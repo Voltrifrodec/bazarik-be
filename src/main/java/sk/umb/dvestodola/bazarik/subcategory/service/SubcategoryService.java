@@ -2,12 +2,18 @@ package sk.umb.dvestodola.bazarik.subcategory.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.management.RuntimeErrorException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import javassist.tools.rmi.ObjectNotFoundException;
+import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
+import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryRepository;
@@ -16,9 +22,11 @@ import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryR
 public class SubcategoryService {
 	
 	private final SubcategoryRepository subcategoryRepository;
+	private final CategoryRepository categoryRepository;
 
-	SubcategoryService(SubcategoryRepository subcategoryRepository) {
+	SubcategoryService(SubcategoryRepository subcategoryRepository, CategoryRepository categoryRepository) {
 		this.subcategoryRepository = subcategoryRepository;
+		this.categoryRepository = categoryRepository;
 	}
 
 	public List<SubcategoryDetailDto> getAllSubcategories() {
@@ -43,7 +51,7 @@ public class SubcategoryService {
 		if (! Strings.isEmpty(subcategoryRequestDto.getName())) {
 			subcategoryEntity.setName(subcategoryRequestDto.getName());
 		}
-        
+
         subcategoryRepository.save(subcategoryEntity);
 	}
 
@@ -54,10 +62,10 @@ public class SubcategoryService {
 
 
 	public List<SubcategoryDetailDto> getSubcategoriesByCategoryId(Long categoryId) {
-		return getSubcategoryEntitiesByCategoryId(categoryId);
+		return getSubcategoryDetailListByCategoryId(categoryId);
 	}
 
-	private List<SubcategoryDetailDto> getSubcategoryEntitiesByCategoryId(Long categoryId) {
+	private List<SubcategoryDetailDto> getSubcategoryDetailListByCategoryId(Long categoryId) {
 		Iterable<SubcategoryEntity> subcategoryEntities = subcategoryRepository.getAllByCategoryId(categoryId);
 		List<SubcategoryDetailDto> subcategoryEntityList = new ArrayList<>();
 
@@ -72,7 +80,7 @@ public class SubcategoryService {
 		Optional<SubcategoryEntity> subcategory = subcategoryRepository.findById(subcategoryId);
 
         if (subcategory.isEmpty()) {
-            throw new IllegalArgumentException("Customer not found. ID: " + subcategoryId);
+            throw new IllegalArgumentException("Subcategory not found. ID: " + subcategoryId);
         }
 
 		return subcategory.get();
@@ -80,8 +88,13 @@ public class SubcategoryService {
 
 	private SubcategoryEntity mapToSubcategoryEntity(SubcategoryRequestDto subcategoryRequestDto) {
 		SubcategoryEntity subcategoryEntity = new SubcategoryEntity();
-
+		
 		subcategoryEntity.setName(subcategoryRequestDto.getName());
+
+		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequestDto.getCategoryId());
+		if (categoryEntity.isPresent()) {
+			subcategoryEntity.setCategory(categoryEntity.get());
+		}
 
 		return subcategoryEntity;
 	}
@@ -102,7 +115,21 @@ public class SubcategoryService {
 
 		subcategory.setId(subcategoryEntity.getId());
 		subcategory.setName(subcategoryEntity.getName());
+		subcategory.setCategory(mapToCategoryDetailDto(subcategoryEntity.getCategory()));
 
 		return subcategory;
+	}
+
+	private CategoryDetailDto mapToCategoryDetailDto(CategoryEntity category) {
+		CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
+
+		if (Objects.isNull(category)) {
+			throw new RuntimeException("ERROR: Category is missing!");
+		}
+
+		categoryDetailDto.setId(category.getId());
+		categoryDetailDto.setName(category.getName());
+
+		return categoryDetailDto;
 	}
 }

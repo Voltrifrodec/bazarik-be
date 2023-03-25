@@ -24,8 +24,8 @@ public class SubcategoryEntity {
 	@ManyToOne
 	@JoinTable(
 		name = "category_subcategory",
-		joinColumns = @JoinColumn(name = "id_category"),
-		inverseJoinColumns = @JoinColumn(name = "id_subcategory")
+		joinColumns = @JoinColumn(name = "id_subcategory"),
+		inverseJoinColumns = @JoinColumn(name = "id_category")
 	)
 	// @JoinColumn(name = "id_category", referencedColumnName = "id_category", table = "")
 	private CategoryEntity category;
