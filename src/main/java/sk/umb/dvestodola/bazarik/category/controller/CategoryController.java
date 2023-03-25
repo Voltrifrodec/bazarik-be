@@ -25,7 +25,7 @@ public class CategoryController {
 
 	@GetMapping("/api/categories")
 	public List<CategoryDetailDto> getCategories() {
-		System.out.println("Get all categories was called: ");
+		System.out.println("Get all categories was called.");
 		return categoryService.getAllCategories();
 	}
 
