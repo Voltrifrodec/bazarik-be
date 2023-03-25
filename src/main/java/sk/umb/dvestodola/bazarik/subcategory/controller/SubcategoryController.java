@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryRequestDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryService;
@@ -36,13 +37,13 @@ public class SubcategoryController {
 	}
 
 	@PostMapping("/api/subcategories")
-	public Long createCategory(@RequestBody SubcategoryRequestDto subcategory) {
+	public Long createCategory(@Valid @RequestBody SubcategoryRequestDto subcategory) {
 		System.out.println("Create subcategory was called.");
 		return subcategoryService.createSubcategory(subcategory);
 	}
 
 	@PutMapping("/api/subcategories/{subcategoryId}")
-	public void updateSubcategory(@PathVariable Long subcategoryId, @RequestBody SubcategoryRequestDto subcategory) {
+	public void updateSubcategory(@PathVariable Long subcategoryId, @Valid @RequestBody SubcategoryRequestDto subcategory) {
 		System.out.println("Update subcategory was called, " + subcategoryId);
 		subcategoryService.updateSubcategory(subcategoryId, subcategory);
 	}

@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import javassist.tools.rmi.ObjectNotFoundException;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
+import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryRepository;
 
@@ -41,6 +39,14 @@ public class SubcategoryService {
 	public Long createSubcategory(SubcategoryRequestDto subcategoryRequestDto) {
 		SubcategoryEntity subcategoryEntity = mapToSubcategoryEntity(subcategoryRequestDto);
 
+		if (Objects.isNull(subcategoryEntity)) {
+			throw new LibraryApplicationException("Subcategory must have valid category.");
+		}
+
+		if (Objects.isNull(subcategoryEntity.getCategory())) {
+			throw new LibraryApplicationException("Subcategory must have valid category.");
+		}
+
 		return subcategoryRepository.save(subcategoryEntity).getId();
 	}
 
@@ -50,6 +56,15 @@ public class SubcategoryService {
         
 		if (! Strings.isEmpty(subcategoryRequestDto.getName())) {
 			subcategoryEntity.setName(subcategoryRequestDto.getName());
+		}
+
+		if (! Objects.isNull(subcategoryEntity.getCategory())) {
+			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequestDto.getCategoryId());
+			if (categoryEntity.isPresent()) {
+				subcategoryEntity.setCategory(categoryEntity.get());
+			} else {
+				throw new LibraryApplicationException("Subcategory must have valid category.");
+			}
 		}
 
         subcategoryRepository.save(subcategoryEntity);
@@ -80,7 +95,7 @@ public class SubcategoryService {
 		Optional<SubcategoryEntity> subcategory = subcategoryRepository.findById(subcategoryId);
 
         if (subcategory.isEmpty()) {
-            throw new IllegalArgumentException("Subcategory not found. ID: " + subcategoryId);
+			throw new LibraryApplicationException("Subcategory must have valid category.");
         }
 
 		return subcategory.get();
@@ -94,6 +109,8 @@ public class SubcategoryService {
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequestDto.getCategoryId());
 		if (categoryEntity.isPresent()) {
 			subcategoryEntity.setCategory(categoryEntity.get());
+		} else {
+			return null;
 		}
 
 		return subcategoryEntity;
@@ -124,7 +141,7 @@ public class SubcategoryService {
 		CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
 
 		if (Objects.isNull(category)) {
-			throw new RuntimeException("ERROR: Category is missing!");
+			throw new LibraryApplicationException("Category is missing!");
 		}
 
 		categoryDetailDto.setId(category.getId());

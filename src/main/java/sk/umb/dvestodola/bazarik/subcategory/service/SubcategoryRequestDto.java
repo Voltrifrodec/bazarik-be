@@ -1,7 +1,18 @@
 package sk.umb.dvestodola.bazarik.subcategory.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class SubcategoryRequestDto {
+	@NotBlank(message = "Subcategory name must not be blank.")
 	private String name;
+
+	/* @Valid
+	@NotEmpty(message = "CategoryID for subcategory must not be blank.") */
+	@Valid
+	@NotNull(message = "CategoryID for subcategory must not be blank.")
 	private Long categoryId;
 
 	public Long getCategoryId() {
