@@ -6,9 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 
 @Entity(name = "subcategory")
@@ -28,7 +26,6 @@ public class SubcategoryEntity {
 		inverseJoinColumns = @JoinColumn(name = "id_category")
 	)
 	@JoinColumn(nullable = false)
-	// @JoinColumn(name = "id_category", referencedColumnName = "id_category", table = "")
 	private CategoryEntity category;
 
 
