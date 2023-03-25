@@ -13,14 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.category.service.CategoryRequestDto;
 import sk.umb.dvestodola.bazarik.category.service.CategoryService;
+import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
+import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryService;
 
 @RestController
 public class CategoryController {
 
 	private final CategoryService categoryService;
+	private final SubcategoryService subcategoryService;
 
-	public CategoryController(CategoryService categoryService) {
+	public CategoryController(
+		CategoryService categoryService,
+		SubcategoryService subcategoryService
+	) {
 		this.categoryService = categoryService;
+		this.subcategoryService = subcategoryService;
 	}
 
 	@GetMapping("/api/categories")
@@ -33,6 +40,12 @@ public class CategoryController {
 	public CategoryDetailDto getCategory(@PathVariable Long categoryId) {
 		System.out.println("Get category was called, " + categoryId);
 		return categoryService.getCategoryById(categoryId);
+	}
+
+	@GetMapping("/api/categories/{categoryId}/subcategories")
+	public List<SubcategoryDetailDto> getSubcategoriesByCategoryId(@PathVariable Long categoryId) {
+		System.out.println("Get subcategories by categoryId was called, " + categoryId);
+		return subcategoryService.getSubcategoriesByCategoryId(categoryId);
 	}
 
 	@PostMapping("/api/categories")
