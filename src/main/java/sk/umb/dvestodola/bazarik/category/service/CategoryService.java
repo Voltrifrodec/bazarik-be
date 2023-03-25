@@ -8,8 +8,10 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
+import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 
 @Service
 public class CategoryService {
@@ -29,14 +31,14 @@ public class CategoryService {
 	}
 
 	@Transactional
-	public Long createCategory(CategoryRequestDto categoryRequestDto) {
+	public Long createCategory(@Valid CategoryRequestDto categoryRequestDto) {
 		CategoryEntity categoryEntity = mapToCategoryEntity(categoryRequestDto);
 
 		return categoryRepository.save(categoryEntity).getId();
 	}
 
 	@Transactional
-	public void updateCategory(Long categoryId, CategoryRequestDto categoryRequestDto) {
+	public void updateCategory(Long categoryId, @Valid CategoryRequestDto categoryRequestDto) {
 		CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
         
 		if (! Strings.isEmpty(categoryRequestDto.getName())) {
@@ -56,7 +58,7 @@ public class CategoryService {
 		Optional<CategoryEntity> category = categoryRepository.findById(categoryId);
 
         if (category.isEmpty()) {
-            throw new IllegalArgumentException("Customer not found. ID: " + categoryId);
+            throw new LibraryApplicationException("Category could not be found, id: " + categoryId);
         }
 
 		return category.get();

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.category.service.CategoryRequestDto;
 import sk.umb.dvestodola.bazarik.category.service.CategoryService;
@@ -49,13 +50,13 @@ public class CategoryController {
 	}
 
 	@PostMapping("/api/categories")
-	public Long createCategory(@RequestBody CategoryRequestDto category) {
+	public Long createCategory(@Valid @RequestBody CategoryRequestDto category) {
 		System.out.println("Create category was called.");
 		return categoryService.createCategory(category);
 	}
 
 	@PutMapping("/api/categories/{categoryId}")
-	public void updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDto category) {
+	public void updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryRequestDto category) {
 		System.out.println("Update category was called, " + categoryId);
 		categoryService.updateCategory(categoryId, category);
 	}
