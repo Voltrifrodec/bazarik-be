@@ -1,107 +1,104 @@
 package sk.umb.dvestodola.bazarik.image.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 
-// import java.sql.Date;
-import java.util.Date;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.mariadb.jdbc.MariaDbBlob;
+import org.springframework.stereotype.Service;
+
+@Service
 public class ImageService {
 
-    // CRUD & Methods
-    // - nepotrebujem:
-    //      • getAllImages()
-    //      • getImageById()
-    // - potrebujem:
-    //      [✓] constructor()
-    //      [✓] createImage()
-    //      [✓] updateImage()
-    //      [✓] deleteImage()
-    //      [✓] getImageEntityById() -> ak by sa musel vymazat obrazok na server-side
-    //      [✓] mapToEntity()
-    //      [✓] mapToDataTransferObjectList
-    //      [✓] mapToDataTransferObject
+	private final ImageRepository imageRepository;
 
-    // Ulozenie repa
-    private final ImageRepository imageRepository;
+	public ImageService(ImageRepository imageRepository) {
+		this.imageRepository = imageRepository;
+	}
 
-    // Konstruktor
-    public ImageService(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
+	public ImageDetailDto getImageById(Long imageId) {
+		return mapToDataTransferObject(getImageEntityById(imageId));
+	}
 
-    // Hladanie obrazka alebo entity obrazka podla id (ak by to vobec bolo potrebne)
-    // TODO: Prerobit throw exception osobitne (ako sme robili na cviceni)
-    public ImageDetailDataTransferObject getImageById(Long imageId) {
-        return mapToDataTransferObject(getImageEntityById(imageId));
-    }
+	public ImageEntity getImageEntityById(Long imageId) {
+		Optional<ImageEntity> imageEntity = imageRepository.findById(imageId);
 
-    public ImageEntity getImageEntityById(Long imageId) {
-        Optional<ImageEntity> imageEntity = imageRepository.findById(imageId);
+		if(imageEntity.isEmpty()) {
+			throw new LibraryApplicationException("Image could not be found, id: " + imageId);
+		}
 
-        if(imageEntity.isEmpty()) {
-            return new ImageEntity();
-        }
+		return imageEntity.get();
+	}
 
-        return imageEntity.get();
-    }
+	@Transactional
+    public Long createImage(ImageRequestDto image) {
+        ImageEntity imageEntity = mapToEntity(image);
 
-    // CRUD
-    @Transactional
-    public Long createImage(ImageRequestDataTransferObject imageRequestDataTransferObject) {
-        ImageEntity imageEntity = mapToEntity(imageRequestDataTransferObject);
+		return imageRepository.save(imageEntity).getId();
+	}
 
-        return imageRepository.save(imageEntity).getId();
-    }
+	@Transactional
+	public void updateImage(Long imageId, @Valid ImageRequestDto imageRequestDto) {
+		ImageEntity imageEntity = getImageEntityById(imageId);
 
-    @Transactional
-    public void updateImage(Long imageId, ImageRequestDataTransferObject imageRequestDataTransferObject) {
-        ImageEntity imageEntity = getImageEntityById(imageId);
-        imageEntity.setImage(imageRequestDataTransferObject.getImage());
-        imageEntity.setLastChange(new Date(/*System.currentTimeMillis()*/));
+		// imageEntity.setImage(imageRequestDto.getImage());
+		// imageEntity.setLastChange(new Date(/*System.currentTimeMillis()*/));
 
-        imageRepository.save(imageEntity);
-    }
+		imageRepository.save(imageEntity);
+	}
 
-    @Transactional
-    public void deleteImage(Long imageId) {
-        imageRepository.deleteById(imageId);
-    }
+	@Transactional
+	public void deleteImage(Long imageId) {
+		imageRepository.deleteById(imageId);
+	}
+
+	public ImageEntity mapToEntity(ImageRequestDto imageRequest) {
+		ImageEntity imageEntity = new ImageEntity();
+
+		byte[] byteArray = imageRequest.getImage().getBytes();
+
+		Blob blob = new MariaDbBlob(byteArray);
+
+		imageEntity.setImage(blob);
+
+		return imageEntity;
+	}
+
+	public ImageDetailDto mapToDataTransferObject(ImageEntity imageEntity) {
+		ImageDetailDto imageDetailDto = new ImageDetailDto();
+
+		imageDetailDto.setId(imageEntity.getId());
+
+		Blob blob = imageEntity.getImage();
+
+		try {
+			byte[] byteArray = imageEntity.getImage().getBytes(1,(int)blob.length());
+			imageDetailDto.setImage(byteArray);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 
+		return imageDetailDto;
+	}
 
-    // Mapping
-    public ImageEntity mapToEntity(ImageRequestDataTransferObject imageRequestDataTransferObject) {
-        ImageEntity imageEntity = new ImageEntity();
-        imageEntity.setImage(imageRequestDataTransferObject.getImage());
-        imageEntity.setLastChange(imageRequestDataTransferObject.getLastChange());
+	public List<ImageDetailDto> mapToDataTransferObjectList(Iterable<ImageEntity> imageEntities) {
+		List<ImageDetailDto> imageDetailDataTransferObjects = new ArrayList<>();
 
-        return imageEntity;
-    }
+		imageEntities.forEach(imageEntity -> {
+			ImageDetailDto imageDetailDataTransferObject = mapToDataTransferObject(imageEntity);
+			imageDetailDataTransferObjects.add(imageDetailDataTransferObject);
+		});
 
-    public ImageDetailDataTransferObject mapToDataTransferObject(ImageEntity imageEntity) {
-        ImageDetailDataTransferObject imageDetailDataTransferObject = new ImageDetailDataTransferObject();
-
-        imageDetailDataTransferObject.setId(imageEntity.getId());
-        imageDetailDataTransferObject.setImage(imageEntity.getImage());
-        imageDetailDataTransferObject.setLastChange(imageEntity.getLastChange());
-
-        return imageDetailDataTransferObject;
-    }
-
-    public List<ImageDetailDataTransferObject> mapToDataTransferObjectList(Iterable<ImageEntity> imageEntities) {
-        List<ImageDetailDataTransferObject> imageDetailDataTransferObjects = new ArrayList<>();
-
-        imageEntities.forEach(imageEntity -> {
-            ImageDetailDataTransferObject imageDetailDataTransferObject = mapToDataTransferObject(imageEntity);
-            imageDetailDataTransferObjects.add(imageDetailDataTransferObject);
-        });
-
-        return imageDetailDataTransferObjects;
-    }
+		return imageDetailDataTransferObjects;
+	}
 
 }
