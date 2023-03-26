@@ -31,13 +31,13 @@ public class RegionController {
 	}
 
 	@GetMapping("/api/regions/{regionId}")
-	public RegionDetailDto getCategory(@PathVariable Long regionId) {
+	public RegionDetailDto getRegion(@PathVariable Long regionId) {
 		System.out.println("Get region was called, " + regionId);
-		return regionService.getCategoryById(regionId);
+		return regionService.getRegionById(regionId);
 	}
 
 	@PostMapping("/api/regions")
-	public Long createCategory(@Valid @RequestBody RegionRequestDto region) {
+	public Long createRegion(@Valid @RequestBody RegionRequestDto region) {
 		System.out.println("Create region was called.");
 		return regionService.createRegion(region);
 	}

@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 
 @Entity(name = "region")
@@ -18,13 +18,7 @@ public class RegionEntity {
 	@Column(name = "name")
 	private String name;
 
-	// @ManyToMany
-	/* @JoinTable(
-		name = "region_country",
-		joinColumns = @JoinColumn(name = "id_region"),
-		inverseJoinColumns = @JoinColumn(name = "id_country")
-	) */
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_country", nullable = false)
 	private CountryEntity country;
 

@@ -19,8 +19,6 @@ import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 @Service
 public class RegionService {
 
-	// TODO: Fixnúť rekurzívne pridávanie country
-	
 	private final RegionRepository regionRepository;
 	private final CountryRepository countryRepository;
 
@@ -33,7 +31,7 @@ public class RegionService {
         return mapToRegionDtoList(regionRepository.findAll());
     }
 
-	public RegionDetailDto getCategoryById(Long regionId) {
+	public RegionDetailDto getRegionById(Long regionId) {
 		return mapToRegionDetailDto(getRegionEntityById(regionId));
 	}
 
