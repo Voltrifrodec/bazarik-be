@@ -6,9 +6,7 @@ import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 
 @Repository
 public interface ContactRepository extends CrudRepository<ContactEntity, Long> {
-    
-    Iterable<ContactEntity> findByPhoneNumber(String phoneNumber);
+	Iterable<ContactEntity> findByPhoneNumber(String phoneNumber);
 
-    Iterable<ContactEntity> findByEmail(String email);
-    
+	Iterable<ContactEntity> findByEmail(String email);
 }

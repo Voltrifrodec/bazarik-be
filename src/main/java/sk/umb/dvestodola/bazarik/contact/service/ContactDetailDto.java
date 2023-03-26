@@ -1,20 +1,9 @@
-package sk.umb.dvestodola.bazarik.contact.persistence.entity;
+package sk.umb.dvestodola.bazarik.contact.service;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-
-@Entity(name = "contact")
-public class ContactEntity {
-	@Id
-	@GeneratedValue
+public class ContactDetailDto {
+	
 	private Long id;
-
-	@Column(name = "phone_number", nullable = false)
 	private String phoneNumber;
-
-	@Column(name = "email", nullable = false)
 	private String email;
 
 
@@ -41,5 +30,5 @@ public class ContactEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 }
