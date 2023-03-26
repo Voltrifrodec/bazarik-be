@@ -31,13 +31,13 @@ public class SubcategoryController {
 	}
 
 	@GetMapping("/api/subcategories/{subcategoryId}")
-	public SubcategoryDetailDto getCategory(@PathVariable Long subcategoryId) {
+	public SubcategoryDetailDto getSubcategoryById(@PathVariable Long subcategoryId) {
 		System.out.println("Get subcategory was called, " + subcategoryId);
 		return subcategoryService.getCategoryById(subcategoryId);
 	}
 
 	@PostMapping("/api/subcategories")
-	public Long createCategory(@Valid @RequestBody SubcategoryRequestDto subcategory) {
+	public Long createSubcategory(@Valid @RequestBody SubcategoryRequestDto subcategory) {
 		System.out.println("Create subcategory was called.");
 		return subcategoryService.createSubcategory(subcategory);
 	}
