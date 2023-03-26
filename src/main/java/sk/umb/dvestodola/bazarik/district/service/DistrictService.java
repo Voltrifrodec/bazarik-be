@@ -42,11 +42,11 @@ public class DistrictService {
 		DistrictEntity regionEntity = mapToDistrictEntity(districtRequestDto);
 
 		if (Objects.isNull(regionEntity)) {
-			throw new LibraryApplicationException("District must have valid country id.");
+			throw new LibraryApplicationException("District must have valid region id.");
 		}
 
 		if (Objects.isNull(regionEntity.getRegion())) {
-			throw new LibraryApplicationException("District must have valid country id.");
+			throw new LibraryApplicationException("District must have valid region id.");
 		}
 
 		return districtRepository.save(regionEntity).getId();
