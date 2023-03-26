@@ -33,7 +33,7 @@ public class SubcategoryController {
 	@GetMapping("/api/subcategories/{subcategoryId}")
 	public SubcategoryDetailDto getSubcategoryById(@PathVariable Long subcategoryId) {
 		System.out.println("Get subcategory was called, " + subcategoryId);
-		return subcategoryService.getCategoryById(subcategoryId);
+		return subcategoryService.getSubcategoryById(subcategoryId);
 	}
 
 	@PostMapping("/api/subcategories")

@@ -31,7 +31,7 @@ public class SubcategoryService {
         return mapToSubcategoryDtoList(subcategoryRepository.findAll());
     }
 
-	public SubcategoryDetailDto getCategoryById(Long subcategoryId) {
+	public SubcategoryDetailDto getSubcategoryById(Long subcategoryId) {
 		return mapToSubcategoryDetailDto(getSubcategoryEntityById(subcategoryId));
 	}
 
