@@ -22,26 +22,26 @@ public class ContactService {
 	}
 
 	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
-		return mapToDtoList(contactRepository.findByPhoneNumber(phoneNumber));
+		return mapToConctactDetailList(contactRepository.findByPhoneNumber(phoneNumber));
 	}
 	
 	public List<ContactDetailDto> searchContactByEmail(String email) {
-		return mapToDtoList(contactRepository.findByEmail(email));
+		return mapToConctactDetailList(contactRepository.findByEmail(email));
 	}
 
 	public List<ContactDetailDto> getAllContacts() {
-		return mapToDtoList(contactRepository.findAll());
+		return mapToConctactDetailList(contactRepository.findAll());
 	}
 
 	public ContactDetailDto getContactById(Long contactId) {
-		return mapToDto(getContactEntityById(contactId));
+		return mapToContactDetail(getContactEntityById(contactId));
 	}
 
 	public ContactEntity getContactEntityById(Long contactId) {
 		Optional<ContactEntity> contact = contactRepository.findById(contactId);
 
 		if(contact.isEmpty()) {
-			throw new LibraryApplicationException("Contact with ID: " + contactId + " couldn't be found!");
+			throw new LibraryApplicationException("Contact not found, id: " + contactId);
 		}
 
 		return contact.get();
@@ -49,7 +49,7 @@ public class ContactService {
 
 	@Transactional
 	public Long createContact(ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = mapToEntity(contactRequestDataTransferObject);
+		ContactEntity contact = mapToContactEntity(contactRequestDataTransferObject);
 		
 		return contactRepository.save(contact).getId();
 	}
@@ -58,9 +58,9 @@ public class ContactService {
 	public void updateContact(Long contactId, ContactRequestDto contactRequestDataTransferObject) {
 		ContactEntity contact = getContactEntityById(contactId);
 
-		if(!Strings.isEmpty(contact.getPhoneNumber())) {
+		/* if(!Strings.isEmpty(contact.getPhoneNumber())) {
 			contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
-		}
+		} */
 
 		if(!Strings.isEmpty(contact.getEmail())) {
 			contact.setEmail(contactRequestDataTransferObject.getEmail());
@@ -74,29 +74,29 @@ public class ContactService {
 		contactRepository.deleteById(contactId);
 	}
 
-	private ContactEntity mapToEntity(ContactRequestDto contactRequestDataTransferObject) {
+	private ContactEntity mapToContactEntity(ContactRequestDto contactRequestDataTransferObject) {
 		ContactEntity contact = new ContactEntity();
 
-		contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
+		// contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
 		contact.setEmail(contactRequestDataTransferObject.getEmail());
 
 		return contact;
 	}
 
-	private ContactDetailDto mapToDto(ContactEntity contactEntity) {
+	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
 		ContactDetailDto contactDto = new ContactDetailDto();
 		contactDto.setId(contactEntity.getId());
-		contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
+		// contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
 		contactDto.setEmail(contactEntity.getEmail());
 		
 		return contactDto;
 	}
 
-	private List<ContactDetailDto> mapToDtoList(Iterable<ContactEntity> contactEntities) {
+	private List<ContactDetailDto> mapToConctactDetailList(Iterable<ContactEntity> contactEntities) {
 		List<ContactDetailDto> contacts = new ArrayList<>();
 		
 		contactEntities.forEach(contactEntity -> {
-			ContactDetailDto contactDto = mapToDto(contactEntity);
+			ContactDetailDto contactDto = mapToContactDetail(contactEntity);
 			contacts.add(contactDto);
 		});
 
