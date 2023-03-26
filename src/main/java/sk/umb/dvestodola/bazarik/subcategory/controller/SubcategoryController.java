@@ -14,14 +14,18 @@ import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryRequestDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryService;
+import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
+import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryService;
 
 @RestController
 public class SubcategoryController {
 
 	private final SubcategoryService subcategoryService;
+	private final SubsubcategoryService subsubcategoryService;
 
-	public SubcategoryController(SubcategoryService subcategoryService) {
+	public SubcategoryController(SubcategoryService subcategoryService, SubsubcategoryService subsubcategoryService) {
 		this.subcategoryService = subcategoryService;
+		this.subsubcategoryService = subsubcategoryService;
 	}
 
 	@GetMapping("/api/subcategories")
@@ -34,6 +38,12 @@ public class SubcategoryController {
 	public SubcategoryDetailDto getCategory(@PathVariable Long subcategoryId) {
 		System.out.println("Get subcategory was called, " + subcategoryId);
 		return subcategoryService.getCategoryById(subcategoryId);
+	}
+
+	@GetMapping("/api/subcategories/{subcategoryId}/subsubcategories")
+	public List<SubsubcategoryDetailDto> getSubsubcategoriesBySubcategoryId(@PathVariable Long subcategoryId) {
+		System.out.println("Get subcategories by categoryId was called, " + subcategoryId);
+		return subsubcategoryService.getSubsubcategoriesBySubcategoryId(subcategoryId);
 	}
 
 	@PostMapping("/api/subcategories")
