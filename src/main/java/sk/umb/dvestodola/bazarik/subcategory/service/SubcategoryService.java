@@ -95,7 +95,7 @@ public class SubcategoryService {
 		Optional<SubcategoryEntity> subcategory = subcategoryRepository.findById(subcategoryId);
 
         if (subcategory.isEmpty()) {
-			throw new LibraryApplicationException("Subcategory must have valid category.");
+			throw new LibraryApplicationException("Subcategory must have valid category id.");
         }
 
 		return subcategory.get();
@@ -110,7 +110,7 @@ public class SubcategoryService {
 		if (categoryEntity.isPresent()) {
 			subcategoryEntity.setCategory(categoryEntity.get());
 		} else {
-			return null;
+			throw new LibraryApplicationException("Subcategory must have valid category id.");
 		}
 
 		return subcategoryEntity;
