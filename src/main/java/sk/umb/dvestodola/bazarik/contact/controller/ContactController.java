@@ -6,6 +6,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDataTransferObject;
 import sk.umb.dvestodola.bazarik.contact.service.ContactRequestDataTransferObject;
 import sk.umb.dvestodola.bazarik.contact.service.ContactService;
@@ -36,7 +37,7 @@ public class ContactController {
     }
 
     @PostMapping("/api/contacts")
-    public Long createContact(@RequestBody ContactRequestDataTransferObject contactRequestDataTransferObject) {
+    public Long createContact(@Valid @RequestBody ContactRequestDataTransferObject contactRequestDataTransferObject) {
         
         System.out.println("Creating contact...");
         return contactService.createContact(contactRequestDataTransferObject);
@@ -44,7 +45,7 @@ public class ContactController {
     }
 
     @PutMapping("/api/contacts/{contactId}")
-    public void updateContact(@PathVariable Long contactId, @RequestBody ContactRequestDataTransferObject contactRequestDataTransferObject) {
+    public void updateContact(@PathVariable Long contactId, @Valid @RequestBody ContactRequestDataTransferObject contactRequestDataTransferObject) {
 
         System.out.println("Updating contact with ID: " + contactId);
         contactService.updateContact(contactId, contactRequestDataTransferObject);

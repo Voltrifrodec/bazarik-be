@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.repository.ContactRepository;
+import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ContactService {
         Optional<ContactEntity> contact = contactRepository.findById(contactId);
 
         if(contact.isEmpty()) {
-            return new ContactEntity();
+            throw new LibraryApplicationException("Contact with ID: " + contactId + " couldn't be found!");
         }
 
         return contact.get();
