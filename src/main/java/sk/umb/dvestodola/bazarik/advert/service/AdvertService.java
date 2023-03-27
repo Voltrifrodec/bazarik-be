@@ -9,22 +9,16 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
-import sk.umb.dvestodola.bazarik.region.persistence.repository.RegionRepository;
-import sk.umb.dvestodola.bazarik.country.persistence.repository.CountryRepository;
-import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
-import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
+import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 
 @Service
 public class AdvertService {
 
-	private final RegionRepository regionRepository;
-	private final CountryRepository countryRepository;
+	private final AdvertRepository advertRepository;
 
-	AdvertService(RegionRepository regionRepository, CountryRepository countryRepository) {
-		this.regionRepository = regionRepository;
-		this.countryRepository = countryRepository;
+	AdvertService(AdvertRepository advertRepository) {
+		this.advertRepository = advertRepository;
 	}
 
 	public List<AdvertDetailDto> getAllAdverts() {
@@ -61,12 +55,12 @@ public class AdvertService {
 		// TODO: Check for every attribute
 		
 		if (! Objects.isNull(regionEntity.getCountry())) {
-			Optional<CountryEntity> regionsEntity = countryRepository.findById(regionRequestDto.getCountryId());
+			/* Optional<CountryEntity> regionsEntity = countryRepository.findById(regionRequestDto.getCountryId());
 			if (regionsEntity.isPresent()) {
 				regionEntity.setCountry(regionsEntity.get());
 			} else {
 				throw new LibraryApplicationException("Region must have a valid id.");
-			}
+			} */
 		}
 
         regionRepository.save(regionEntity);
@@ -92,10 +86,10 @@ public class AdvertService {
 		
 		regionEntity.setName(regionRequestDto.getName());
 
-		Optional<CountryEntity> countryEntity = countryRepository.findById(regionRequestDto.getCountryId());
+		/*  Optional<CountryEntity> countryEntity = countryRepository.findById(regionRequestDto.getCountryId());
 		if (countryEntity.isPresent()) {
 			regionEntity.setCountry(countryEntity.get());
-		}
+		} */
 
 		return regionEntity;
 	}
@@ -116,7 +110,7 @@ public class AdvertService {
 
 		region.setId(regionEntity.getId());
 		region.setName(regionEntity.getName());
-		region.setCountry(mapToCountryDetailDto(regionEntity.getCountry()));
+		// region.setCountry(mapToCountryDetailDto(regionEntity.getCountry()));
 
 		return region;
 	}
