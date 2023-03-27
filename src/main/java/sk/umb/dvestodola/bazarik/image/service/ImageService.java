@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.stereotype.Service;
 
@@ -77,15 +80,22 @@ public class ImageService {
 
 		imageDetailDto.setId(imageEntity.getId());
 
-		Blob blob = imageEntity.getImage();
-
+		Blob blob;
 		try {
-			byte[] byteArray = imageEntity.getImage().getBytes(1,(int)blob.length());
-			imageDetailDto.setImage(byteArray);
+			blob = new SerialBlob(imageEntity.getImage());
+			imageDetailDto.setImage(blob);
+		} catch (SerialException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		//imageEntity.getImage();
 
+		/* try {
+			byte[] byteArray = imageEntity.getImage().getBytes(1,(int)blob.length());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} */
 
 		return imageDetailDto;
 	}
