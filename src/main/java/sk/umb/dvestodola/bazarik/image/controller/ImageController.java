@@ -2,7 +2,10 @@ package sk.umb.dvestodola.bazarik.image.controller;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
 import sk.umb.dvestodola.bazarik.image.service.ImageRequestDto;
@@ -17,6 +20,12 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+	@GetMapping("/api/images")
+	public List<ImageDetailDto> getAllImages() {
+        System.out.println("Get all images was called.");
+		return imageService.getAllImages();
+	}
+
     @GetMapping("/api/images/{imageId}")
     public ImageDetailDto getImageById(@PathVariable Long imageId) {
         System.out.println("Get image by id was called, id: " + imageId);
@@ -28,6 +37,12 @@ public class ImageController {
         System.out.println("Create image was called.");
         return imageService.createImage(image);
     }
+
+	@PostMapping("api/uploadImage")
+	public Long handleImageUpload(@RequestParam("file") MultipartFile file) {
+        System.out.println("Upload image was called.");
+		return imageService.uploadImage(file);
+	}
 
     @PutMapping("/api/images/{imageId}")
     public void updateImage(@PathVariable Long imageId, @Valid @RequestBody ImageRequestDto image) {

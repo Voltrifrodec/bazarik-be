@@ -6,6 +6,7 @@ import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import javax.sql.rowset.serial.SerialException;
 
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ImageService {
@@ -25,6 +27,10 @@ public class ImageService {
 
 	public ImageService(ImageRepository imageRepository) {
 		this.imageRepository = imageRepository;
+	}
+
+	public List<ImageDetailDto> getAllImages() {
+		return mapToDataTransferObjectList(imageRepository.findAll());
 	}
 
 	public ImageDetailDto getImageById(Long imageId) {
@@ -44,6 +50,23 @@ public class ImageService {
 	@Transactional
     public Long createImage(ImageRequestDto image) {
         ImageEntity imageEntity = mapToEntity(image);
+
+		return imageRepository.save(imageEntity).getId();
+	}
+
+	@Transactional
+	public Long uploadImage(MultipartFile file) {
+		ImageEntity imageEntity = new ImageEntity();
+
+		// TODO: Spraviť kompresiu obrázku
+		// TODO: Ukladať ako ?jpeg/png/webp
+
+		try {
+			Blob imageData = new SerialBlob(file.getBytes());
+			imageEntity.setImage(imageData);
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
 
 		return imageRepository.save(imageEntity).getId();
 	}

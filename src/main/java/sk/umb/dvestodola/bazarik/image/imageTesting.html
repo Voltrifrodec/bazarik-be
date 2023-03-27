@@ -1,0 +1,25 @@
+<!-- https://stackoverflow.com/questions/34111390/displaying-blob-image-from-mysql-database-into-dynamic-div-in-html -->
+
+<!-- Image element -->
+<img id="image"/>
+
+<script>
+	window.onload = async () => {
+		let url = `http://localhost:8080/api/images`;
+		let response = await fetch(url);
+		const data = await response.json();
+		
+		data.forEach(d => {
+			console.log(d);
+			let imageData = d.image;
+			let imageElement = document.createElement('img');
+			let br = document.createElement('br');
+
+			imageElement.src = `data:image/png;base64,${imageData}`;
+
+			document.body.append(imageElement);
+			document.body.append(br);
+		})
+
+	}
+</script>
