@@ -22,11 +22,11 @@ public class ContactService {
 	}
 
 	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
-		return mapToConctactDetailList(contactRepository.findByPhoneNumber(phoneNumber));
+		return mapToConctactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
 	}
 	
 	public List<ContactDetailDto> searchContactByEmail(String email) {
-		return mapToConctactDetailList(contactRepository.findByEmail(email));
+		return mapToConctactDetailList(contactRepository.findAllByEmail(email));
 	}
 
 	public List<ContactDetailDto> getAllContacts() {
