@@ -20,12 +20,13 @@ import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
-import sk.umb.dvestodola.bazarik.category.service.CategoryRequestDto;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.repository.ContactRepository;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
+import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
+import sk.umb.dvestodola.bazarik.currency.persistence.repository.CurrencyRepository;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
 import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
@@ -52,6 +53,7 @@ public class AdvertService {
 	private final ContactRepository contactRepository;
 	private final DistrictRepository districtRepository;
 	private final ImageRepository imageRepository;
+	private final CurrencyRepository currencyRepository;
 
 	public AdvertService(
 		AdvertRepository advertRepository,
@@ -60,7 +62,8 @@ public class AdvertService {
 		SubsubcategoryRepository subsubcategoryRepository,
 		ContactRepository contactRepository,
 		DistrictRepository districtRepository,
-		ImageRepository imageRepository
+		ImageRepository imageRepository,
+		CurrencyRepository currencyRepository
 	) {
 		this.advertRepository = advertRepository;
 		this.categoryRepository = categoryRepository;
@@ -69,6 +72,7 @@ public class AdvertService {
 		this.contactRepository = contactRepository;
 		this.districtRepository = districtRepository;
 		this.imageRepository = imageRepository;
+		this.currencyRepository = currencyRepository;
 	}
 
 	public List<AdvertDetailDto> getAllAdverts() {
@@ -116,8 +120,6 @@ public class AdvertService {
 			advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 		}
 
-		// TODO: Check for every attribute
-		
 		if (! Objects.isNull(advertEntity.getCategory())) {
 			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 			if (categoryEntity.isPresent()) {
@@ -204,6 +206,13 @@ public class AdvertService {
 		advertEntity.setDateModified(advertEntity.getDateAdded());
 		advertEntity.setPriceEur(advertRequest.getPriceEur());
 		advertEntity.setFixedPrice(advertRequest.getFixedPrice());
+		
+		Optional<CurrencyEntity> currencyEntity = currencyRepository.findById(1L);
+		if (currencyEntity.isPresent()) {
+			advertEntity.setCurrency(currencyEntity.get());
+		} else {
+			throw new LibraryApplicationException("Currency must have a valid id.");
+		}
 
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 		if (categoryEntity.isPresent()) {

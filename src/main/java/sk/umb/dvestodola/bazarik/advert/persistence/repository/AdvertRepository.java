@@ -8,4 +8,5 @@ public interface AdvertRepository extends CrudRepository<AdvertEntity, Long> {
 	Iterable<AdvertEntity> findAllAdvertsByCategoryId(Long categoryId);
 	Iterable<AdvertEntity> findAllAdvertsBySubcategoryId(Long subcategoryId);
 	Iterable<AdvertEntity> findAllAdvertsBySubsubcategoryId(Long subsubcategoryId);
+	Iterable<AdvertEntity> findAllAdvertsByCurrencyId(Long currencyId);
 }

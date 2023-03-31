@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
+import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
@@ -44,6 +45,10 @@ public class AdvertEntity {
 	private Boolean fixedPrice;
 
 	@OneToOne
+	@JoinColumn(name = "id_currency", nullable = false)
+	private CurrencyEntity currency;
+
+	@OneToOne
 	@JoinColumn(name = "id_category", nullable = false)
 	private CategoryEntity category;
 	
@@ -67,7 +72,7 @@ public class AdvertEntity {
 	@JoinColumn(name = "id_image")
 	private ImageEntity image;
 
-	
+
 	public Date getDateModified() {
 		return dateModified;
 	}
@@ -178,5 +183,13 @@ public class AdvertEntity {
 
 	public void setFixedPrice(Boolean fixedPrice) {
 		this.fixedPrice = fixedPrice;
+	}
+
+	public CurrencyEntity getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(CurrencyEntity currency) {
+		this.currency = currency;
 	}
 }
