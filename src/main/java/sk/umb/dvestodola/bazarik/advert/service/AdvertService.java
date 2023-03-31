@@ -388,13 +388,15 @@ public class AdvertService {
 		ImageDetailDto imageDetail = new ImageDetailDto();
 
 		imageDetail.setId(imageEntity.getId());
+		imageDetail.setOriginalFileName(imageEntity.getOriginalFileName());
+		imageDetail.setType(imageEntity.getType());
+		imageDetail.setSizeBytes(imageEntity.getSizeBytes());
+		imageDetail.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
 
 		Blob blob;
 		try {
 			blob = new SerialBlob(imageEntity.getImage());
 			imageDetail.setImage(blob);
-		} catch (SerialException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
