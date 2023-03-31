@@ -1,13 +1,38 @@
 package sk.umb.dvestodola.bazarik;
 
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-public class BazarikApplication {
+import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
+import sk.umb.dvestodola.bazarik.currency.persistence.repository.CurrencyRepository;
 
+@SpringBootApplication
+public class BazarikApplication implements CommandLineRunner {
+	
+	@Autowired
+	CurrencyRepository currencyRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(BazarikApplication.class, args);
 	}
 
+	@Override
+	public void run(String... args) throws Exception {
+		if (currencyRepository.count() == 0) {
+			insertToCurrencies("€", "Euro");
+		}
+	}
+
+	public void insertToCurrencies(String symbol, String name) {
+		if (Strings.isBlank(name)) return;
+		if (Strings.isBlank(symbol)) return;
+		
+		CurrencyEntity currencyEntity = new CurrencyEntity();
+		currencyEntity.setName(name);
+		currencyEntity.setSymbol(symbol);
+		currencyRepository.save(currencyEntity);
+	}
 }
