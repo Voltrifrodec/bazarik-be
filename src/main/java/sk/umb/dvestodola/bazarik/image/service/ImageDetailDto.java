@@ -5,10 +5,10 @@ import java.sql.Blob;
 public class ImageDetailDto {
     private Long id;
 	private String originalFileName;
-    private Blob image;
 	private String type;
-	private Long sizeBytes;
 	private Long originalSizeBytes;
+	private Long sizeBytes;
+    private Blob image;
 
 
     public String getType() {
