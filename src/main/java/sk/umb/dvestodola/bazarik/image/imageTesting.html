@@ -8,17 +8,17 @@
 		let url = `http://localhost:8080/api/images`;
 		let response = await fetch(url);
 		const data = await response.json();
+		console.log(data.length);
 		
 		data.forEach(d => {
 			console.log(d);
-			let imageData = d.image;
 			let imageElement = document.createElement('img');
-			let br = document.createElement('br');
 
-			imageElement.src = `data:image/png;base64,${imageData}`;
+			imageElement.style.display = "inline";
+			imageElement.src = `data:${d.type};base64,${d.image}`;
 
 			document.body.append(imageElement);
-			document.body.append(br);
+			// document.body.append(br);
 		})
 
 	}

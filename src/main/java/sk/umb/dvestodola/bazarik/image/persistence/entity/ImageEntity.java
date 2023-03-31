@@ -15,9 +15,23 @@ public class ImageEntity {
 
 	@Column(name = "image", nullable = false)
     private Blob image;
+
+	@Column(name = "size_bytes")
+	private Long sizeBytes;
+
+	@Column(name= "type")
+	private String type;
 	
 
-    public Long getId() {
+    public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -32,4 +46,12 @@ public class ImageEntity {
     public void setImage(Blob image) {
         this.image = image;
     }
+
+	public Long getSizeBytes() {
+		return sizeBytes;
+	}
+
+	public void setSizeBytes(Long sizeBytes) {
+		this.sizeBytes = sizeBytes;
+	}
 }

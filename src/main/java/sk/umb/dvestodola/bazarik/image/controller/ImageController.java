@@ -39,7 +39,7 @@ public class ImageController {
     }
 
 	@PostMapping("api/uploadImage")
-	public Long handleImageUpload(@RequestParam("file") MultipartFile file) {
+	public Long handleImageUpload(@Valid @RequestParam("file") MultipartFile file) {
         System.out.println("Upload image was called.");
 		return imageService.uploadImage(file);
 	}
@@ -54,5 +54,11 @@ public class ImageController {
     public void deleteImage(@PathVariable Long imageId) {
         System.out.println("Delete image was called, id: " + imageId);
         imageService.deleteImage(imageId);
+    }
+
+	@DeleteMapping("/api/images")
+    public void deleteAllImages() {
+        System.out.println("Delete all images was called.");
+        imageService.deleteAllImages();
     }
 }
