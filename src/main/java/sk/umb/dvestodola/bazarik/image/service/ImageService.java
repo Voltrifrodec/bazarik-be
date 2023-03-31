@@ -2,7 +2,7 @@ package sk.umb.dvestodola.bazarik.image.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 
@@ -44,7 +44,7 @@ public class ImageService {
 		Optional<ImageEntity> imageEntity = imageRepository.findById(imageId);
 
 		if(imageEntity.isEmpty()) {
-			throw new LibraryApplicationException("Image could not be found, id: " + imageId);
+			throw new BazarikApplicationException("Image could not be found, id: " + imageId);
 		}
 
 		return imageEntity.get();
@@ -59,7 +59,7 @@ public class ImageService {
 
 	@Transactional
 	public Long uploadImage(MultipartFile file) {
-		if (Objects.isNull(file)) { throw new LibraryApplicationException("Image file must be valid."); }
+		if (Objects.isNull(file)) { throw new BazarikApplicationException("Image file must be valid."); }
 
 		ImageEntity imageEntity = new ImageEntity();
 		String imageType = "jpg";
@@ -73,7 +73,7 @@ public class ImageService {
 			imageEntity.setOriginalSizeBytes((long)(file.getBytes().length));
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
-			throw new LibraryApplicationException("Unexpected error when handling image file.");
+			throw new BazarikApplicationException("Unexpected error when handling image file.");
 		}
 
 		return imageRepository.save(imageEntity).getId();
@@ -100,7 +100,7 @@ public class ImageService {
 			BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
 			if (originalImage == null) {
-				throw new LibraryApplicationException("File must be of type image.");
+				throw new BazarikApplicationException("File must be of type image.");
 			}
 			
 			int targetWidth = (width > 0) ? width : 720;
@@ -119,7 +119,7 @@ public class ImageService {
 			return new SerialBlob(baos.toByteArray());
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
-			throw new LibraryApplicationException("Image could not be processed.");
+			throw new BazarikApplicationException("Image could not be processed.");
 		}
 	}
 

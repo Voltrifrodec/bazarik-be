@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.persistence.repository.CountryRepository;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
 @Service
 public class CountryService {
@@ -58,7 +58,7 @@ public class CountryService {
 		Optional<CountryEntity> country = countryRepository.findById(countryId);
 
         if (country.isEmpty()) {
-            throw new LibraryApplicationException("Country could not be found, id: " + countryId);
+            throw new BazarikApplicationException("Country could not be found, id: " + countryId);
         }
 
 		return country.get();

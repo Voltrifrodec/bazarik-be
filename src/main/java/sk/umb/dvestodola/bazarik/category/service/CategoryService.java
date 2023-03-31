@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
 @Service
 public class CategoryService {
@@ -58,7 +58,7 @@ public class CategoryService {
 		Optional<CategoryEntity> category = categoryRepository.findById(categoryId);
 
         if (category.isEmpty()) {
-            throw new LibraryApplicationException("Category could not be found, id: " + categoryId);
+            throw new BazarikApplicationException("Category could not be found, id: " + categoryId);
         }
 
 		return category.get();

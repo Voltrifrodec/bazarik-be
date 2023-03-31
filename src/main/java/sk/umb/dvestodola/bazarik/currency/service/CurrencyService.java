@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
 import sk.umb.dvestodola.bazarik.currency.persistence.repository.CurrencyRepository;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
 @Service
 public class CurrencyService {
@@ -54,7 +54,7 @@ public class CurrencyService {
 	@Transactional
 	public void deleteCurrency(Long currencyId) {
 		if (currencyId.equals(1L)) {
-			throw new LibraryApplicationException("Currency with id=1 must not be deleted.");
+			throw new BazarikApplicationException("Currency with id=1 must not be deleted.");
 		}
 
 		currencyRepository.deleteById(currencyId);
@@ -64,11 +64,11 @@ public class CurrencyService {
 		Optional<CurrencyEntity> currency = currencyRepository.findById(currencyId);
 
 		if (currencyId.equals(1L)) {
-			throw new LibraryApplicationException("Currency with id=1 must not be modified.");
+			throw new BazarikApplicationException("Currency with id=1 must not be modified.");
 		}
 
         if (currency.isEmpty()) {
-			throw new LibraryApplicationException("CurrencyId must be valid.");
+			throw new BazarikApplicationException("CurrencyId must be valid.");
         }
 
 		return currency.get();

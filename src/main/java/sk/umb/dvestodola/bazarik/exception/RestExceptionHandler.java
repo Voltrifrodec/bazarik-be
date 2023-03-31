@@ -12,8 +12,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-    @ExceptionHandler(LibraryApplicationException.class)
-    public ResponseEntity<Map<String, String>> handleException(LibraryApplicationException libraryApplicationException) {
+    @ExceptionHandler(BazarikApplicationException.class)
+    public ResponseEntity<Map<String, String>> handleException(BazarikApplicationException libraryApplicationException) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", libraryApplicationException.getMessage());
         return ResponseEntity.status(400)

@@ -14,7 +14,7 @@ import sk.umb.dvestodola.bazarik.region.persistence.repository.RegionRepository;
 import sk.umb.dvestodola.bazarik.country.persistence.repository.CountryRepository;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
 @Service
 public class RegionService {
@@ -40,11 +40,11 @@ public class RegionService {
 		RegionEntity regionEntity = mapToRegionEntity(regionRequestDto);
 
 		if (Objects.isNull(regionEntity)) {
-			throw new LibraryApplicationException("Region must have valid country id.");
+			throw new BazarikApplicationException("Region must have valid country id.");
 		}
 
 		if (Objects.isNull(regionEntity.getCountry())) {
-			throw new LibraryApplicationException("Region must have valid country id.");
+			throw new BazarikApplicationException("Region must have valid country id.");
 		}
 
 		return regionRepository.save(regionEntity).getId();
@@ -63,7 +63,7 @@ public class RegionService {
 			if (regionsEntity.isPresent()) {
 				regionEntity.setCountry(regionsEntity.get());
 			} else {
-				throw new LibraryApplicationException("Region must have a valid id.");
+				throw new BazarikApplicationException("Region must have a valid id.");
 			}
 		}
 
@@ -79,7 +79,7 @@ public class RegionService {
 		Optional<RegionEntity> region = regionRepository.findById(regionId);
 
         if (region.isEmpty()) {
-			throw new LibraryApplicationException("Region must have a valid id.");
+			throw new BazarikApplicationException("Region must have a valid id.");
         }
 
 		return region.get();
@@ -123,7 +123,7 @@ public class RegionService {
 		CountryDetailDto regionsDetailDto = new CountryDetailDto();
 
 		if (Objects.isNull(countryEntity)) {
-			throw new LibraryApplicationException("Category is missing!");
+			throw new BazarikApplicationException("Category is missing!");
 		}
 
 		regionsDetailDto.setId(countryEntity.getId());

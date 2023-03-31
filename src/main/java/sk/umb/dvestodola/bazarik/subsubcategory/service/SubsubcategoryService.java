@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryRepository;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
@@ -42,11 +42,11 @@ public class SubsubcategoryService {
 		SubsubcategoryEntity subsubcategoryEntity = mapToSubsubcategoryEntity(subsubcategoryRequestDto);
 
 		if (Objects.isNull(subsubcategoryEntity)) {
-			throw new LibraryApplicationException("Subcategory must have valid category.");
+			throw new BazarikApplicationException("Subcategory must have valid category.");
 		}
 
 		if (Objects.isNull(subsubcategoryEntity.getSubcategory())) {
-			throw new LibraryApplicationException("Subcategory must have valid category.");
+			throw new BazarikApplicationException("Subcategory must have valid category.");
 		}
 
 		return subsubcategoryRepository.save(subsubcategoryEntity).getId();
@@ -65,7 +65,7 @@ public class SubsubcategoryService {
 			if (subcategoryEntity.isPresent()) {
 				subsubcategoryEntity.setCategory(subcategoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Subcategory must have valid category.");
+				throw new BazarikApplicationException("Subcategory must have valid category.");
 			}
 		}
 
@@ -97,7 +97,7 @@ public class SubsubcategoryService {
 		Optional<SubsubcategoryEntity> subsubcategory = subsubcategoryRepository.findById(subsubcategoryId);
 
         if (subsubcategory.isEmpty()) {
-			throw new LibraryApplicationException("Subsubcategory must have valid category id.");
+			throw new BazarikApplicationException("Subsubcategory must have valid category id.");
         }
 
 		return subsubcategory.get();
@@ -112,7 +112,7 @@ public class SubsubcategoryService {
 		if (subcategoryEntity.isPresent()) {
 			subsubcategoryEntity.setCategory(subcategoryEntity.get());
 		} else {
-			throw new LibraryApplicationException("Subsubcategory must have valid subcategory id.");
+			throw new BazarikApplicationException("Subsubcategory must have valid subcategory id.");
 		}
 
 		return subsubcategoryEntity;
@@ -143,7 +143,7 @@ public class SubsubcategoryService {
 		SubcategoryDetailDto subcategoryDetailDto = new SubcategoryDetailDto();
 
 		if (Objects.isNull(subcategoryEntity)) {
-			throw new LibraryApplicationException("Subcategory is missing!");
+			throw new BazarikApplicationException("Subcategory is missing!");
 		}
 
 		subcategoryDetailDto.setId(subcategoryEntity.getId());

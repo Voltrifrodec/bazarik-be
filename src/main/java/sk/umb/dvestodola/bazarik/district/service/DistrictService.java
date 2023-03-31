@@ -13,7 +13,7 @@ import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
 import sk.umb.dvestodola.bazarik.region.persistence.repository.RegionRepository;
 import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
@@ -42,11 +42,11 @@ public class DistrictService {
 		DistrictEntity regionEntity = mapToDistrictEntity(districtRequestDto);
 
 		if (Objects.isNull(regionEntity)) {
-			throw new LibraryApplicationException("District must have valid region id.");
+			throw new BazarikApplicationException("District must have valid region id.");
 		}
 
 		if (Objects.isNull(regionEntity.getRegion())) {
-			throw new LibraryApplicationException("District must have valid region id.");
+			throw new BazarikApplicationException("District must have valid region id.");
 		}
 
 		return districtRepository.save(regionEntity).getId();
@@ -65,7 +65,7 @@ public class DistrictService {
 			if (districtEntity.isPresent()) {
 				regionEntity.setRegion(districtEntity.get());
 			} else {
-				throw new LibraryApplicationException("Region must have a valid id.");
+				throw new BazarikApplicationException("Region must have a valid id.");
 			}
 		}
 
@@ -85,7 +85,7 @@ public class DistrictService {
 		Optional<DistrictEntity> region = districtRepository.findById(regionId);
 
         if (region.isEmpty()) {
-			throw new LibraryApplicationException("Region must have a valid id.");
+			throw new BazarikApplicationException("Region must have a valid id.");
         }
 
 		return region.get();
@@ -131,7 +131,7 @@ public class DistrictService {
 		RegionDetailDto regionDetailDto = new RegionDetailDto();
 
 		if (Objects.isNull(regionEntity)) {
-			throw new LibraryApplicationException("Category is missing!");
+			throw new BazarikApplicationException("Category is missing!");
 		}
 
 		regionDetailDto.setId(regionEntity.getId());

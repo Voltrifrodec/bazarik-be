@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryRepository;
 
@@ -40,11 +40,11 @@ public class SubcategoryService {
 		SubcategoryEntity subcategoryEntity = mapToSubcategoryEntity(subcategoryRequestDto);
 
 		if (Objects.isNull(subcategoryEntity)) {
-			throw new LibraryApplicationException("Subcategory must have valid category.");
+			throw new BazarikApplicationException("Subcategory must have valid category.");
 		}
 
 		if (Objects.isNull(subcategoryEntity.getCategory())) {
-			throw new LibraryApplicationException("Subcategory must have valid category.");
+			throw new BazarikApplicationException("Subcategory must have valid category.");
 		}
 
 		return subcategoryRepository.save(subcategoryEntity).getId();
@@ -63,7 +63,7 @@ public class SubcategoryService {
 			if (categoryEntity.isPresent()) {
 				subcategoryEntity.setCategory(categoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Subcategory must have valid category.");
+				throw new BazarikApplicationException("Subcategory must have valid category.");
 			}
 		}
 
@@ -95,7 +95,7 @@ public class SubcategoryService {
 		Optional<SubcategoryEntity> subcategory = subcategoryRepository.findById(subcategoryId);
 
         if (subcategory.isEmpty()) {
-			throw new LibraryApplicationException("Subcategory must have valid category id.");
+			throw new BazarikApplicationException("Subcategory must have valid category id.");
         }
 
 		return subcategory.get();
@@ -110,7 +110,7 @@ public class SubcategoryService {
 		if (categoryEntity.isPresent()) {
 			subcategoryEntity.setCategory(categoryEntity.get());
 		} else {
-			throw new LibraryApplicationException("Subcategory must have valid category id.");
+			throw new BazarikApplicationException("Subcategory must have valid category id.");
 		}
 
 		return subcategoryEntity;
@@ -141,7 +141,7 @@ public class SubcategoryService {
 		CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
 
 		if (Objects.isNull(category)) {
-			throw new LibraryApplicationException("Category is missing!");
+			throw new BazarikApplicationException("Category is missing!");
 		}
 
 		categoryDetailDto.setId(category.getId());

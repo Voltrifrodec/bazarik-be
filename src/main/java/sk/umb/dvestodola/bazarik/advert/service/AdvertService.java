@@ -31,7 +31,7 @@ import sk.umb.dvestodola.bazarik.currency.service.CurrencyDetailDto;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
 import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
-import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
@@ -89,7 +89,7 @@ public class AdvertService {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
 
 		if (Objects.isNull(advertEntity)) {
-			throw new LibraryApplicationException("Advert information must be filled properly.");
+			throw new BazarikApplicationException("Advert information must be filled properly.");
 		}
 
 		return advertRepository.save(advertEntity).getId();
@@ -126,7 +126,7 @@ public class AdvertService {
 			if (categoryEntity.isPresent()) {
 				advertEntity.setCategory(categoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Category must have a valid id.");
+				throw new BazarikApplicationException("Category must have a valid id.");
 			}
 		}
 
@@ -135,7 +135,7 @@ public class AdvertService {
 			if (subcategoryEntity.isPresent()) {
 				advertEntity.setSubcategory(subcategoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Subcategory must have a valid id.");
+				throw new BazarikApplicationException("Subcategory must have a valid id.");
 			}
 		}
 
@@ -144,7 +144,7 @@ public class AdvertService {
 			if (subsubcategoryEntity.isPresent()) {
 				advertEntity.setSubsubcategory(subsubcategoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Subsubcategory must have a valid id.");
+				throw new BazarikApplicationException("Subsubcategory must have a valid id.");
 			}
 		}
 
@@ -166,7 +166,7 @@ public class AdvertService {
 			if (districtEntity.isPresent()) {
 				advertEntity.setDistrict(districtEntity.get());
 			} else {
-				throw new LibraryApplicationException("District must have a valid id.");
+				throw new BazarikApplicationException("District must have a valid id.");
 			}
 		}
 
@@ -175,7 +175,7 @@ public class AdvertService {
 			if (contactEntity.isPresent()) {
 				advertEntity.setImage(contactEntity.get());
 			} else {
-				throw new LibraryApplicationException("Image must have a valid id.");
+				throw new BazarikApplicationException("Image must have a valid id.");
 			}
 		}
 
@@ -191,7 +191,7 @@ public class AdvertService {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
         if (advertEntity.isEmpty()) {
-			throw new LibraryApplicationException("Advert must have a valid id.");
+			throw new BazarikApplicationException("Advert must have a valid id.");
         }
 
 		return advertEntity.get();
@@ -212,28 +212,28 @@ public class AdvertService {
 		if (currencyEntity.isPresent()) {
 			advertEntity.setCurrency(currencyEntity.get());
 		} else {
-			throw new LibraryApplicationException("Currency must have a valid id.");
+			throw new BazarikApplicationException("Currency must have a valid id.");
 		}
 
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 		if (categoryEntity.isPresent()) {
 			advertEntity.setCategory(categoryEntity.get());
 		} else {
-			throw new LibraryApplicationException("Category must have a valid id.");
+			throw new BazarikApplicationException("Category must have a valid id.");
 		}
 
 		Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
 		if (subcategoryEntity.isPresent()) {
 			advertEntity.setSubcategory(subcategoryEntity.get());
 		} else {
-			throw new LibraryApplicationException("Subcategory must have a valid id.");
+			throw new BazarikApplicationException("Subcategory must have a valid id.");
 		}
 
 		Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
 		if (subsubcategoryEntity.isPresent()) {
 			advertEntity.setSubsubcategory(subsubcategoryEntity.get());
 		} else {
-			throw new LibraryApplicationException("Subsubcategory must have a valid id.");
+			throw new BazarikApplicationException("Subsubcategory must have a valid id.");
 		}
 		
 		Optional<ContactEntity> contactEntity = contactRepository.findByEmail(advertRequest.getContactEmail());
@@ -252,14 +252,14 @@ public class AdvertService {
 		if (districtEntity.isPresent()) {
 			advertEntity.setDistrict(districtEntity.get());
 		} else {
-			throw new LibraryApplicationException("District must have a valid id.");
+			throw new BazarikApplicationException("District must have a valid id.");
 		}
 
 		Optional<ImageEntity> imageEntity = imageRepository.findById(advertRequest.getImageId());
 		if (imageEntity.isPresent()) {
 			advertEntity.setImage(imageEntity.get());
 		} else {
-			throw new LibraryApplicationException("Image must have a valid id.");
+			throw new BazarikApplicationException("Image must have a valid id.");
 		}
 		
 		return advertEntity;
@@ -355,7 +355,7 @@ public class AdvertService {
 		RegionDetailDto regionDetail = new RegionDetailDto();
 
 		if (Objects.isNull(regionEntity)) {
-			throw new LibraryApplicationException("Region is missing!");
+			throw new BazarikApplicationException("Region is missing!");
 		}
 
 		regionDetail.setId(regionEntity.getId());
