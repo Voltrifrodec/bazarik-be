@@ -33,9 +33,9 @@ public class ImageController {
     }
 
     @PostMapping("/api/images")
-    public Long createImage(@Valid @RequestBody ImageRequestDto image) {
+    public Long createImage(@Valid @RequestBody ImageRequestDto imageRequest) {
         System.out.println("Create image was called.");
-        return imageService.createImage(image);
+        return imageService.createImage(imageRequest);
     }
 
 	@PostMapping("api/uploadImage")
@@ -45,9 +45,9 @@ public class ImageController {
 	}
 
     @PutMapping("/api/images/{imageId}")
-    public void updateImage(@PathVariable Long imageId, @Valid @RequestBody ImageRequestDto image) {
+    public void updateImage(@PathVariable Long imageId, @Valid @RequestBody ImageRequestDto imageRequest) {
         System.out.println("Update image was called, id: " + imageId);
-        imageService.updateImage(imageId, image);
+        imageService.updateImage(imageId, imageRequest);
     }
 
     @DeleteMapping("/api/images/{imageId}")

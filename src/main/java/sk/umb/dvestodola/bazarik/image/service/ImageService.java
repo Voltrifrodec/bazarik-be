@@ -33,11 +33,11 @@ public class ImageService {
 	}
 
 	public List<ImageDetailDto> getAllImages() {
-		return mapToDataTransferObjectList(imageRepository.findAll());
+		return mapToImageDetailList(imageRepository.findAll());
 	}
 
 	public ImageDetailDto getImageById(Long imageId) {
-		return mapToDataTransferObject(getImageEntityById(imageId));
+		return mapToImageDetail(getImageEntityById(imageId));
 	}
 
 	public ImageEntity getImageEntityById(Long imageId) {
@@ -51,8 +51,8 @@ public class ImageService {
 	}
 
 	@Transactional
-    public Long createImage(ImageRequestDto image) {
-        ImageEntity imageEntity = mapToEntity(image);
+    public Long createImage(ImageRequestDto imageRequest) {
+        ImageEntity imageEntity = mapToImageEntity(imageRequest);
 
 		return imageRepository.save(imageEntity).getId();
 	}
@@ -77,6 +77,22 @@ public class ImageService {
 		}
 
 		return imageRepository.save(imageEntity).getId();
+	}
+
+	@Transactional
+	public void updateImage(Long imageId, @Valid ImageRequestDto imageRequest) {
+		// TODO: Maybe?
+		return;
+	}
+
+	@Transactional
+	public void deleteImage(Long imageId) {
+		imageRepository.deleteById(imageId);
+	}
+
+	@Transactional
+	public void deleteAllImages() {
+		imageRepository.deleteAll();
 	}
 
 	private SerialBlob compressImage(MultipartFile file, String imageType, int width, int height) {
@@ -107,23 +123,8 @@ public class ImageService {
 		}
 	}
 
-	@Transactional
-	public void updateImage(Long imageId, @Valid ImageRequestDto imageRequestDto) {
-		// TODO: Maybe?
-		return;
-	}
 
-	@Transactional
-	public void deleteImage(Long imageId) {
-		imageRepository.deleteById(imageId);
-	}
-
-	@Transactional
-	public void deleteAllImages() {
-		imageRepository.deleteAll();
-	}
-
-	public ImageEntity mapToEntity(ImageRequestDto imageRequest) {
+	public ImageEntity mapToImageEntity(ImageRequestDto imageRequest) {
 		ImageEntity imageEntity = new ImageEntity();
 
 		byte[] byteArray = imageRequest.getImage().getBytes();
@@ -135,35 +136,35 @@ public class ImageService {
 		return imageEntity;
 	}
 
-	public ImageDetailDto mapToDataTransferObject(ImageEntity imageEntity) {
-		ImageDetailDto imageDetailDto = new ImageDetailDto();
+	public ImageDetailDto mapToImageDetail(ImageEntity imageEntity) {
+		ImageDetailDto imageDetail = new ImageDetailDto();
 
-		imageDetailDto.setId(imageEntity.getId());
-		imageDetailDto.setOriginalFileName(imageEntity.getOriginalFileName());
-		imageDetailDto.setType(imageEntity.getType());
-		imageDetailDto.setSizeBytes(imageEntity.getSizeBytes());
-		imageDetailDto.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
+		imageDetail.setId(imageEntity.getId());
+		imageDetail.setOriginalFileName(imageEntity.getOriginalFileName());
+		imageDetail.setType(imageEntity.getType());
+		imageDetail.setSizeBytes(imageEntity.getSizeBytes());
+		imageDetail.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
 
 		Blob blob;
 		try {
 			blob = new SerialBlob(imageEntity.getImage());
-			imageDetailDto.setImage(blob);
+			imageDetail.setImage(blob);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return imageDetailDto;
+		return imageDetail;
 	}
 
-	public List<ImageDetailDto> mapToDataTransferObjectList(Iterable<ImageEntity> imageEntities) {
-		List<ImageDetailDto> imageDetailDataTransferObjects = new ArrayList<>();
+	public List<ImageDetailDto> mapToImageDetailList(Iterable<ImageEntity> imageEntities) {
+		List<ImageDetailDto> imageDetailList = new ArrayList<>();
 
 		imageEntities.forEach(imageEntity -> {
-			ImageDetailDto imageDetailDataTransferObject = mapToDataTransferObject(imageEntity);
-			imageDetailDataTransferObjects.add(imageDetailDataTransferObject);
+			ImageDetailDto imageDetail = mapToImageDetail(imageEntity);
+			imageDetailList.add(imageDetail);
 		});
 
-		return imageDetailDataTransferObjects;
+		return imageDetailList;
 	}
 
 
