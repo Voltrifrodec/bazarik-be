@@ -20,6 +20,7 @@ import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
+import sk.umb.dvestodola.bazarik.category.service.CategoryRequestDto;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.repository.ContactRepository;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
@@ -90,23 +91,90 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void updateAdvert(Long advertId, AdvertRequestDto advertRequestDto) {
+	public void updateAdvert(Long advertId, AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = getAdvertEntityById(advertId);
+
+		advertEntity.setDateModified(new Date());
         
-		if (! Strings.isEmpty(advertRequestDto.getName())) {
-			advertEntity.setName(advertRequestDto.getName());
+		if (! Strings.isEmpty(advertRequest.getName())) {
+			advertEntity.setName(advertRequest.getName());
+		}
+
+		if (! Strings.isEmpty(advertRequest.getDescription())) {
+			advertEntity.setDescription(advertRequest.getDescription());
+		}
+
+		if (! Strings.isEmpty(advertRequest.getKeywords())) {
+			advertEntity.setKeywords(advertRequest.getKeywords());
+		}
+
+		if (! Objects.isNull(advertRequest.getPriceEur()) && advertRequest.getPriceEur() >= 0) {
+			advertEntity.setPriceEur(advertRequest.getPriceEur());
+		}
+
+		if (! Objects.isNull(advertRequest.getFixedPrice())) {
+			advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 		}
 
 		// TODO: Check for every attribute
-		/* 
-		if (! Objects.isNull(advertEntity.getCountry())) {
-			/* Optional<CountryEntity> advertsEntity = countryRepository.findById(advertRequestDto.getCountryId());
-			if (advertsEntity.isPresent()) {
-				advertEntity.setCountry(advertsEntity.get());
+		
+		if (! Objects.isNull(advertEntity.getCategory())) {
+			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
+			if (categoryEntity.isPresent()) {
+				advertEntity.setCategory(categoryEntity.get());
 			} else {
-				throw new LibraryApplicationException("Region must have a valid id.");
+				throw new LibraryApplicationException("Category must have a valid id.");
 			}
-		} */
+		}
+
+		if (! Objects.isNull(advertEntity.getSubcategory())) {
+			Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
+			if (subcategoryEntity.isPresent()) {
+				advertEntity.setSubcategory(subcategoryEntity.get());
+			} else {
+				throw new LibraryApplicationException("Subcategory must have a valid id.");
+			}
+		}
+
+		if (! Objects.isNull(advertEntity.getSubsubcategory())) {
+			Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
+			if (subsubcategoryEntity.isPresent()) {
+				advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+			} else {
+				throw new LibraryApplicationException("Subsubcategory must have a valid id.");
+			}
+		}
+
+		if (! Objects.isNull(advertEntity.getContact())) {
+			Optional<ContactEntity> contactEntity = contactRepository.findByEmail(advertRequest.getContactEmail());
+			if (contactEntity.isPresent()) {
+				advertEntity.setContact(contactEntity.get());
+			} else {
+				ContactEntity newContactEntity = new ContactEntity();
+
+				newContactEntity.setEmail(advertRequest.getContactEmail());
+
+				advertEntity.setContact(contactRepository.save(newContactEntity));
+			}
+		}
+
+		if (! Objects.isNull(advertEntity.getDistrict())) {
+			Optional<DistrictEntity> districtEntity = districtRepository.findById(advertRequest.getDistrictId());
+			if (districtEntity.isPresent()) {
+				advertEntity.setDistrict(districtEntity.get());
+			} else {
+				throw new LibraryApplicationException("District must have a valid id.");
+			}
+		}
+
+		if (! Objects.isNull(advertEntity.getImage())) {
+			Optional<ImageEntity> contactEntity = imageRepository.findById(advertRequest.getImageId());
+			if (contactEntity.isPresent()) {
+				advertEntity.setImage(contactEntity.get());
+			} else {
+				throw new LibraryApplicationException("Image must have a valid id.");
+			}
+		}
 
         advertRepository.save(advertEntity);
 	}
@@ -133,6 +201,7 @@ public class AdvertService {
 		advertEntity.setDescription(advertRequest.getDescription());
 		advertEntity.setKeywords(advertRequest.getKeywords());
 		advertEntity.setDateAdded(new Date());
+		advertEntity.setDateModified(advertEntity.getDateAdded());
 		advertEntity.setPriceEur(advertRequest.getPriceEur());
 		advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 
@@ -157,16 +226,16 @@ public class AdvertService {
 			throw new LibraryApplicationException("Subsubcategory must have a valid id.");
 		}
 		
-		Iterable<ContactEntity> contactEntities = contactRepository.findByEmail(advertRequest.getContactEmail());
-		if (contactEntities.iterator().hasNext()) {
-			advertEntity.setContact(contactEntities.iterator().next());
+		Optional<ContactEntity> contactEntity = contactRepository.findByEmail(advertRequest.getContactEmail());
+		if (contactEntity.isPresent()) {
+			advertEntity.setContact(contactEntity.get());
 		} else {
-			ContactEntity contactEntity = new ContactEntity();
+			ContactEntity newContactEntity = new ContactEntity();
 
-			contactEntity.setEmail(advertRequest.getContactEmail());
-			contactEntity.setPhoneNumber("");
+			newContactEntity.setEmail(advertRequest.getContactEmail());
+			newContactEntity.setPhoneNumber("");
 
-			advertEntity.setContact(contactRepository.save(contactEntity));
+			advertEntity.setContact(contactRepository.save(newContactEntity));
 		}
 
 		Optional<DistrictEntity> districtEntity = districtRepository.findById(advertRequest.getDistrictId());
@@ -180,7 +249,7 @@ public class AdvertService {
 		if (imageEntity.isPresent()) {
 			advertEntity.setImage(imageEntity.get());
 		} else {
-			Optional<ImageEntity> nullImage = imageRepository.findById(0L);
+			Optional<ImageEntity> nullImage = imageRepository.findById(1L);
 			if (nullImage.isPresent()) {
 				advertEntity.setImage(nullImage.get());
 			} else {
@@ -210,6 +279,7 @@ public class AdvertService {
 		advertDetail.setDescription(advertEntity.getDescription());
 		advertDetail.setKeywords(advertEntity.getKeywords());
 		advertDetail.setDateAdded(advertEntity.getDateAdded());
+		advertDetail.setDateModified(advertEntity.getDateModified());
 		advertDetail.setPriceEur(advertEntity.getPriceEur());
 		advertDetail.setFixedPrice(advertEntity.getFixedPrice());
 
@@ -291,7 +361,7 @@ public class AdvertService {
 		ContactDetailDto contactDetail = new ContactDetailDto();
 
 		contactDetail.setId(contactEntity.getId());
-		// contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
+		// contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
 		contactDetail.setEmail(contactEntity.getEmail());
 		
 		return contactDetail;

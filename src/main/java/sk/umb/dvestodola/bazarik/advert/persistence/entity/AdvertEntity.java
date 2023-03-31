@@ -34,6 +34,9 @@ public class AdvertEntity {
 	@Column(name = "date_added")
 	private Date dateAdded;
 
+	@Column(name = "date_modified")
+	private Date dateModified;
+
 	@Column(name = "priceEur")
 	private Integer priceEur;
 
@@ -63,6 +66,15 @@ public class AdvertEntity {
 	@OneToOne
 	@JoinColumn(name = "id_image")
 	private ImageEntity image;
+
+	
+	public Date getDateModified() {
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
 
 	public Long getId() {
 		return id;

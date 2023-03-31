@@ -6,22 +6,23 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+@Valid
 public class AdvertRequestDto {
-	@NotBlank(message = "Advert name must not be blank.")
+	@NotBlank(message = "Name must not be blank.")
 	private String name;
 
 	private String description;
 
-	// @NotBlank(message = "Category id name must not be blank.")
 	@Valid
+	@NotNull(message = "Category id name must not be null.")
 	private Long categoryId;
 	
-	// @NotBlank(message = "Subcategory id name must not be blank.")
 	@Valid
+	@NotNull(message = "Subcategory id name must not be null.")
 	private Long subcategoryId;
 	
-	// @NotBlank(message = "Subsubcategory id name must not be blank.")
 	@Valid
+	@NotNull(message = "Subsubcategory id name must not be null.")
 	private Long subsubcategoryId;
 
 	// @NotBlank(message = "Email must not be blank.")
@@ -29,6 +30,7 @@ public class AdvertRequestDto {
 	private String contactEmail;
 
 	@Valid
+	@NotNull(message = "District id name must not be null.")
 	private Long districtId;
 
 	private String keywords;
@@ -36,10 +38,11 @@ public class AdvertRequestDto {
 	@Min(value = 0, message = "Minimal priceEur must be at least 0.")
 	private Integer priceEur;
 
-	@NotNull(message = "Fixed price must not be blank.")
+	@NotNull(message = "Fixed price must not be null.")
 	private Boolean fixedPrice;
 
 	private Long imageId;
+	
 
 	public Long getImageId() {
 		return imageId;

@@ -14,16 +14,26 @@ public class AdvertDetailDto {
 	private String name;
 	private String description;
 	private String keywords;
-	private Date dateAdded;
 	private Integer priceEur;
 	private Boolean fixedPrice;
+	private Date dateAdded;
+	private Date dateModified;
 
 	private CategoryDetailDto category;
 	private SubcategoryDetailDto subcategory;
 	private SubsubcategoryDetailDto subsubcategory;
+	
 	private ContactDetailDto contact;
 	private DistrictDetailDto district;
 	private ImageDetailDto image;
+
+
+	public Date getDateModified() {
+		return dateModified;
+	}
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
 
 	public ImageDetailDto getImage() {
 		return image;
