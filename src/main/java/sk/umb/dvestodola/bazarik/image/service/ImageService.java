@@ -7,9 +7,7 @@ import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Blob;
@@ -21,8 +19,6 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
-
 import org.mariadb.jdbc.MariaDbBlob;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,48 +59,37 @@ public class ImageService {
 
 	@Transactional
 	public Long uploadImage(MultipartFile file) {
-		if (Objects.isNull(file)) { throw new LibraryApplicationException("Image must be valid."); }
-		if (Objects.isNull(file.getContentType())) { throw new LibraryApplicationException("Image must be valid."); }
+		if (Objects.isNull(file)) { throw new LibraryApplicationException("Image file must be valid."); }
 
 		ImageEntity imageEntity = new ImageEntity();
-
-		Blob imageData = compressImage(file, 1280, 0);
+		String imageType = "jpg";
+		Blob imageData = compressImage(file, imageType, 1024, 0);
 
 		try {
+			imageEntity.setOriginalFileName(file.getOriginalFilename());
 			imageEntity.setSizeBytes(imageData.length());
-		} catch (SQLException e) {
+			imageEntity.setImage(imageData);
+			imageEntity.setType("image/" + imageType);
+			imageEntity.setOriginalSizeBytes((long)(file.getBytes().length));
+		} catch (SQLException | IOException e) {
 			e.printStackTrace();
+			throw new LibraryApplicationException("Unexpected error when handling image file.");
 		}
-		imageEntity.setImage(imageData);
-		imageEntity.setType("image/jpg");
 
 		return imageRepository.save(imageEntity).getId();
-
-		/*
-			// 1. Scalr
-			/* System.out.println(file.getSize());
-			BufferedImage imageFile = ImageIO.read(file.getInputStream());
-			Method method = Method.SPEED;
-			Mode mode = Mode.FIT_TO_WIDTH;
-			int width = 400;
-			int height = 400;
-			BufferedImage compressedImage = Scalr.resize(imageFile, method, mode, width, height);
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(compressedImage, "jpg", baos);
-			
-			Blob imageData = new SerialBlob(baos.toByteArray());
-			imageEntity.setImage(imageData);
-			System.out.println(baos.size()); */
 	}
 
-	public SerialBlob compressImage(MultipartFile file, int width, int height) {
+	private SerialBlob compressImage(MultipartFile file, String imageType, int width, int height) {
 		try {
 			BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
+			if (originalImage == null) {
+				throw new LibraryApplicationException("File must be of type image.");
+			}
+			
 			int targetWidth = (width > 0) ? width : 720;
 			int targetHeight = (height > 0) ? height : (int) ((float)originalImage.getHeight() / (float)originalImage.getWidth() * targetWidth);
-	
+
 			BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
 			Graphics2D graphics2D = resizedImage.createGraphics();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -113,7 +98,7 @@ public class ImageService {
 			graphics2D.dispose();
 			originalImage.flush();
 	
-			ImageIO.write(resizedImage, "jpg", baos);
+			ImageIO.write(resizedImage, imageType, baos);
 
 			return new SerialBlob(baos.toByteArray());
 		} catch (IOException | SQLException e) {
@@ -126,9 +111,6 @@ public class ImageService {
 	public void updateImage(Long imageId, @Valid ImageRequestDto imageRequestDto) {
 		// TODO: Maybe?
 		return;
-		// ImageEntity imageEntity = getImageEntityById(imageId);
-
-		// imageRepository.save(imageEntity);
 	}
 
 	@Transactional
@@ -157,25 +139,18 @@ public class ImageService {
 		ImageDetailDto imageDetailDto = new ImageDetailDto();
 
 		imageDetailDto.setId(imageEntity.getId());
-		imageDetailDto.setSizeBytes(imageEntity.getSizeBytes());
+		imageDetailDto.setOriginalFileName(imageEntity.getOriginalFileName());
 		imageDetailDto.setType(imageEntity.getType());
+		imageDetailDto.setSizeBytes(imageEntity.getSizeBytes());
+		imageDetailDto.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
 
 		Blob blob;
 		try {
 			blob = new SerialBlob(imageEntity.getImage());
 			imageDetailDto.setImage(blob);
-		} catch (SerialException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		//imageEntity.getImage();
-
-		/* try {
-			byte[] byteArray = imageEntity.getImage().getBytes(1,(int)blob.length());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} */
 
 		return imageDetailDto;
 	}

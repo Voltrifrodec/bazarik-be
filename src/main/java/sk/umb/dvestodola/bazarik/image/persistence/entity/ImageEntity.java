@@ -13,14 +13,20 @@ public class ImageEntity {
     @GeneratedValue
     private Long id;
 
-	@Column(name = "image", nullable = false)
-    private Blob image;
-
+	@Column(name = "original_file_name")
+	private String originalFileName;
+	
+	@Column(name= "type")
+	private String type;
+	
+	@Column(name = "original_size_bytes")
+	private Long originalSizeBytes;
+	
 	@Column(name = "size_bytes")
 	private Long sizeBytes;
 
-	@Column(name= "type")
-	private String type;
+	@Column(name = "image", nullable = false)
+	private Blob image;
 	
 
     public String getType() {
@@ -53,5 +59,21 @@ public class ImageEntity {
 
 	public void setSizeBytes(Long sizeBytes) {
 		this.sizeBytes = sizeBytes;
+	}
+
+	public Long getOriginalSizeBytes() {
+		return originalSizeBytes;
+	}
+
+	public void setOriginalSizeBytes(Long originalSizeBytes) {
+		this.originalSizeBytes = originalSizeBytes;
+	}
+
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
 	}
 }

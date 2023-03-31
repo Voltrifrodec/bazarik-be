@@ -4,9 +4,11 @@ import java.sql.Blob;
 
 public class ImageDetailDto {
     private Long id;
+	private String originalFileName;
     private Blob image;
-	private Long sizeBytes;
 	private String type;
+	private Long sizeBytes;
+	private Long originalSizeBytes;
 
 
     public String getType() {
@@ -40,4 +42,20 @@ public class ImageDetailDto {
     public void setImage(Blob image) {
         this.image = image;
     }
+
+	public Long getOriginalSizeBytes() {
+		return originalSizeBytes;
+	}
+
+	public void setOriginalSizeBytes(Long originalSizeBytes) {
+		this.originalSizeBytes = originalSizeBytes;
+	}
+
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
+	}
 }
