@@ -1,10 +1,15 @@
 package sk.umb.dvestodola.bazarik.advert.service;
 
-import java.sql.Date;
+import java.util.Date;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -14,19 +19,27 @@ import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
+import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.repository.ContactRepository;
+import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
+import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
 import sk.umb.dvestodola.bazarik.exception.LibraryApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
+import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
+import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
+import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.repository.SubcategoryRepository;
+import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subsubcategory.persistence.entity.SubsubcategoryEntity;
 import sk.umb.dvestodola.bazarik.subsubcategory.persistence.repository.SubsubcategoryRepository;
+import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 
 @Service
 public class AdvertService {
@@ -104,13 +117,13 @@ public class AdvertService {
 	}
 
 	private AdvertEntity getAdvertEntityById(Long advertId) {
-		Optional<AdvertEntity> advert = advertRepository.findById(advertId);
+		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
-        if (advert.isEmpty()) {
+        if (advertEntity.isEmpty()) {
 			throw new LibraryApplicationException("Advert must have a valid id.");
         }
 
-		return advert.get();
+		return advertEntity.get();
 	}
 
 	private AdvertEntity mapToAdvertEntity(AdvertRequestDto advertRequest) {
@@ -118,6 +131,10 @@ public class AdvertService {
 
 		advertEntity.setName(advertRequest.getName());
 		advertEntity.setDescription(advertRequest.getDescription());
+		advertEntity.setKeywords(advertRequest.getKeywords());
+		advertEntity.setDateAdded(new Date());
+		advertEntity.setPriceEur(advertRequest.getPriceEur());
+		advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 		if (categoryEntity.isPresent()) {
@@ -145,7 +162,10 @@ public class AdvertService {
 			advertEntity.setContact(contactEntities.iterator().next());
 		} else {
 			ContactEntity contactEntity = new ContactEntity();
+
 			contactEntity.setEmail(advertRequest.getContactEmail());
+			contactEntity.setPhoneNumber("");
+
 			advertEntity.setContact(contactRepository.save(contactEntity));
 		}
 
@@ -165,14 +185,8 @@ public class AdvertService {
 				advertEntity.setImage(nullImage.get());
 			} else {
 				throw new LibraryApplicationException("Image could not be set to imageNull (index 0).");
-				// throw new LibraryApplicationException("Image must have a valid id.");
 			}
 		}
-		
-		advertEntity.setKeywords(advertRequest.getKeywords());
-		advertEntity.setDateAdded(new Date(new java.util.Date().getTime()));
-		advertEntity.setPriceEur(advertRequest.getPriceEur());
-		advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 		
 		return advertEntity;
 	}
@@ -181,33 +195,124 @@ public class AdvertService {
 		List<AdvertDetailDto> advertEntityList = new ArrayList<>();
 
 		advertsEntities.forEach(advert -> {
-			AdvertDetailDto advertDetailDto = mapToAdvertDetail(advert);
-			advertEntityList.add(advertDetailDto);
+			AdvertDetailDto advertDetail = mapToAdvertDetail(advert);
+			advertEntityList.add(advertDetail);
 		});
 
 		return advertEntityList;
 	}
 
 	private AdvertDetailDto mapToAdvertDetail(AdvertEntity advertEntity) {
-		AdvertDetailDto advert = new AdvertDetailDto();
+		AdvertDetailDto advertDetail = new AdvertDetailDto();
 
-		advert.setId(advertEntity.getId());
-		advert.setName(advertEntity.getName());
-		// advert.setCountry(mapToCountryDetailDto(advertEntity.getCountry()));
+		advertDetail.setId(advertEntity.getId());
+		advertDetail.setName(advertEntity.getName());
+		advertDetail.setDescription(advertEntity.getDescription());
+		advertDetail.setKeywords(advertEntity.getKeywords());
+		advertDetail.setDateAdded(advertEntity.getDateAdded());
+		advertDetail.setPriceEur(advertEntity.getPriceEur());
+		advertDetail.setFixedPrice(advertEntity.getFixedPrice());
 
-		return advert;
+		advertDetail.setCategory(mapToCategoryDetail(advertEntity.getCategory()));
+		advertDetail.setSubcategory(mapToSubcategoryDetail(advertEntity.getSubcategory()));
+		advertDetail.setSubsubcategory(mapToSubsubcategoryDetail(advertEntity.getSubsubcategory()));
+
+		advertDetail.setContact(mapToContactDetail(advertEntity.getContact()));
+		advertDetail.setDistrict(mapToDistrictDetail(advertEntity.getDistrict()));
+		advertDetail.setImage(mapToImageDetail(advertEntity.getImage()));
+
+		return advertDetail;
 	}
 
-	private CountryDetailDto mapToCountryDetailDto(CountryEntity countryEntity) {
-		CountryDetailDto advertsDetailDto = new CountryDetailDto();
+	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {
+		CategoryDetailDto categoryDetail = new CategoryDetailDto();
 
-		if (Objects.isNull(countryEntity)) {
-			throw new LibraryApplicationException("Category is missing!");
+		categoryDetail.setId(categoryEntity.getId());
+		categoryDetail.setName(categoryEntity.getName());
+
+		return categoryDetail;
+	}
+
+	private SubcategoryDetailDto mapToSubcategoryDetail(SubcategoryEntity subcategoryEntity) {
+		SubcategoryDetailDto subcategoryDetail = new SubcategoryDetailDto();
+
+		subcategoryDetail.setId(subcategoryEntity.getId());
+		subcategoryDetail.setName(subcategoryEntity.getName());
+		subcategoryDetail.setCategory(mapToCategoryDetail(subcategoryEntity.getCategory()));
+
+		return subcategoryDetail;
+	}
+
+	private SubsubcategoryDetailDto mapToSubsubcategoryDetail(SubsubcategoryEntity subsubcategoryEntity) {
+		SubsubcategoryDetailDto subsubcategoryDetail = new SubsubcategoryDetailDto();
+
+		subsubcategoryDetail.setId(subsubcategoryEntity.getId());
+		subsubcategoryDetail.setName(subsubcategoryEntity.getName());
+		subsubcategoryDetail.setSubcategory(mapToSubcategoryDetail(subsubcategoryEntity.getSubcategory()));
+
+		return subsubcategoryDetail;
+	}
+
+	private DistrictDetailDto mapToDistrictDetail(DistrictEntity regionEntity) {
+		DistrictDetailDto regionDetail = new DistrictDetailDto();
+
+		regionDetail.setId(regionEntity.getId());
+		regionDetail.setName(regionEntity.getName());
+		regionDetail.setPostcode(regionEntity.getPostcode());
+		regionDetail.setRegion(mapToCountryDetail(regionEntity.getRegion()));
+
+		return regionDetail;
+	}
+
+	private RegionDetailDto mapToCountryDetail(RegionEntity regionEntity) {
+		RegionDetailDto regionDetail = new RegionDetailDto();
+
+		if (Objects.isNull(regionEntity)) {
+			throw new LibraryApplicationException("Region is missing!");
 		}
 
-		advertsDetailDto.setId(countryEntity.getId());
-		advertsDetailDto.setName(countryEntity.getName());
+		regionDetail.setId(regionEntity.getId());
+		regionDetail.setName(regionEntity.getName());
+		regionDetail.setCountry(mapToCountryDetail(regionEntity.getCountry()));
 
-		return advertsDetailDto;
+		return regionDetail;
 	}
+
+	private CountryDetailDto mapToCountryDetail(CountryEntity countryEntity) {
+		CountryDetailDto countryDetail = new CountryDetailDto();
+		
+		countryDetail.setId(countryEntity.getId());
+		countryDetail.setName(countryEntity.getName());
+
+		return countryDetail;
+	}
+
+	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
+		ContactDetailDto contactDetail = new ContactDetailDto();
+
+		contactDetail.setId(contactEntity.getId());
+		// contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
+		contactDetail.setEmail(contactEntity.getEmail());
+		
+		return contactDetail;
+	}
+
+	public ImageDetailDto mapToImageDetail(ImageEntity imageEntity) {
+		ImageDetailDto imageDetail = new ImageDetailDto();
+
+		imageDetail.setId(imageEntity.getId());
+
+		Blob blob;
+		try {
+			blob = new SerialBlob(imageEntity.getImage());
+			imageDetail.setImage(blob);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return imageDetail;
+	}
+
 }

@@ -1,10 +1,11 @@
 package sk.umb.dvestodola.bazarik.advert.service;
 
-import java.sql.Date;
+import java.util.Date;
 
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
 import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
+import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 
@@ -12,16 +13,24 @@ public class AdvertDetailDto {
 	private Long id;
 	private String name;
 	private String description;
+	private String keywords;
+	private Date dateAdded;
+	private Integer priceEur;
+	private Boolean fixedPrice;
+
 	private CategoryDetailDto category;
 	private SubcategoryDetailDto subcategory;
 	private SubsubcategoryDetailDto subsubcategory;
 	private ContactDetailDto contact;
 	private DistrictDetailDto district;
-	private String keywords;
-	private Date date_added;
-	private Integer priceEur;
-	private Boolean fixedPrice;
+	private ImageDetailDto image;
 
+	public ImageDetailDto getImage() {
+		return image;
+	}
+	public void setImage(ImageDetailDto image) {
+		this.image = image;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -76,11 +85,11 @@ public class AdvertDetailDto {
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
-	public Date getDate_added() {
-		return date_added;
+	public Date getDateAdded() {
+		return dateAdded;
 	}
-	public void setDate_added(Date date_added) {
-		this.date_added = date_added;
+	public void setDateAdded(Date dateAdded) {
+		this.dateAdded = dateAdded;
 	}
 	public Integer getPriceEur() {
 		return priceEur;

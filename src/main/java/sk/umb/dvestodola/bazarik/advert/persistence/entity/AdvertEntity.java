@@ -1,6 +1,6 @@
 package sk.umb.dvestodola.bazarik.advert.persistence.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +27,18 @@ public class AdvertEntity {
 
 	@Column(name = "description")
 	private String description;
+	
+	@Column(name = "keywords")
+	private String keywords;
+
+	@Column(name = "date_added")
+	private Date dateAdded;
+
+	@Column(name = "priceEur")
+	private Integer priceEur;
+
+	@Column(name = "fixedPrice")
+	private Boolean fixedPrice;
 
 	@OneToOne
 	@JoinColumn(name = "id_category", nullable = false)
@@ -51,18 +63,6 @@ public class AdvertEntity {
 	@OneToOne
 	@JoinColumn(name = "id_image")
 	private ImageEntity image;
-
-	@Column(name = "keywords")
-	private String keywords;
-
-	@Column(name = "date_added")
-	private Date dateAdded;
-
-	@Column(name = "priceEur")
-	private Integer priceEur;
-
-	@Column(name = "fixedPrice")
-	private Boolean fixedPrice;
 
 	public Long getId() {
 		return id;

@@ -1,7 +1,5 @@
 package sk.umb.dvestodola.bazarik.advert.service;
 
-import java.sql.Date;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
