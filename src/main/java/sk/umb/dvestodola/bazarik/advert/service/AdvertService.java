@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
