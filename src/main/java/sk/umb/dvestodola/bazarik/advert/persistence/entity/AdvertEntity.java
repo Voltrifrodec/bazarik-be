@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.contact.persistence.entity.ContactEntity;
 import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
@@ -44,31 +44,31 @@ public class AdvertEntity {
 	@Column(name = "fixedPrice")
 	private Boolean fixedPrice;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_currency", nullable = false)
 	private CurrencyEntity currency;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_category", nullable = false)
 	private CategoryEntity category;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_subcategory", nullable = true)
 	private SubcategoryEntity subcategory;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_subsubcategory", nullable = true)
 	private SubsubcategoryEntity subsubcategory;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_contact", nullable = false)
 	private ContactEntity contact;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_district", nullable = false)
 	private DistrictEntity district;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "id_image")
 	private ImageEntity image;
 

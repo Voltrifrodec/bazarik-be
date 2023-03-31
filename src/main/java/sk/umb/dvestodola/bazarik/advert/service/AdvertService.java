@@ -27,6 +27,7 @@ import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
 import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
 import sk.umb.dvestodola.bazarik.currency.persistence.repository.CurrencyRepository;
+import sk.umb.dvestodola.bazarik.currency.service.CurrencyDetailDto;
 import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
 import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
 import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
@@ -258,12 +259,7 @@ public class AdvertService {
 		if (imageEntity.isPresent()) {
 			advertEntity.setImage(imageEntity.get());
 		} else {
-			Optional<ImageEntity> nullImage = imageRepository.findById(1L);
-			if (nullImage.isPresent()) {
-				advertEntity.setImage(nullImage.get());
-			} else {
-				throw new LibraryApplicationException("Image could not be set to imageNull (index 0).");
-			}
+			throw new LibraryApplicationException("Image must have a valid id.");
 		}
 		
 		return advertEntity;
@@ -292,6 +288,8 @@ public class AdvertService {
 		advertDetail.setPriceEur(advertEntity.getPriceEur());
 		advertDetail.setFixedPrice(advertEntity.getFixedPrice());
 
+		advertDetail.setCurrency(mapToCurrencyDetail(advertEntity.getCurrency()));
+
 		advertDetail.setCategory(mapToCategoryDetail(advertEntity.getCategory()));
 		advertDetail.setSubcategory(mapToSubcategoryDetail(advertEntity.getSubcategory()));
 		advertDetail.setSubsubcategory(mapToSubsubcategoryDetail(advertEntity.getSubsubcategory()));
@@ -301,6 +299,16 @@ public class AdvertService {
 		advertDetail.setImage(mapToImageDetail(advertEntity.getImage()));
 
 		return advertDetail;
+	}
+
+	private CurrencyDetailDto mapToCurrencyDetail(CurrencyEntity currencyEntity) {
+		CurrencyDetailDto currencyDetail = new CurrencyDetailDto();
+
+		currencyDetail.setId(currencyEntity.getId());
+		currencyDetail.setSymbol(currencyEntity.getSymbol());
+		currencyDetail.setName(currencyEntity.getName());
+
+		return currencyDetail;
 	}
 
 	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {

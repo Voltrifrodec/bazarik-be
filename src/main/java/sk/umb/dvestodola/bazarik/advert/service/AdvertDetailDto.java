@@ -4,6 +4,7 @@ import java.util.Date;
 
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
+import sk.umb.dvestodola.bazarik.currency.service.CurrencyDetailDto;
 import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
 import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
@@ -18,6 +19,7 @@ public class AdvertDetailDto {
 	private Boolean fixedPrice;
 	private Date dateAdded;
 	private Date dateModified;
+	private CurrencyDetailDto currency;
 
 	private CategoryDetailDto category;
 	private SubcategoryDetailDto subcategory;
@@ -112,6 +114,12 @@ public class AdvertDetailDto {
 	}
 	public void setFixedPrice(Boolean fixedPrice) {
 		this.fixedPrice = fixedPrice;
+	}
+	public CurrencyDetailDto getCurrency() {
+		return currency;
+	}
+	public void setCurrency(CurrencyDetailDto currency) {
+		this.currency = currency;
 	}
 
 	
