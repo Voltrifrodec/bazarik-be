@@ -53,11 +53,19 @@ public class CurrencyService {
 
 	@Transactional
 	public void deleteCurrency(Long currencyId) {
+		if (currencyId.equals(1L)) {
+			throw new LibraryApplicationException("Currency with id=1 must not be deleted.");
+		}
+
 		currencyRepository.deleteById(currencyId);
 	}
 
 	private CurrencyEntity getCurrencyEntityById(Long currencyId) {
 		Optional<CurrencyEntity> currency = currencyRepository.findById(currencyId);
+
+		if (currencyId.equals(1L)) {
+			throw new LibraryApplicationException("Currency with id=1 must not be modified.");
+		}
 
         if (currency.isEmpty()) {
 			throw new LibraryApplicationException("CurrencyId must be valid.");
