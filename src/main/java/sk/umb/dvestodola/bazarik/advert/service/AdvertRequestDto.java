@@ -2,7 +2,11 @@ package sk.umb.dvestodola.bazarik.advert.service;
 
 import java.sql.Date;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class AdvertRequestDto {
 	@NotBlank(message = "Advert name must not be blank.")
@@ -10,31 +14,42 @@ public class AdvertRequestDto {
 
 	private String description;
 
-	@NotBlank(message = "Category id name must not be blank.")
+	// @NotBlank(message = "Category id name must not be blank.")
+	@Valid
 	private Long categoryId;
 	
-	@NotBlank(message = "Subcategory id name must not be blank.")
+	// @NotBlank(message = "Subcategory id name must not be blank.")
+	@Valid
 	private Long subcategoryId;
-
-	@NotBlank(message = "Subsubcategory id name must not be blank.")
+	
+	// @NotBlank(message = "Subsubcategory id name must not be blank.")
+	@Valid
 	private Long subsubcategoryId;
 
-	@NotBlank(message = "Contact id must not be blank.")
-	private Long contactId;
+	// @NotBlank(message = "Email must not be blank.")
+	@Pattern(regexp = "^\\S+@\\S+\\.\\S+$", message = "Email must be valid.")
+	private String contactEmail;
 
-	@NotBlank(message = "District id must not be blank.")
+	@Valid
 	private Long districtId;
 
 	private String keywords;
 
-	@NotBlank(message = "Date added must not be blank.")
-	private Date date_added;
-
-	@NotBlank(message = "Price must not be blank.")
+	@Min(value = 0, message = "Minimal priceEur must be at least 0.")
 	private Integer priceEur;
 
-	@NotBlank(message = "Fixed price must not be blank.")
+	@NotNull(message = "Fixed price must not be blank.")
 	private Boolean fixedPrice;
+
+	private Long imageId;
+
+	public Long getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(Long imageId) {
+		this.imageId = imageId;
+	}
 
 	public String getName() {
 		return name;
@@ -76,12 +91,12 @@ public class AdvertRequestDto {
 		this.subsubcategoryId = subsubcategoryId;
 	}
 
-	public Long getContactId() {
-		return contactId;
+	public String getContactEmail() {
+		return contactEmail;
 	}
 
-	public void setContactId(Long contactId) {
-		this.contactId = contactId;
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
 	}
 
 	public Long getDistrictId() {
@@ -100,13 +115,6 @@ public class AdvertRequestDto {
 		this.keywords = keywords;
 	}
 
-	public Date getDate_added() {
-		return date_added;
-	}
-
-	public void setDate_added(Date date_added) {
-		this.date_added = date_added;
-	}
 
 	public Integer getPriceEur() {
 		return priceEur;
