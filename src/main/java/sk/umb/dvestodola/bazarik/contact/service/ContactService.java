@@ -21,16 +21,16 @@ public class ContactService {
 		this.contactRepository = contactRepository;
 	}
 
+	public List<ContactDetailDto> getAllContacts() {
+		return mapToConctactDetailList(contactRepository.findAll());
+	}
+
 	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
 		return mapToConctactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
 	}
 	
-	public List<ContactDetailDto> searchContactByEmail(String email) {
+	public List<ContactDetailDto> searchContactsByEmail(String email) {
 		return mapToConctactDetailList(contactRepository.findAllByEmail(email));
-	}
-
-	public List<ContactDetailDto> getAllContacts() {
-		return mapToConctactDetailList(contactRepository.findAll());
 	}
 
 	public ContactDetailDto getContactById(Long contactId) {
@@ -38,35 +38,31 @@ public class ContactService {
 	}
 
 	public ContactEntity getContactEntityById(Long contactId) {
-		Optional<ContactEntity> contact = contactRepository.findById(contactId);
+		Optional<ContactEntity> contactEntity = contactRepository.findById(contactId);
 
-		if(contact.isEmpty()) {
-			throw new BazarikApplicationException("Contact not found, id: " + contactId);
+		if(contactEntity.isEmpty()) {
+			throw new BazarikApplicationException("Contact must have a valid id.");
 		}
 
-		return contact.get();
+		return contactEntity.get();
 	}
 
 	@Transactional
-	public Long createContact(ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = mapToContactEntity(contactRequestDataTransferObject);
+	public Long createContact(ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = mapToContactEntity(contactRequest);
 		
-		return contactRepository.save(contact).getId();
+		return contactRepository.save(contactEntity).getId();
 	}
 
 	@Transactional
-	public void updateContact(Long contactId, ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = getContactEntityById(contactId);
+	public void updateContact(Long contactId, ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = getContactEntityById(contactId);
 
-		/* if(!Strings.isEmpty(contact.getPhoneNumber())) {
-			contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
-		} */
-
-		if(!Strings.isEmpty(contact.getEmail())) {
-			contact.setEmail(contactRequestDataTransferObject.getEmail());
+		if(! Strings.isEmpty(contactEntity.getEmail())) {
+			contactEntity.setEmail(contactRequest.getEmail());
 		}
 		
-		contactRepository.save(contact);
+		contactRepository.save(contactEntity);
 	}
 
 	@Transactional
@@ -74,32 +70,31 @@ public class ContactService {
 		contactRepository.deleteById(contactId);
 	}
 
-	private ContactEntity mapToContactEntity(ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = new ContactEntity();
+	private ContactEntity mapToContactEntity(ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = new ContactEntity();
 
-		// contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
-		contact.setEmail(contactRequestDataTransferObject.getEmail());
+		contactEntity.setEmail(contactRequest.getEmail());
 
-		return contact;
+		return contactEntity;
 	}
 
 	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
-		ContactDetailDto contactDto = new ContactDetailDto();
-		contactDto.setId(contactEntity.getId());
-		// contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
-		contactDto.setEmail(contactEntity.getEmail());
+		ContactDetailDto contactDetail = new ContactDetailDto();
+
+		contactDetail.setId(contactEntity.getId());
+		contactDetail.setEmail(contactEntity.getEmail());
 		
-		return contactDto;
+		return contactDetail;
 	}
 
 	private List<ContactDetailDto> mapToConctactDetailList(Iterable<ContactEntity> contactEntities) {
-		List<ContactDetailDto> contacts = new ArrayList<>();
+		List<ContactDetailDto> contactDetailList = new ArrayList<>();
 		
 		contactEntities.forEach(contactEntity -> {
-			ContactDetailDto contactDto = mapToContactDetail(contactEntity);
-			contacts.add(contactDto);
+			ContactDetailDto contactDetail = mapToContactDetail(contactEntity);
+			contactDetailList.add(contactDetail);
 		});
 
-		return contacts;
+		return contactDetailList;
 	}
 }

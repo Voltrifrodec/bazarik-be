@@ -13,14 +13,6 @@ public class ContactRequestDto {
 	private String email;
 	
 
-	/* public String getPhoneNumber() {
-		return this.phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	} */
-
 	public String getEmail() {
 		return this.email;
 	}

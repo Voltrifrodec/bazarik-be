@@ -11,7 +11,7 @@ public class ContactEntity {
 	@GeneratedValue
 	private Long id;
 
-	@Column(name = "phone_number", nullable = true)
+	@Column(name = "phone_number")
 	private String phoneNumber;
 
 	@Column(name = "email", nullable = false)
