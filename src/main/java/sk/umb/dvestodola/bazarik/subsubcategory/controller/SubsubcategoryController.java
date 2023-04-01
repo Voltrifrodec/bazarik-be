@@ -36,17 +36,16 @@ public class SubsubcategoryController {
 		return subsubcategoryService.getSubsubcategoryById(subsubcategoryId);
 	}
 
-	
 	@PostMapping("/api/subsubcategories")
-	public Long createSubsubcategory(@Valid @RequestBody SubsubcategoryRequestDto subsubcategory) {
+	public Long createSubsubcategory(@Valid @RequestBody SubsubcategoryRequestDto subsubcategoryRequest) {
 		System.out.println("Create subsubcategory was called.");
-		return subsubcategoryService.createSubsubcategory(subsubcategory);
+		return subsubcategoryService.createSubsubcategory(subsubcategoryRequest);
 	}
 
 	@PutMapping("/api/subsubcategories/{subsubcategoryId}")
-	public void updateSubsubcategory(@PathVariable Long subsubcategoryId, @Valid @RequestBody SubsubcategoryRequestDto subsubcategory) {
+	public void updateSubsubcategory(@PathVariable Long subsubcategoryId, @Valid @RequestBody SubsubcategoryRequestDto subsubcategoryRequest) {
 		System.out.println("Update subsubcategory was called, " + subsubcategoryId);
-		subsubcategoryService.updateSubsubcategory(subsubcategoryId, subsubcategory);
+		subsubcategoryService.updateSubsubcategory(subsubcategoryId, subsubcategoryRequest);
 	}
 
 	@DeleteMapping("/api/subsubcategories/{subsubcategoryId}")

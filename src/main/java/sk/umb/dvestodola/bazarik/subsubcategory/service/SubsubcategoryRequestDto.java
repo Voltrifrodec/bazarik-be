@@ -9,8 +9,9 @@ public class SubsubcategoryRequestDto {
 	private String name;
 
 	@Valid
-	@NotNull(message = "SubcategoryID for subsubcategory must not be blank.")
+	@NotNull(message = "SubcategoryID for subsubcategory must not be null.")
 	private Long subcategoryId;
+
 
 	public Long getSubcategoryId() {
 		return subcategoryId;

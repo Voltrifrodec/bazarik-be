@@ -7,12 +7,13 @@ public class SubsubcategoryDetailDto {
 	private String name;
 	private SubcategoryDetailDto subcategory;
 
+	
 	public SubcategoryDetailDto getSubcategory() {
 		return subcategory;
 	}
 
-	public void setSubcategory(SubcategoryDetailDto category) {
-		this.subcategory = category;
+	public void setSubcategory(SubcategoryDetailDto subcategory) {
+		this.subcategory = subcategory;
 	}
 
 	public Long getId() {
