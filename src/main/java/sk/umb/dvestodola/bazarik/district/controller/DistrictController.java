@@ -25,7 +25,7 @@ public class DistrictController {
 	}
 
 	@GetMapping("/api/districts")
-	public List<DistrictDetailDto> getDistricts() {
+	public List<DistrictDetailDto> getAllDistricts() {
 		System.out.println("Get all districts was called.");
 		return districtService.getAllDistricts();
 	}
@@ -37,15 +37,15 @@ public class DistrictController {
 	}
 
 	@PostMapping("/api/districts")
-	public Long createDistrict(@Valid @RequestBody DistrictRequestDto district) {
+	public Long createDistrict(@Valid @RequestBody DistrictRequestDto districtRequest) {
 		System.out.println("Create district was called.");
-		return districtService.createDistrict(district);
+		return districtService.createDistrict(districtRequest);
 	}
 
 	@PutMapping("/api/districts/{districtId}")
-	public void updateDistrict(@PathVariable Long districtId, @Valid @RequestBody DistrictRequestDto district) {
+	public void updateDistrict(@PathVariable Long districtId, @Valid @RequestBody DistrictRequestDto districtRequest) {
 		System.out.println("Update district was called, " + districtId);
-		districtService.updateDistrict(districtId, district);
+		districtService.updateDistrict(districtId, districtRequest);
 	}
 
 	@DeleteMapping("/api/districts/{districtId}")

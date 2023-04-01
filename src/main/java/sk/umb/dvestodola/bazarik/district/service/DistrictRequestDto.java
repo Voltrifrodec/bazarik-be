@@ -12,8 +12,9 @@ public class DistrictRequestDto {
 	private String postcode;
 
 	@Valid
-	@NotNull(message = "Region ID for district must not be blank.")
+	@NotNull(message = "Region ID for district must not be null.")
 	private Long regionId;
+
 
 	public Long getRegionId() {
 		return regionId;
