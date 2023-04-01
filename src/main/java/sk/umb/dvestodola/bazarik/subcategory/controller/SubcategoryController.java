@@ -29,7 +29,7 @@ public class SubcategoryController {
 	}
 
 	@GetMapping("/api/subcategories")
-	public List<SubcategoryDetailDto> getSubcategories() {
+	public List<SubcategoryDetailDto> getAllSubcategories() {
 		System.out.println("Get all subcategories was called.");
 		return subcategoryService.getAllSubcategories();
 	}
@@ -41,21 +41,21 @@ public class SubcategoryController {
 	}
 
 	@GetMapping("/api/subcategories/{subcategoryId}/subsubcategories")
-	public List<SubsubcategoryDetailDto> getSubsubcategoriesBySubcategoryId(@PathVariable Long subcategoryId) {
-		System.out.println("Get subcategories by categoryId was called, " + subcategoryId);
-		return subsubcategoryService.getSubsubcategoriesBySubcategoryId(subcategoryId);
+	public List<SubsubcategoryDetailDto> getAllSubsubcategoriesBySubcategoryId(@PathVariable Long subcategoryId) {
+		System.out.println("Get subsubcategories by subcategoryId was called, " + subcategoryId);
+		return subsubcategoryService.getAllSubsubcategoriesBySubcategoryId(subcategoryId);
 	}
 
 	@PostMapping("/api/subcategories")
-	public Long createSubcategory(@Valid @RequestBody SubcategoryRequestDto subcategory) {
+	public Long createSubcategory(@Valid @RequestBody SubcategoryRequestDto subcategoryRequest) {
 		System.out.println("Create subcategory was called.");
-		return subcategoryService.createSubcategory(subcategory);
+		return subcategoryService.createSubcategory(subcategoryRequest);
 	}
 
 	@PutMapping("/api/subcategories/{subcategoryId}")
-	public void updateSubcategory(@PathVariable Long subcategoryId, @Valid @RequestBody SubcategoryRequestDto subcategory) {
+	public void updateSubcategory(@PathVariable Long subcategoryId, @Valid @RequestBody SubcategoryRequestDto subcategoryRequest) {
 		System.out.println("Update subcategory was called, " + subcategoryId);
-		subcategoryService.updateSubcategory(subcategoryId, subcategory);
+		subcategoryService.updateSubcategory(subcategoryId, subcategoryRequest);
 	}
 
 	@DeleteMapping("/api/subcategories/{subcategoryId}")

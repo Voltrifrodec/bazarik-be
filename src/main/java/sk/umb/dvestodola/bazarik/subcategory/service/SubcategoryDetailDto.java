@@ -6,6 +6,7 @@ public class SubcategoryDetailDto {
 	private Long id;
 	private String name;
 	private CategoryDetailDto category;
+	
 
 	public CategoryDetailDto getCategory() {
 		return category;

@@ -28,16 +28,20 @@ public class SubcategoryService {
 	}
 
 	public List<SubcategoryDetailDto> getAllSubcategories() {
-        return mapToSubcategoryDtoList(subcategoryRepository.findAll());
+        return mapToSubcategoryDetailList(subcategoryRepository.findAll());
     }
 
 	public SubcategoryDetailDto getSubcategoryById(Long subcategoryId) {
-		return mapToSubcategoryDetailDto(getSubcategoryEntityById(subcategoryId));
+		return mapToSubcategoryDetail(getSubcategoryEntityById(subcategoryId));
+	}
+
+	public List<SubcategoryDetailDto> getSubcategoriesByCategoryId(Long categoryId) {
+		return getSubcategoryDetailListByCategoryId(categoryId);
 	}
 
 	@Transactional
-	public Long createSubcategory(SubcategoryRequestDto subcategoryRequestDto) {
-		SubcategoryEntity subcategoryEntity = mapToSubcategoryEntity(subcategoryRequestDto);
+	public Long createSubcategory(SubcategoryRequestDto subcategoryRequest) {
+		SubcategoryEntity subcategoryEntity = mapToSubcategoryEntity(subcategoryRequest);
 
 		if (Objects.isNull(subcategoryEntity)) {
 			throw new BazarikApplicationException("Subcategory must have valid category.");
@@ -51,15 +55,16 @@ public class SubcategoryService {
 	}
 
 	@Transactional
-	public void updateSubcategory(Long subcategoryId, SubcategoryRequestDto subcategoryRequestDto) {
+	public void updateSubcategory(Long subcategoryId, SubcategoryRequestDto subcategoryRequest) {
 		SubcategoryEntity subcategoryEntity = getSubcategoryEntityById(subcategoryId);
         
-		if (! Strings.isEmpty(subcategoryRequestDto.getName())) {
-			subcategoryEntity.setName(subcategoryRequestDto.getName());
+		if (! Strings.isEmpty(subcategoryRequest.getName())) {
+			subcategoryEntity.setName(subcategoryRequest.getName());
 		}
 
 		if (! Objects.isNull(subcategoryEntity.getCategory())) {
-			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequestDto.getCategoryId());
+			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequest.getCategoryId());
+
 			if (categoryEntity.isPresent()) {
 				subcategoryEntity.setCategory(categoryEntity.get());
 			} else {
@@ -76,37 +81,34 @@ public class SubcategoryService {
 	}
 
 
-	public List<SubcategoryDetailDto> getSubcategoriesByCategoryId(Long categoryId) {
-		return getSubcategoryDetailListByCategoryId(categoryId);
-	}
-
 	private List<SubcategoryDetailDto> getSubcategoryDetailListByCategoryId(Long categoryId) {
 		Iterable<SubcategoryEntity> subcategoryEntities = subcategoryRepository.getAllByCategoryId(categoryId);
 		List<SubcategoryDetailDto> subcategoryEntityList = new ArrayList<>();
 
-		subcategoryEntities.forEach(subcategory -> {
-			subcategoryEntityList.add(mapToSubcategoryDetailDto(subcategory));
+		subcategoryEntities.forEach(subcategoryEntity -> {
+			subcategoryEntityList.add(mapToSubcategoryDetail(subcategoryEntity));
 		});
 
 		return subcategoryEntityList;
 	}
 
 	private SubcategoryEntity getSubcategoryEntityById(Long subcategoryId) {
-		Optional<SubcategoryEntity> subcategory = subcategoryRepository.findById(subcategoryId);
+		Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(subcategoryId);
 
-        if (subcategory.isEmpty()) {
+        if (subcategoryEntity.isEmpty()) {
 			throw new BazarikApplicationException("Subcategory must have valid category id.");
         }
 
-		return subcategory.get();
+		return subcategoryEntity.get();
 	}
 
-	private SubcategoryEntity mapToSubcategoryEntity(SubcategoryRequestDto subcategoryRequestDto) {
+	private SubcategoryEntity mapToSubcategoryEntity(SubcategoryRequestDto subcategoryRequest) {
 		SubcategoryEntity subcategoryEntity = new SubcategoryEntity();
 		
-		subcategoryEntity.setName(subcategoryRequestDto.getName());
+		subcategoryEntity.setName(subcategoryRequest.getName());
 
-		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequestDto.getCategoryId());
+		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(subcategoryRequest.getCategoryId());
+
 		if (categoryEntity.isPresent()) {
 			subcategoryEntity.setCategory(categoryEntity.get());
 		} else {
@@ -116,37 +118,37 @@ public class SubcategoryService {
 		return subcategoryEntity;
 	}
 
-	private List<SubcategoryDetailDto> mapToSubcategoryDtoList(Iterable<SubcategoryEntity> categoryEntities) {
+	private List<SubcategoryDetailDto> mapToSubcategoryDetailList(Iterable<SubcategoryEntity> categoryEntities) {
 		List<SubcategoryDetailDto> subcategoryEntityList = new ArrayList<>();
 
 		categoryEntities.forEach(subcategory -> {
-			SubcategoryDetailDto subcategoryDetailDto = mapToSubcategoryDetailDto(subcategory);
-			subcategoryEntityList.add(subcategoryDetailDto);
+			SubcategoryDetailDto subcategoryDetail = mapToSubcategoryDetail(subcategory);
+			subcategoryEntityList.add(subcategoryDetail);
 		});
 
 		return subcategoryEntityList;
 	}
 
-	private SubcategoryDetailDto mapToSubcategoryDetailDto(SubcategoryEntity subcategoryEntity) {
-		SubcategoryDetailDto subcategory = new SubcategoryDetailDto();
+	private SubcategoryDetailDto mapToSubcategoryDetail(SubcategoryEntity subcategoryEntity) {
+		SubcategoryDetailDto subcategoryDetail = new SubcategoryDetailDto();
 
-		subcategory.setId(subcategoryEntity.getId());
-		subcategory.setName(subcategoryEntity.getName());
-		subcategory.setCategory(mapToCategoryDetailDto(subcategoryEntity.getCategory()));
+		subcategoryDetail.setId(subcategoryEntity.getId());
+		subcategoryDetail.setName(subcategoryEntity.getName());
+		subcategoryDetail.setCategory(mapToCategoryDetail(subcategoryEntity.getCategory()));
 
-		return subcategory;
+		return subcategoryDetail;
 	}
 
-	private CategoryDetailDto mapToCategoryDetailDto(CategoryEntity category) {
-		CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
+	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {
+		CategoryDetailDto categoryDetail = new CategoryDetailDto();
 
-		if (Objects.isNull(category)) {
-			throw new BazarikApplicationException("Category is missing!");
+		if (Objects.isNull(categoryEntity)) {
+			throw new BazarikApplicationException("Category must have a valid id.");
 		}
 
-		categoryDetailDto.setId(category.getId());
-		categoryDetailDto.setName(category.getName());
+		categoryDetail.setId(categoryEntity.getId());
+		categoryDetail.setName(categoryEntity.getName());
 
-		return categoryDetailDto;
+		return categoryDetail;
 	}
 }

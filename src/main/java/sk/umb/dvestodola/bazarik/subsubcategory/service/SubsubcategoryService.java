@@ -78,7 +78,7 @@ public class SubsubcategoryService {
 	}
 
 
-	public List<SubsubcategoryDetailDto> getSubsubcategoriesBySubcategoryId(Long subcategoryId) {
+	public List<SubsubcategoryDetailDto> getAllSubsubcategoriesBySubcategoryId(Long subcategoryId) {
 		return getSubsubcategoryDetailListByCategoryId(subcategoryId);
 	}
 

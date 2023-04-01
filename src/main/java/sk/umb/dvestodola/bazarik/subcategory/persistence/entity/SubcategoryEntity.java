@@ -25,7 +25,7 @@ public class SubcategoryEntity {
 		joinColumns = @JoinColumn(name = "id_subcategory"),
 		inverseJoinColumns = @JoinColumn(name = "id_category")
 	)
-	@JoinColumn(nullable = false)
+	@JoinColumn(name = "id_category", nullable = false)
 	private CategoryEntity category;
 
 
