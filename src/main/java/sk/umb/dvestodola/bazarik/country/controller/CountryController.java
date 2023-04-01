@@ -37,15 +37,15 @@ public class CountryController {
 	}
 
 	@PostMapping("/api/countries")
-	public Long createCountry(@Valid @RequestBody CountryRequestDto country) {
+	public Long createCountry(@Valid @RequestBody CountryRequestDto countryRequest) {
 		System.out.println("Create country was called.");
-		return countryService.createCountry(country);
+		return countryService.createCountry(countryRequest);
 	}
 
 	@PutMapping("/api/countries/{countryId}")
-	public void updateCountry(@PathVariable Long countryId, @Valid @RequestBody CountryRequestDto country) {
+	public void updateCountry(@PathVariable Long countryId, @Valid @RequestBody CountryRequestDto countryRequest) {
 		System.out.println("Update country was called, " + countryId);
-		countryService.updateCountry(countryId, country);
+		countryService.updateCountry(countryId, countryRequest);
 	}
 
 	@DeleteMapping("/api/countries/{countryId}")

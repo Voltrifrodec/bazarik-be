@@ -23,26 +23,26 @@ public class CountryService {
 	}
 
 	public List<CountryDetailDto> getAllCategories() {
-        return mapToCountryDtoList(countryRepository.findAll());
+        return mapToCountryDetailList(countryRepository.findAll());
     }
 
 	public CountryDetailDto getCountryById(Long countryId) {
-		return mapToCountryDto(getCountryEntityById(countryId));
+		return mapToCountryDetail(getCountryEntityById(countryId));
 	}
 
 	@Transactional
-	public Long createCountry(@Valid CountryRequestDto countryRequestDto) {
-		CountryEntity countryEntity = mapToCountryEntity(countryRequestDto);
+	public Long createCountry(@Valid CountryRequestDto countryRequest) {
+		CountryEntity countryEntity = mapToCountryEntity(countryRequest);
 
 		return countryRepository.save(countryEntity).getId();
 	}
 
 	@Transactional
-	public void updateCountry(Long countryId, @Valid CountryRequestDto countryRequestDto) {
+	public void updateCountry(Long countryId, @Valid CountryRequestDto countryRequest) {
 		CountryEntity countryEntity = getCountryEntityById(countryId);
         
-		if (! Strings.isEmpty(countryRequestDto.getName())) {
-			countryEntity.setName(countryRequestDto.getName());
+		if (! Strings.isEmpty(countryRequest.getName())) {
+			countryEntity.setName(countryRequest.getName());
 		}
         
         countryRepository.save(countryEntity);
@@ -55,40 +55,40 @@ public class CountryService {
 
 
 	private CountryEntity getCountryEntityById(Long countryId) {
-		Optional<CountryEntity> country = countryRepository.findById(countryId);
+		Optional<CountryEntity> countryEntity = countryRepository.findById(countryId);
 
-        if (country.isEmpty()) {
-            throw new BazarikApplicationException("Country could not be found, id: " + countryId);
+        if (countryEntity.isEmpty()) {
+            throw new BazarikApplicationException("Country id must be valid.");
         }
 
-		return country.get();
+		return countryEntity.get();
 	}
 
-	private CountryEntity mapToCountryEntity(CountryRequestDto countryRequestDto) {
+	private CountryEntity mapToCountryEntity(CountryRequestDto countryRequest) {
 		CountryEntity countryEntity = new CountryEntity();
 
-		countryEntity.setName(countryRequestDto.getName());
+		countryEntity.setName(countryRequest.getName());
 
 		return countryEntity;
 	}
 
-	private List<CountryDetailDto> mapToCountryDtoList(Iterable<CountryEntity> countryEntities) {
+	private List<CountryDetailDto> mapToCountryDetailList(Iterable<CountryEntity> countryEntities) {
 		List<CountryDetailDto> countryEntityList = new ArrayList<>();
 
-		countryEntities.forEach(country -> {
-			CountryDetailDto countryDetailDto = mapToCountryDto(country);
-			countryEntityList.add(countryDetailDto);
+		countryEntities.forEach(countryEntity -> {
+			CountryDetailDto countryDetail = mapToCountryDetail(countryEntity);
+			countryEntityList.add(countryDetail);
 		});
 
 		return countryEntityList;
 	}
 
-	private CountryDetailDto mapToCountryDto(CountryEntity countryEntity) {
-		CountryDetailDto country = new CountryDetailDto();
+	private CountryDetailDto mapToCountryDetail(CountryEntity countryEntity) {
+		CountryDetailDto countryDetail = new CountryDetailDto();
 
-		country.setId(countryEntity.getId());
-		country.setName(countryEntity.getName());
+		countryDetail.setId(countryEntity.getId());
+		countryDetail.setName(countryEntity.getName());
 
-		return country;
+		return countryDetail;
 	}
 }
