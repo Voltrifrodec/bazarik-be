@@ -25,27 +25,27 @@ public class RegionController {
 	}
 
 	@GetMapping("/api/regions")
-	public List<RegionDetailDto> getRegions() {
+	public List<RegionDetailDto> getAllRegions() {
 		System.out.println("Get all regions was called.");
-		return regionService.getAllSubcategories();
+		return regionService.getAllRegions();
 	}
 
 	@GetMapping("/api/regions/{regionId}")
-	public RegionDetailDto getRegion(@PathVariable Long regionId) {
-		System.out.println("Get region was called, " + regionId);
+	public RegionDetailDto getRegionById(@PathVariable Long regionId) {
+		System.out.println("Get region by id was called, " + regionId);
 		return regionService.getRegionById(regionId);
 	}
 
 	@PostMapping("/api/regions")
-	public Long createRegion(@Valid @RequestBody RegionRequestDto region) {
+	public Long createRegion(@Valid @RequestBody RegionRequestDto regionRequest) {
 		System.out.println("Create region was called.");
-		return regionService.createRegion(region);
+		return regionService.createRegion(regionRequest);
 	}
 
 	@PutMapping("/api/regions/{regionId}")
-	public void updateRegion(@PathVariable Long regionId, @Valid @RequestBody RegionRequestDto region) {
+	public void updateRegion(@PathVariable Long regionId, @Valid @RequestBody RegionRequestDto regionRequest) {
 		System.out.println("Update region was called, " + regionId);
-		regionService.updateRegion(regionId, region);
+		regionService.updateRegion(regionId, regionRequest);
 	}
 
 	@DeleteMapping("/api/regions/{regionId}")

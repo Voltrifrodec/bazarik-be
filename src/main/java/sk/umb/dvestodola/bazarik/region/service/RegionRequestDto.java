@@ -9,8 +9,9 @@ public class RegionRequestDto {
 	private String name;
 
 	@Valid
-	@NotNull(message = "Country ID for region must not be blank.")
+	@NotNull(message = "Country ID for region must not be null.")
 	private Long countryId;
+
 
 	public Long getCountryId() {
 		return countryId;

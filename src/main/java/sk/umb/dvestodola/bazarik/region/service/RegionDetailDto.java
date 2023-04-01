@@ -7,6 +7,7 @@ public class RegionDetailDto {
 	private String name;
 	private CountryDetailDto country;
 
+	
 	public CountryDetailDto getCountry() {
 		return country;
 	}

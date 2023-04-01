@@ -27,41 +27,42 @@ public class RegionService {
 		this.countryRepository = countryRepository;
 	}
 
-	public List<RegionDetailDto> getAllSubcategories() {
-        return mapToRegionDtoList(regionRepository.findAll());
+	public List<RegionDetailDto> getAllRegions() {
+        return mapToRegionDetailList(regionRepository.findAll());
     }
 
 	public RegionDetailDto getRegionById(Long regionId) {
-		return mapToRegionDetailDto(getRegionEntityById(regionId));
+		return mapToRegionDetail(getRegionEntityById(regionId));
 	}
 
 	@Transactional
-	public Long createRegion(RegionRequestDto regionRequestDto) {
-		RegionEntity regionEntity = mapToRegionEntity(regionRequestDto);
+	public Long createRegion(RegionRequestDto regionRequest) {
+		RegionEntity regionEntity = mapToRegionEntity(regionRequest);
 
 		if (Objects.isNull(regionEntity)) {
-			throw new BazarikApplicationException("Region must have valid country id.");
+			throw new BazarikApplicationException("Region must be valid.");
 		}
 
 		if (Objects.isNull(regionEntity.getCountry())) {
-			throw new BazarikApplicationException("Region must have valid country id.");
+			throw new BazarikApplicationException("Region must be valid.");
 		}
 
 		return regionRepository.save(regionEntity).getId();
 	}
 
 	@Transactional
-	public void updateRegion(Long regionId, RegionRequestDto regionRequestDto) {
+	public void updateRegion(Long regionId, RegionRequestDto regionRequest) {
 		RegionEntity regionEntity = getRegionEntityById(regionId);
         
-		if (! Strings.isEmpty(regionRequestDto.getName())) {
-			regionEntity.setName(regionRequestDto.getName());
+		if (! Strings.isEmpty(regionRequest.getName())) {
+			regionEntity.setName(regionRequest.getName());
 		}
 
 		if (! Objects.isNull(regionEntity.getCountry())) {
-			Optional<CountryEntity> regionsEntity = countryRepository.findById(regionRequestDto.getCountryId());
-			if (regionsEntity.isPresent()) {
-				regionEntity.setCountry(regionsEntity.get());
+			Optional<CountryEntity> countryEntity = countryRepository.findById(regionRequest.getCountryId());
+
+			if (countryEntity.isPresent()) {
+				regionEntity.setCountry(countryEntity.get());
 			} else {
 				throw new BazarikApplicationException("Region must have a valid id.");
 			}
@@ -76,21 +77,22 @@ public class RegionService {
 	}
 
 	private RegionEntity getRegionEntityById(Long regionId) {
-		Optional<RegionEntity> region = regionRepository.findById(regionId);
+		Optional<RegionEntity> regionEntity = regionRepository.findById(regionId);
 
-        if (region.isEmpty()) {
+        if (regionEntity.isEmpty()) {
 			throw new BazarikApplicationException("Region must have a valid id.");
         }
 
-		return region.get();
+		return regionEntity.get();
 	}
 
-	private RegionEntity mapToRegionEntity(RegionRequestDto regionRequestDto) {
+	private RegionEntity mapToRegionEntity(RegionRequestDto regionRequest) {
 		RegionEntity regionEntity = new RegionEntity();
 		
-		regionEntity.setName(regionRequestDto.getName());
+		regionEntity.setName(regionRequest.getName());
 
-		Optional<CountryEntity> countryEntity = countryRepository.findById(regionRequestDto.getCountryId());
+		Optional<CountryEntity> countryEntity = countryRepository.findById(regionRequest.getCountryId());
+
 		if (countryEntity.isPresent()) {
 			regionEntity.setCountry(countryEntity.get());
 		}
@@ -98,37 +100,37 @@ public class RegionService {
 		return regionEntity;
 	}
 
-	private List<RegionDetailDto> mapToRegionDtoList(Iterable<RegionEntity> regionsEntities) {
+	private List<RegionDetailDto> mapToRegionDetailList(Iterable<RegionEntity> regionsEntities) {
 		List<RegionDetailDto> regionEntityList = new ArrayList<>();
 
-		regionsEntities.forEach(region -> {
-			RegionDetailDto regionDetailDto = mapToRegionDetailDto(region);
-			regionEntityList.add(regionDetailDto);
+		regionsEntities.forEach(regionEntity -> {
+			RegionDetailDto regionDetail = mapToRegionDetail(regionEntity);
+			regionEntityList.add(regionDetail);
 		});
 
 		return regionEntityList;
 	}
 
-	private RegionDetailDto mapToRegionDetailDto(RegionEntity regionEntity) {
-		RegionDetailDto region = new RegionDetailDto();
+	private RegionDetailDto mapToRegionDetail(RegionEntity regionEntity) {
+		RegionDetailDto regionDetail = new RegionDetailDto();
 
-		region.setId(regionEntity.getId());
-		region.setName(regionEntity.getName());
-		region.setCountry(mapToCountryDetailDto(regionEntity.getCountry()));
+		regionDetail.setId(regionEntity.getId());
+		regionDetail.setName(regionEntity.getName());
+		regionDetail.setCountry(mapToCountryDetail(regionEntity.getCountry()));
 
-		return region;
+		return regionDetail;
 	}
 
-	private CountryDetailDto mapToCountryDetailDto(CountryEntity countryEntity) {
-		CountryDetailDto regionsDetailDto = new CountryDetailDto();
+	private CountryDetailDto mapToCountryDetail(CountryEntity countryEntity) {
+		CountryDetailDto regionsDetail = new CountryDetailDto();
 
 		if (Objects.isNull(countryEntity)) {
 			throw new BazarikApplicationException("Category is missing!");
 		}
 
-		regionsDetailDto.setId(countryEntity.getId());
-		regionsDetailDto.setName(countryEntity.getName());
+		regionsDetail.setId(countryEntity.getId());
+		regionsDetail.setName(countryEntity.getName());
 
-		return regionsDetailDto;
+		return regionsDetail;
 	}
 }
