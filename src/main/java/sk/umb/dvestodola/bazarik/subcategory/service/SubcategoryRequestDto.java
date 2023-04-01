@@ -9,7 +9,7 @@ public class SubcategoryRequestDto {
 	private String name;
 
 	@Valid
-	@NotNull(message = "CategoryID for subcategory must not be blank.")
+	@NotNull(message = "CategoryID for subcategory must not be null.")
 	private Long categoryId;
 
 
