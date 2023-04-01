@@ -3,6 +3,7 @@ package sk.umb.dvestodola.bazarik.image.service;
 public class ImageRequestDto {
     private String image;
 
+	
     public String getImage() {
         return image;
     }
