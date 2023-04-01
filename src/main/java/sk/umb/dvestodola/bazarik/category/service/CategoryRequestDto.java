@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public class CategoryRequestDto {
 	@NotBlank(message = "Category name must not be blank.")
 	private String name;
+	
 
 	public String getName() {
 		return name;

@@ -23,26 +23,26 @@ public class CategoryService {
 	}
 
 	public List<CategoryDetailDto> getAllCategories() {
-        return mapToCategoryDtoList(categoryRepository.findAll());
+        return mapToCategoryDetailList(categoryRepository.findAll());
     }
 
 	public CategoryDetailDto getCategoryById(Long categoryId) {
-		return mapToCategoryDto(getCategoryEntityById(categoryId));
+		return mapToCategoryDetail(getCategoryEntityById(categoryId));
 	}
 
 	@Transactional
-	public Long createCategory(@Valid CategoryRequestDto categoryRequestDto) {
-		CategoryEntity categoryEntity = mapToCategoryEntity(categoryRequestDto);
+	public Long createCategory(@Valid CategoryRequestDto categoryRequest) {
+		CategoryEntity categoryEntity = mapToCategoryEntity(categoryRequest);
 
 		return categoryRepository.save(categoryEntity).getId();
 	}
 
 	@Transactional
-	public void updateCategory(Long categoryId, @Valid CategoryRequestDto categoryRequestDto) {
+	public void updateCategory(Long categoryId, @Valid CategoryRequestDto categoryRequest) {
 		CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
         
-		if (! Strings.isEmpty(categoryRequestDto.getName())) {
-			categoryEntity.setName(categoryRequestDto.getName());
+		if (! Strings.isEmpty(categoryRequest.getName())) {
+			categoryEntity.setName(categoryRequest.getName());
 		}
         
         categoryRepository.save(categoryEntity);
@@ -55,40 +55,40 @@ public class CategoryService {
 
 
 	private CategoryEntity getCategoryEntityById(Long categoryId) {
-		Optional<CategoryEntity> category = categoryRepository.findById(categoryId);
+		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(categoryId);
 
-        if (category.isEmpty()) {
-            throw new BazarikApplicationException("Category could not be found, id: " + categoryId);
+        if (categoryEntity.isEmpty()) {
+            throw new BazarikApplicationException("Category muse have a valid id");
         }
 
-		return category.get();
+		return categoryEntity.get();
 	}
 
-	private CategoryEntity mapToCategoryEntity(CategoryRequestDto categoryRequestDto) {
+	private CategoryEntity mapToCategoryEntity(CategoryRequestDto categoryRequest) {
 		CategoryEntity categoryEntity = new CategoryEntity();
 
-		categoryEntity.setName(categoryRequestDto.getName());
+		categoryEntity.setName(categoryRequest.getName());
 
 		return categoryEntity;
 	}
 
-	private List<CategoryDetailDto> mapToCategoryDtoList(Iterable<CategoryEntity> categoryEntities) {
+	private List<CategoryDetailDto> mapToCategoryDetailList(Iterable<CategoryEntity> categoryEntities) {
 		List<CategoryDetailDto> categoryEntityList = new ArrayList<>();
 
-		categoryEntities.forEach(category -> {
-			CategoryDetailDto categoryDetailDto = mapToCategoryDto(category);
+		categoryEntities.forEach(categoryEntity -> {
+			CategoryDetailDto categoryDetailDto = mapToCategoryDetail(categoryEntity);
 			categoryEntityList.add(categoryDetailDto);
 		});
 
 		return categoryEntityList;
 	}
 
-	private CategoryDetailDto mapToCategoryDto(CategoryEntity categoryEntity) {
-		CategoryDetailDto category = new CategoryDetailDto();
+	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {
+		CategoryDetailDto categoryDetail = new CategoryDetailDto();
 
-		category.setId(categoryEntity.getId());
-		category.setName(categoryEntity.getName());
+		categoryDetail.setId(categoryEntity.getId());
+		categoryDetail.setName(categoryEntity.getName());
 
-		return category;
+		return categoryDetail;
 	}
 }
