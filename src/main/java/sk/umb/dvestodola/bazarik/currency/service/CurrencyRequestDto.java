@@ -1,13 +1,16 @@
 package sk.umb.dvestodola.bazarik.currency.service;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class CurrencyRequestDto {
+	@NotBlank(message = "Currency symbol must not be blank.")
+	@Length(min = 1, max = 1, message = "Symbol must contain only one character.")
+	private String symbol;
+
 	@NotBlank(message = "Currency name must not be blank.")
 	private String name;
-
-	@NotBlank(message = "Currency symbol must not be blank.")
-	private String symbol;
 
 	
 	public String getName() {

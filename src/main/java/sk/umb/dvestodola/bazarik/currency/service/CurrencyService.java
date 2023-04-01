@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.currency.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
@@ -33,12 +34,20 @@ public class CurrencyService {
 	public Long createCurrency(CurrencyRequestDto currencyRequest) {
 		CurrencyEntity currencyEntity = mapToCurrencyEntity(currencyRequest);
 
+		if (Objects.isNull(currencyEntity)) {
+			throw new BazarikApplicationException("Currency must be valid.");
+		}
+
 		return currencyRepository.save(currencyEntity).getId();
 	}
 
 	@Transactional
 	public void updateCurrency(Long currencyId, CurrencyRequestDto currencyRequest) {
 		CurrencyEntity currencyEntity = getCurrencyEntityById(currencyId);
+
+		if (currencyId == 1 && !currencyRequest.getSymbol().equals("€")) {
+			throw new BazarikApplicationException("Currency with id=1 must not be updated.");
+		}
         
 		if (! Strings.isBlank(currencyRequest.getName())) {
 			currencyEntity.setName(currencyRequest.getName());
@@ -60,18 +69,15 @@ public class CurrencyService {
 		currencyRepository.deleteById(currencyId);
 	}
 
+
 	private CurrencyEntity getCurrencyEntityById(Long currencyId) {
-		Optional<CurrencyEntity> currency = currencyRepository.findById(currencyId);
+		Optional<CurrencyEntity> currencyEntity = currencyRepository.findById(currencyId);
 
-		if (currencyId.equals(1L)) {
-			throw new BazarikApplicationException("Currency with id=1 must not be modified.");
-		}
-
-        if (currency.isEmpty()) {
+        if (currencyEntity.isEmpty()) {
 			throw new BazarikApplicationException("CurrencyId must be valid.");
         }
 
-		return currency.get();
+		return currencyEntity.get();
 	}
 
 	private CurrencyEntity mapToCurrencyEntity(CurrencyRequestDto currencyRequest) {
@@ -87,8 +93,8 @@ public class CurrencyService {
 		List<CurrencyDetailDto> currencyEntityList = new ArrayList<>();
 
 		currencysEntities.forEach(currencyEntity -> {
-			CurrencyDetailDto currencyDetailDto = mapToCurrencyDetail(currencyEntity);
-			currencyEntityList.add(currencyDetailDto);
+			CurrencyDetailDto currencyDetail = mapToCurrencyDetail(currencyEntity);
+			currencyEntityList.add(currencyDetail);
 		});
 
 		return currencyEntityList;
