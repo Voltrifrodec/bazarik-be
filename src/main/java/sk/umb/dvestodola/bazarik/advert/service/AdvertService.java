@@ -259,6 +259,7 @@ public class AdvertService {
 			throw new BazarikApplicationException("Currency must have a valid id.");
 		}
 
+
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 		if (categoryEntity.isPresent()) {
 			advertEntity.setCategory(categoryEntity.get());
@@ -266,24 +267,46 @@ public class AdvertService {
 			throw new BazarikApplicationException("Category must have a valid id.");
 		}
 
-		if (! Objects.isNull(advertEntity.getCategory())) {
+
+		if (! Objects.isNull(advertRequest.getSubcategoryId())) {
 			Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
+
 			if (subcategoryEntity.isPresent()) {
-				advertEntity.setSubcategory(subcategoryEntity.get());
+				if (advertEntity.getCategory().getId().equals(subcategoryEntity.get().getCategory().getId())) {
+					advertEntity.setSubcategory(subcategoryEntity.get());
+				} else {
+					throw new BazarikApplicationException("Subcategory must have a valid id.");
+					// advertEntity.setSubcategory(null);
+				}
 			} else {
-				advertEntity.setSubcategory(null);
-				// throw new BazarikApplicationException("Subcategory must have a valid id.");
+				// advertEntity.setSubcategory(null);
+				throw new BazarikApplicationException("Subcategory must have a valid id.");
 			}
+		} else {
+			advertEntity.setSubcategory(null);
 		}
 
+
 		if (! Objects.isNull(advertEntity.getSubcategory())) {
-			Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
-			if (subsubcategoryEntity.isPresent()) {
-				advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+			if (! Objects.isNull(advertRequest.getSubsubcategoryId())) {
+				Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
+	
+				if (subsubcategoryEntity.isPresent()) {
+					if (advertEntity.getSubcategory().getId().equals(subsubcategoryEntity.get().getSubcategory().getId())) {
+						advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+					} else {
+						// advertEntity.setSubsubcategory(null);
+						throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+					}
+				} else {
+					// advertEntity.setSubsubcategory(null);
+					throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+				}
 			} else {
 				advertEntity.setSubsubcategory(null);
-				// throw new BazarikApplicationException("Subsubcategory must have a valid id.");
 			}
+		} else {
+			advertEntity.setSubsubcategory(null);
 		}
 		
 		Optional<ContactEntity> contactEntity = contactRepository.findByEmail(advertRequest.getContactEmail());

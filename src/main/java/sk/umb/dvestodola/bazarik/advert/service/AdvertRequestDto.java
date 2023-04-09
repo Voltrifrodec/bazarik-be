@@ -14,7 +14,7 @@ public class AdvertRequestDto {
 	private String description;
 
 	@Valid
-	// @NotNull(message = "Category id name must not be null.")
+	@NotNull(message = "Category id name must not be null.")
 	private Long categoryId;
 	
 	@Valid
