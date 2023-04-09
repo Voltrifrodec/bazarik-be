@@ -41,6 +41,7 @@ public class AdvertRequestDto {
 	@NotNull(message = "Fixed price must not be null.")
 	private Boolean fixedPrice;
 
+	@NotNull(message = "Image id must not be null.")
 	private Long imageId;
 	
 

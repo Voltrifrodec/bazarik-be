@@ -69,7 +69,7 @@ public class AdvertEntity {
 	private DistrictEntity district;
 
 	@ManyToOne
-	@JoinColumn(name = "id_image")
+	@JoinColumn(name = "id_image", nullable = false)
 	private ImageEntity image;
 
 
