@@ -25,7 +25,7 @@ Táto chyba sa vyskytuje vtedy, keď port ktorý využíva MariaDB je obsadený 
 3. Pomocou príkazu `netstat -ano | findstr :3306` vyhľadajte všetky procesy, ktoré bežia na danom porte.
 
 <p class="ImageContainer">
-    <img src="/bazarik-be/docs/issues_fixing/gss-api-1.png">
+    <img src="gss-api-1.png">
 </p>
 
 V našom prípade nás zaujímajú procesy so socketom `[::]:3306`. Ako môžeme vidieť, na danom porte nám beží jednak docker, a jednak aj proces, ktorý nám spôsobuje chybové hlásenia.
@@ -33,7 +33,7 @@ V našom prípade nás zaujímajú procesy so socketom `[::]:3306`. Ako môžeme
 4. Pre každý z procesov použite príkaz `netstat -ano | find "3306" | findstr "LISTEN" | tasklist /fi "PID eq <id_procesu>"`. ID procesu (PID) sa nachádza v poslednom stĺpci výpisu v predchádzajúcom kroku.
    
 <p class="ImageContainer">
-    <img src="/bazarik-be/docs/issues_fixing/gss-api-2.png">
+    <img src="gss-api-2.png">
 </p>
 
 Ako môžeme vidieť, proces ktorý nemá byť spustený je v tomto prípade používaný programom *mysqld.exe*. Tento proces môžeme vypnúť dvoma spôsobmi: buď vyhľadaním programu v správci úloh, alebo pomocou príkazového riadku. V prípade druhej možnosti (ktorá sa v tejto ukážke následne použije) je dobré sa uistiť či sa vypol aj samotný program.
