@@ -24,7 +24,7 @@ Táto chyba sa vyskytuje vtedy, keď port ktorý využíva MariaDB je obsadený 
 2. Zapnite docker pomocou príkazu `docker-compose up` v adresári projektu.
 3. Pomocou príkazu `netstat -ano | findstr :3306` vyhľadajte všetky procesy, ktoré bežia na danom porte.
 
-<p class="ImageContainer">
+<p align="center">
     <img src="gss-api-1.png">
 </p>
 
@@ -32,7 +32,7 @@ V našom prípade nás zaujímajú procesy so socketom `[::]:3306`. Ako môžeme
 
 4. Pre každý z procesov použite príkaz `netstat -ano | find "3306" | findstr "LISTEN" | tasklist /fi "PID eq <id_procesu>"`. ID procesu (PID) sa nachádza v poslednom stĺpci výpisu v predchádzajúcom kroku.
    
-<p class="ImageContainer">
+<p align="center">
     <img src="gss-api-2.png">
 </p>
 
@@ -42,12 +42,3 @@ Ako môžeme vidieť, proces ktorý nemá byť spustený je v tomto prípade pou
 
 6. Ak ste postupovali správne, tak pri výpise príkazu na výpis všetkých procesov sa zobrazí len jeden proces pre socket `[::]:3306` (3. krok).
 7. Reštartuje IDE, nanovo zapnite docker a spustte Spring aplikáciu.
-
-
-
-## Poznámky
-<details><summary>Použitý CSS kód</summary>
-<style>
-    .ImageContainer { text-align: center; }
-</style>
-</details>
