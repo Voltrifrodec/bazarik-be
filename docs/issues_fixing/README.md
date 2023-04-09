@@ -16,12 +16,12 @@ null credentials from Ticket Cache
 Unable to obtain Principal Name for authentication
 ```
 
-Táto chyba sa vyskytuje vtedy, keď port ktorý využíva MariaDB je obsadený iným procesom.
+Táto chyba sa vyskytuje vtedy, keď na porte ktorý využíva MariaDB beží viacero procesov.
 
 ### Riešenie
 
-1. Prejdite do príkazového riadku.
-2. Zapnite docker pomocou príkazu `docker-compose up` v adresári projektu.
+1. Spustite docker pomocou príkazu `docker-compose up` v adresári projektu.
+2. Otvorte príkazový riadok.
 3. Pomocou príkazu `netstat -ano | findstr :3306` vyhľadajte všetky procesy, ktoré bežia na danom porte.
 
 <p align="center">
@@ -36,7 +36,7 @@ V našom prípade nás zaujímajú procesy so socketom `[::]:3306`. Ako môžeme
     <img src="gss-api-2.png">
 </p>
 
-Ako môžeme vidieť, proces ktorý nemá byť spustený je v tomto prípade používaný programom *mysqld.exe*. Tento proces môžeme vypnúť dvoma spôsobmi: buď vyhľadaním programu v správci úloh, alebo pomocou príkazového riadku. V prípade druhej možnosti (ktorá sa v tejto ukážke následne použije) je dobré sa uistiť či sa vypol aj samotný program.
+Ako môžeme vidieť, proces ktorý nemá byť spustený je v tomto prípade používaný programom *mysqld.exe*. Tento proces môžeme vypnúť dvoma spôsobmi: buď vyhľadaním programu v správci úloh, alebo pomocou príkazového riadku. V prípade druhej možnosti (ktorú použijeme v nasledujúcom kroku) je dobré sa uistiť či sa vypol aj samotný program.
 
 5. Použite príkaz `taskkill /PID <id_procesu> /F`. Tento príkaz vypne daný proces. Ak sa vyskytne chybové hlásenie, tak je nutné prejsť na prvú možnosť, a to vypnúť program skrz správcu úloh.
 
