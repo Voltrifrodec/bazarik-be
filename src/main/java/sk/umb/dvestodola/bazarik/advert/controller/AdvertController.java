@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertService;
-import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertDetailDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
@@ -31,19 +30,16 @@ public class AdvertController {
 		return advertService.getAllAdverts();
 	}
 
-	// TODO: Get mapping for adverts in category
 	@GetMapping("/api/categories/{categoryId}/adverts")
 	public List<AdvertDetailDto> getAllAdvertsByCategoryId(@PathVariable Long categoryId) {
 		return advertService.getAllAdvertsByCategoryId(categoryId);
 	}
 
-	// TODO: Get mapping for all adverts in subcategory
 	@GetMapping("/api/subcategories/{subcategoryId}/adverts")
 	public List<AdvertDetailDto> getAllAdvertsBySubcategoryId(@PathVariable Long subcategoryId) {
 		return advertService.getAllAdvertsBySubcategoryId(subcategoryId);
 	}
 
-	// TODO: Get mapping for all adverts in subsubcategory
 	@GetMapping("/api/subsubcategories/{subsubcategoryId}/adverts")
 	public List<AdvertDetailDto> getAllAdvertsBySubsubcategoryId(@PathVariable Long subsubcategoryId) {
 		return advertService.getAllAdvertsBySubsubcategoryId(subsubcategoryId);
