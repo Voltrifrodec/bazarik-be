@@ -13,6 +13,9 @@ import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
 import sk.umb.dvestodola.bazarik.region.persistence.repository.RegionRepository;
 import sk.umb.dvestodola.bazarik.country.persistence.repository.CountryRepository;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
+import sk.umb.dvestodola.bazarik.district.persistence.entity.DistrictEntity;
+import sk.umb.dvestodola.bazarik.district.persistence.repository.DistrictRepository;
+import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
@@ -21,15 +24,25 @@ public class RegionService {
 
 	private final RegionRepository regionRepository;
 	private final CountryRepository countryRepository;
+	private final DistrictRepository districtRepository;
 
-	RegionService(RegionRepository regionRepository, CountryRepository countryRepository) {
+	RegionService(
+		RegionRepository regionRepository,
+		CountryRepository countryRepository,
+		DistrictRepository districtRepository
+	) {
 		this.regionRepository = regionRepository;
 		this.countryRepository = countryRepository;
+		this.districtRepository = districtRepository;
 	}
 
 	public List<RegionDetailDto> getAllRegions() {
         return mapToRegionDetailList(regionRepository.findAll());
     }
+	
+	public List<DistrictDetailDto> getAllDistrictsByRegionById(Long regionId) {
+		return mapToDistrictDetailList(districtRepository.findAllByRegionId(regionId));
+	}
 
 	public RegionDetailDto getRegionById(Long regionId) {
 		return mapToRegionDetail(getRegionEntityById(regionId));
@@ -132,5 +145,42 @@ public class RegionService {
 		regionsDetail.setName(countryEntity.getName());
 
 		return regionsDetail;
+	}
+
+	
+	private List<DistrictDetailDto> mapToDistrictDetailList(Iterable<DistrictEntity> districtEntities) {
+		ArrayList<DistrictDetailDto> districtDetailList = new ArrayList<>();
+
+		districtEntities.forEach(district -> {
+			DistrictDetailDto districtDetail = mapToDistrictDetail(district);
+			districtDetailList.add(districtDetail);
+		});
+
+		return districtDetailList;
+	}
+
+	private DistrictDetailDto mapToDistrictDetail(DistrictEntity regionEntity) {
+		DistrictDetailDto region = new DistrictDetailDto();
+
+		region.setId(regionEntity.getId());
+		region.setName(regionEntity.getName());
+		region.setPostcode(regionEntity.getPostcode());
+		region.setRegion(mapToCountryDetail(regionEntity.getRegion()));
+
+		return region;
+	}
+
+	private RegionDetailDto mapToCountryDetail(RegionEntity regionEntity) {
+		RegionDetailDto regionDetailDto = new RegionDetailDto();
+
+		if (Objects.isNull(regionEntity)) {
+			throw new BazarikApplicationException("Category is missing!");
+		}
+
+		regionDetailDto.setId(regionEntity.getId());
+		regionDetailDto.setName(regionEntity.getName());
+		regionDetailDto.setCountry(mapToCountryDetail(regionEntity.getCountry()));
+
+		return regionDetailDto;
 	}
 }

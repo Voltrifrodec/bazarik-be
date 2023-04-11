@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import sk.umb.dvestodola.bazarik.district.service.DistrictDetailDto;
 import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
 import sk.umb.dvestodola.bazarik.region.service.RegionRequestDto;
 import sk.umb.dvestodola.bazarik.region.service.RegionService;
@@ -28,6 +29,12 @@ public class RegionController {
 	public List<RegionDetailDto> getAllRegions() {
 		System.out.println("Get all regions was called.");
 		return regionService.getAllRegions();
+	}
+
+	@GetMapping("/api/regions/{regionId}/districts")
+	public List<DistrictDetailDto> getAllDistrictsByRegionId(@PathVariable Long regionId) {
+		System.out.println("Get all districts by region id was called, " + regionId);
+		return regionService.getAllDistrictsByRegionById(regionId);
 	}
 
 	@GetMapping("/api/regions/{regionId}")
