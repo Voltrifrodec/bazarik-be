@@ -25,27 +25,27 @@ public class CurrencyController {
 	}
 
 	@GetMapping("/api/currencies")
-	public List<CurrencyDetailDto> getCurrencies() {
+	public List<CurrencyDetailDto> getAllCurrencies() {
 		System.out.println("Get all currencies was called.");
 		return currencyService.getAllCurrencies();
 	}
 
 	@GetMapping("/api/currencies/{currencyId}")
-	public CurrencyDetailDto getCurrency(@PathVariable Long currencyId) {
-		System.out.println("Get currency was called, " + currencyId);
+	public CurrencyDetailDto getCurrencyById(@PathVariable Long currencyId) {
+		System.out.println("Get currency by id was called, " + currencyId);
 		return currencyService.getCurrencyById(currencyId);
 	}
 
 	@PostMapping("/api/currencies")
-	public Long createCurrency(@Valid @RequestBody CurrencyRequestDto currency) {
+	public Long createCurrency(@Valid @RequestBody CurrencyRequestDto currencyRequest) {
 		System.out.println("Create currency was called.");
-		return currencyService.createCurrency(currency);
+		return currencyService.createCurrency(currencyRequest);
 	}
 
 	@PutMapping("/api/currencies/{currencyId}")
-	public void updateCurrency(@PathVariable Long currencyId, @Valid @RequestBody CurrencyRequestDto currency) {
+	public void updateCurrency(@PathVariable Long currencyId, @Valid @RequestBody CurrencyRequestDto currencyRequest) {
 		System.out.println("Update currency was called, " + currencyId);
-		currencyService.updateCurrency(currencyId, currency);
+		currencyService.updateCurrency(currencyId, currencyRequest);
 	}
 
 	@DeleteMapping("/api/currencies/{currencyId}")

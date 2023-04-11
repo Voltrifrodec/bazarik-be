@@ -1,10 +1,12 @@
 package sk.umb.dvestodola.bazarik.advert.persistence.entity;
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,9 +21,9 @@ import sk.umb.dvestodola.bazarik.subsubcategory.persistence.entity.Subsubcategor
 @Entity(name = "advert")
 public class AdvertEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "id_advert", unique = true)
-	private Long id;
+	private UUID id;
 
 	@Column(name = "name")
 	private String name;
@@ -69,7 +71,7 @@ public class AdvertEntity {
 	private DistrictEntity district;
 
 	@ManyToOne
-	@JoinColumn(name = "id_image")
+	@JoinColumn(name = "id_image", nullable = false)
 	private ImageEntity image;
 
 
@@ -81,11 +83,11 @@ public class AdvertEntity {
 		this.dateModified = dateModified;
 	}
 
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

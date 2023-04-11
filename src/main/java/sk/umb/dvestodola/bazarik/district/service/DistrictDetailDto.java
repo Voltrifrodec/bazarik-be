@@ -8,6 +8,7 @@ public class DistrictDetailDto {
 	private String postcode;
 	private RegionDetailDto region;
 
+	
 	public RegionDetailDto getRegion() {
 		return region;
 	}

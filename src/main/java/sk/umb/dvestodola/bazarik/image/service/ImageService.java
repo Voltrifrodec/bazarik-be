@@ -44,7 +44,7 @@ public class ImageService {
 		Optional<ImageEntity> imageEntity = imageRepository.findById(imageId);
 
 		if(imageEntity.isEmpty()) {
-			throw new BazarikApplicationException("Image could not be found, id: " + imageId);
+			throw new BazarikApplicationException("Image must have a valid id.");
 		}
 
 		return imageEntity.get();
@@ -59,18 +59,43 @@ public class ImageService {
 
 	@Transactional
 	public Long uploadImage(MultipartFile file) {
-		if (Objects.isNull(file)) { throw new BazarikApplicationException("Image file must be valid."); }
+		if (Objects.isNull(file)) {
+			throw new BazarikApplicationException("Image file must be valid.");
+		}
 
 		ImageEntity imageEntity = new ImageEntity();
-		String imageType = "jpg";
-		Blob imageData = compressImage(file, imageType, 1024, 0);
 
+		String imageFormat = "jpg";
+		String imageType = "image/" + imageFormat;
+		
 		try {
+			BufferedImage originalImage = ImageIO.read(file.getInputStream());
+
+			int targetWidth = originalImage.getWidth();
+			int targetHeight = originalImage.getHeight();
+
+			// targetHeight = (targetHeight > 0) ? targetHeight : (int) ((float)originalImage.getHeight() / (float)originalImage.getWidth() * targetWidth);
+
+			BufferedImage newImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+			Graphics2D renderer = newImage.createGraphics();
+
+			renderer.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+			renderer.dispose();
+
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(newImage, imageFormat, byteArrayOutputStream);
+			Blob imageData = new SerialBlob(byteArrayOutputStream.toByteArray());
+
 			imageEntity.setOriginalFileName(file.getOriginalFilename());
+			imageEntity.setType(imageType);
+			imageEntity.setOriginalSizeBytes((long)(file.getBytes().length));
+			imageEntity.setOriginalWidth(originalImage.getWidth());
+			imageEntity.setOriginalHeight(originalImage.getHeight());
+			imageEntity.setWidth(newImage.getWidth());
+			imageEntity.setHeight(newImage.getHeight());
 			imageEntity.setSizeBytes(imageData.length());
 			imageEntity.setImage(imageData);
-			imageEntity.setType("image/" + imageType);
-			imageEntity.setOriginalSizeBytes((long)(file.getBytes().length));
+
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			throw new BazarikApplicationException("Unexpected error when handling image file.");
@@ -95,35 +120,6 @@ public class ImageService {
 		imageRepository.deleteAll();
 	}
 
-	private SerialBlob compressImage(MultipartFile file, String imageType, int width, int height) {
-		try {
-			BufferedImage originalImage = ImageIO.read(file.getInputStream());
-
-			if (originalImage == null) {
-				throw new BazarikApplicationException("File must be of type image.");
-			}
-			
-			int targetWidth = (width > 0) ? width : 720;
-			int targetHeight = (height > 0) ? height : (int) ((float)originalImage.getHeight() / (float)originalImage.getWidth() * targetWidth);
-
-			BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-			Graphics2D graphics2D = resizedImage.createGraphics();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	
-			graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-			graphics2D.dispose();
-			originalImage.flush();
-	
-			ImageIO.write(resizedImage, imageType, baos);
-
-			return new SerialBlob(baos.toByteArray());
-		} catch (IOException | SQLException e) {
-			e.printStackTrace();
-			throw new BazarikApplicationException("Image could not be processed.");
-		}
-	}
-
-
 	public ImageEntity mapToImageEntity(ImageRequestDto imageRequest) {
 		ImageEntity imageEntity = new ImageEntity();
 
@@ -135,27 +131,7 @@ public class ImageService {
 
 		return imageEntity;
 	}
-
-	public ImageDetailDto mapToImageDetail(ImageEntity imageEntity) {
-		ImageDetailDto imageDetail = new ImageDetailDto();
-
-		imageDetail.setId(imageEntity.getId());
-		imageDetail.setOriginalFileName(imageEntity.getOriginalFileName());
-		imageDetail.setType(imageEntity.getType());
-		imageDetail.setSizeBytes(imageEntity.getSizeBytes());
-		imageDetail.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
-
-		Blob blob;
-		try {
-			blob = new SerialBlob(imageEntity.getImage());
-			imageDetail.setImage(blob);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return imageDetail;
-	}
-
+	
 	public List<ImageDetailDto> mapToImageDetailList(Iterable<ImageEntity> imageEntities) {
 		List<ImageDetailDto> imageDetailList = new ArrayList<>();
 
@@ -167,5 +143,27 @@ public class ImageService {
 		return imageDetailList;
 	}
 
+	public ImageDetailDto mapToImageDetail(ImageEntity imageEntity) {
+		ImageDetailDto imageDetail = new ImageDetailDto();
 
+		imageDetail.setId(imageEntity.getId());
+		imageDetail.setOriginalFileName(imageEntity.getOriginalFileName());
+		imageDetail.setType(imageEntity.getType());
+		imageDetail.setOriginalWidth(imageEntity.getOriginalWidth());
+		imageDetail.setOriginalHeight(imageEntity.getOriginalHeight());
+		imageDetail.setOriginalSizeBytes(imageEntity.getOriginalSizeBytes());
+		imageDetail.setWidth(imageEntity.getWidth());
+		imageDetail.setHeight(imageEntity.getHeight());
+		imageDetail.setSizeBytes(imageEntity.getSizeBytes());
+
+		Blob blob;
+		try {
+			blob = new SerialBlob(imageEntity.getImage());
+			imageDetail.setImage(blob);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return imageDetail;
+	}
 }

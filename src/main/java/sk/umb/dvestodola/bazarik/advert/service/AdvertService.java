@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -79,12 +80,24 @@ public class AdvertService {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
-	public AdvertDetailDto getAdvertById(Long advertId) {
+	public AdvertDetailDto getAdvertById(UUID advertId) {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 
+	public List<AdvertDetailDto> getAllAdvertsByCategoryId(Long categoryId) {
+		return mapToAdvertDetailList(advertRepository.findAllAdvertsByCategoryId(categoryId));
+	}
+
+	public List<AdvertDetailDto> getAllAdvertsBySubcategoryId(Long subcategoryId) {
+		return mapToAdvertDetailList(advertRepository.findAllAdvertsBySubcategoryId(subcategoryId));
+	}
+
+	public List<AdvertDetailDto> getAllAdvertsBySubsubcategoryId(Long subsubcategoryId) {
+		return mapToAdvertDetailList(advertRepository.findAllAdvertsBySubsubcategoryId(subsubcategoryId));
+	}
+
 	@Transactional
-	public Long createAdvert(AdvertRequestDto advertRequestDto) {
+	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
 
 		if (Objects.isNull(advertEntity)) {
@@ -95,7 +108,7 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void updateAdvert(Long advertId, AdvertRequestDto advertRequest) {
+	public void updateAdvert(UUID advertId, AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = getAdvertEntityById(advertId);
 
 		advertEntity.setDateModified(new Date());
@@ -120,7 +133,7 @@ public class AdvertService {
 			advertEntity.setFixedPrice(advertRequest.getFixedPrice());
 		}
 
-		if (! Objects.isNull(advertEntity.getCategory())) {
+		if (! Objects.isNull(advertRequest.getCategoryId())) {
 			Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 			if (categoryEntity.isPresent()) {
 				advertEntity.setCategory(categoryEntity.get());
@@ -129,22 +142,46 @@ public class AdvertService {
 			}
 		}
 
-		if (! Objects.isNull(advertEntity.getSubcategory())) {
-			Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
-			if (subcategoryEntity.isPresent()) {
-				advertEntity.setSubcategory(subcategoryEntity.get());
+		if (! Objects.isNull(advertEntity.getCategory())) {
+			if (! Objects.isNull(advertRequest.getSubcategoryId())) {
+				Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
+				
+				if (subcategoryEntity.isPresent()) {
+					if (advertEntity.getCategory().getId().equals(subcategoryEntity.get().getCategory().getId())) {
+						advertEntity.setSubcategory(subcategoryEntity.get());
+					} else {
+						// advertEntity.setSubcategory(null);
+						return;
+					}
+				} else {
+					throw new BazarikApplicationException("Subcategory must have a valid id.");
+				}
 			} else {
-				throw new BazarikApplicationException("Subcategory must have a valid id.");
+				advertEntity.setSubcategory(null);
 			}
+		} else {
+			advertEntity.setSubcategory(null);
 		}
 
-		if (! Objects.isNull(advertEntity.getSubsubcategory())) {
-			Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
-			if (subsubcategoryEntity.isPresent()) {
-				advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+		if (! Objects.isNull(advertEntity.getSubcategory())) {
+			if (! Objects.isNull(advertRequest.getSubsubcategoryId())) {
+				Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
+				
+				if (subsubcategoryEntity.isPresent()) {
+					if (advertEntity.getSubcategory().getId().equals(subsubcategoryEntity.get().getSubcategory().getId())) {
+						advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+					} else {
+						// advertEntity.setSubsubcategory(null);
+						return;
+					}
+				} else {
+					throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+				}
 			} else {
-				throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+				advertEntity.setSubsubcategory(null);
 			}
+		} else {
+			advertEntity.setSubsubcategory(null);
 		}
 
 		if (! Objects.isNull(advertEntity.getContact())) {
@@ -171,10 +208,19 @@ public class AdvertService {
 
 		if (! Objects.isNull(advertEntity.getImage())) {
 			Optional<ImageEntity> contactEntity = imageRepository.findById(advertRequest.getImageId());
+
 			if (contactEntity.isPresent()) {
 				advertEntity.setImage(contactEntity.get());
 			} else {
 				throw new BazarikApplicationException("Image must have a valid id.");
+			}
+		} else {
+			Optional<ImageEntity> contactEntity = imageRepository.findById(0L);
+
+			if (contactEntity.isPresent()) {
+				advertEntity.setImage(contactEntity.get());
+			} else {
+				throw new BazarikApplicationException("Default image with index 0 is missing.");
 			}
 		}
 
@@ -182,11 +228,11 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void deleteAdvert(Long advertId) {
+	public void deleteAdvert(UUID advertId) {
 		advertRepository.deleteById(advertId);
 	}
 
-	private AdvertEntity getAdvertEntityById(Long advertId) {
+	private AdvertEntity getAdvertEntityById(UUID advertId) {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
         if (advertEntity.isEmpty()) {
@@ -214,6 +260,7 @@ public class AdvertService {
 			throw new BazarikApplicationException("Currency must have a valid id.");
 		}
 
+
 		Optional<CategoryEntity> categoryEntity = categoryRepository.findById(advertRequest.getCategoryId());
 		if (categoryEntity.isPresent()) {
 			advertEntity.setCategory(categoryEntity.get());
@@ -221,18 +268,46 @@ public class AdvertService {
 			throw new BazarikApplicationException("Category must have a valid id.");
 		}
 
-		Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
-		if (subcategoryEntity.isPresent()) {
-			advertEntity.setSubcategory(subcategoryEntity.get());
+
+		if (! Objects.isNull(advertRequest.getSubcategoryId())) {
+			Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
+
+			if (subcategoryEntity.isPresent()) {
+				if (advertEntity.getCategory().getId().equals(subcategoryEntity.get().getCategory().getId())) {
+					advertEntity.setSubcategory(subcategoryEntity.get());
+				} else {
+					throw new BazarikApplicationException("Subcategory must have a valid id.");
+					// advertEntity.setSubcategory(null);
+				}
+			} else {
+				// advertEntity.setSubcategory(null);
+				throw new BazarikApplicationException("Subcategory must have a valid id.");
+			}
 		} else {
-			throw new BazarikApplicationException("Subcategory must have a valid id.");
+			advertEntity.setSubcategory(null);
 		}
 
-		Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
-		if (subsubcategoryEntity.isPresent()) {
-			advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+
+		if (! Objects.isNull(advertEntity.getSubcategory())) {
+			if (! Objects.isNull(advertRequest.getSubsubcategoryId())) {
+				Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
+	
+				if (subsubcategoryEntity.isPresent()) {
+					if (advertEntity.getSubcategory().getId().equals(subsubcategoryEntity.get().getSubcategory().getId())) {
+						advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+					} else {
+						// advertEntity.setSubsubcategory(null);
+						throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+					}
+				} else {
+					// advertEntity.setSubsubcategory(null);
+					throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+				}
+			} else {
+				advertEntity.setSubsubcategory(null);
+			}
 		} else {
-			throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+			advertEntity.setSubsubcategory(null);
 		}
 		
 		Optional<ContactEntity> contactEntity = contactRepository.findByEmail(advertRequest.getContactEmail());
@@ -320,6 +395,8 @@ public class AdvertService {
 	}
 
 	private SubcategoryDetailDto mapToSubcategoryDetail(SubcategoryEntity subcategoryEntity) {
+		if (Objects.isNull(subcategoryEntity)) return null;
+
 		SubcategoryDetailDto subcategoryDetail = new SubcategoryDetailDto();
 
 		subcategoryDetail.setId(subcategoryEntity.getId());
@@ -330,6 +407,8 @@ public class AdvertService {
 	}
 
 	private SubsubcategoryDetailDto mapToSubsubcategoryDetail(SubsubcategoryEntity subsubcategoryEntity) {
+		if (Objects.isNull(subsubcategoryEntity)) return null;
+
 		SubsubcategoryDetailDto subsubcategoryDetail = new SubsubcategoryDetailDto();
 
 		subsubcategoryDetail.setId(subsubcategoryEntity.getId());
@@ -377,7 +456,7 @@ public class AdvertService {
 		ContactDetailDto contactDetail = new ContactDetailDto();
 
 		contactDetail.setId(contactEntity.getId());
-		// contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
+		contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
 		contactDetail.setEmail(contactEntity.getEmail());
 		
 		return contactDetail;
@@ -402,5 +481,7 @@ public class AdvertService {
 
 		return imageDetail;
 	}
+
+	
 
 }

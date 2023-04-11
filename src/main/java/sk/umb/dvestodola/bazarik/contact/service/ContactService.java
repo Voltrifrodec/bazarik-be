@@ -21,52 +21,42 @@ public class ContactService {
 		this.contactRepository = contactRepository;
 	}
 
-	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
-		return mapToConctactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
-	}
-	
-	public List<ContactDetailDto> searchContactByEmail(String email) {
-		return mapToConctactDetailList(contactRepository.findAllByEmail(email));
+	public List<ContactDetailDto> getAllContacts() {
+		return mapToContactDetailList(contactRepository.findAll());
 	}
 
-	public List<ContactDetailDto> getAllContacts() {
-		return mapToConctactDetailList(contactRepository.findAll());
+	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
+		return mapToContactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
+	}
+	
+	public List<ContactDetailDto> searchContactsByEmail(String email) {
+		return mapToContactDetailList(contactRepository.findAllByEmail(email));
 	}
 
 	public ContactDetailDto getContactById(Long contactId) {
 		return mapToContactDetail(getContactEntityById(contactId));
 	}
 
-	public ContactEntity getContactEntityById(Long contactId) {
-		Optional<ContactEntity> contact = contactRepository.findById(contactId);
-
-		if(contact.isEmpty()) {
-			throw new BazarikApplicationException("Contact not found, id: " + contactId);
-		}
-
-		return contact.get();
+	@Transactional
+	public Long createContact(ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = mapToContactEntity(contactRequest);
+		
+		return contactRepository.save(contactEntity).getId();
 	}
 
 	@Transactional
-	public Long createContact(ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = mapToContactEntity(contactRequestDataTransferObject);
-		
-		return contactRepository.save(contact).getId();
-	}
+	public void updateContact(Long contactId, ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = getContactEntityById(contactId);
 
-	@Transactional
-	public void updateContact(Long contactId, ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = getContactEntityById(contactId);
+		if(! Strings.isEmpty(contactEntity.getEmail())) {
+			contactEntity.setEmail(contactRequest.getEmail());
+		}
 
-		/* if(!Strings.isEmpty(contact.getPhoneNumber())) {
-			contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
-		} */
-
-		if(!Strings.isEmpty(contact.getEmail())) {
-			contact.setEmail(contactRequestDataTransferObject.getEmail());
+		if(! Strings.isEmpty(contactEntity.getPhoneNumber())) {
+			contactEntity.setEmail(contactRequest.getPhoneNumber());
 		}
 		
-		contactRepository.save(contact);
+		contactRepository.save(contactEntity);
 	}
 
 	@Transactional
@@ -74,32 +64,43 @@ public class ContactService {
 		contactRepository.deleteById(contactId);
 	}
 
-	private ContactEntity mapToContactEntity(ContactRequestDto contactRequestDataTransferObject) {
-		ContactEntity contact = new ContactEntity();
+	public ContactEntity getContactEntityById(Long contactId) {
+		Optional<ContactEntity> contactEntity = contactRepository.findById(contactId);
 
-		// contact.setPhoneNumber(contactRequestDataTransferObject.getPhoneNumber());
-		contact.setEmail(contactRequestDataTransferObject.getEmail());
+		if(contactEntity.isEmpty()) {
+			throw new BazarikApplicationException("Contact must have a valid id.");
+		}
 
-		return contact;
+		return contactEntity.get();
+	}
+
+	private ContactEntity mapToContactEntity(ContactRequestDto contactRequest) {
+		ContactEntity contactEntity = new ContactEntity();
+
+		contactEntity.setEmail(contactRequest.getEmail());
+		contactEntity.setPhoneNumber(contactRequest.getPhoneNumber());
+
+		return contactEntity;
+	}
+
+	private List<ContactDetailDto> mapToContactDetailList(Iterable<ContactEntity> contactEntities) {
+		List<ContactDetailDto> contactDetailList = new ArrayList<>();
+		
+		contactEntities.forEach(contactEntity -> {
+			ContactDetailDto contactDetail = mapToContactDetail(contactEntity);
+			contactDetailList.add(contactDetail);
+		});
+
+		return contactDetailList;
 	}
 
 	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
-		ContactDetailDto contactDto = new ContactDetailDto();
-		contactDto.setId(contactEntity.getId());
-		// contactDto.setPhoneNumber(contactEntity.getPhoneNumber());
-		contactDto.setEmail(contactEntity.getEmail());
-		
-		return contactDto;
-	}
+		ContactDetailDto contactDetail = new ContactDetailDto();
 
-	private List<ContactDetailDto> mapToConctactDetailList(Iterable<ContactEntity> contactEntities) {
-		List<ContactDetailDto> contacts = new ArrayList<>();
+		contactDetail.setId(contactEntity.getId());
+		contactDetail.setEmail(contactEntity.getEmail());
+		contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
 		
-		contactEntities.forEach(contactEntity -> {
-			ContactDetailDto contactDto = mapToContactDetail(contactEntity);
-			contacts.add(contactDto);
-		});
-
-		return contacts;
+		return contactDetail;
 	}
 }

@@ -18,11 +18,11 @@ public class AdvertRequestDto {
 	private Long categoryId;
 	
 	@Valid
-	@NotNull(message = "Subcategory id name must not be null.")
+	// @NotNull(message = "Subcategory id name must not be null.")
 	private Long subcategoryId;
 	
-	@Valid
-	@NotNull(message = "Subsubcategory id name must not be null.")
+	// @Valid
+	// @NotNull(message = "Subsubcategory id name must not be null.")
 	private Long subsubcategoryId;
 
 	// @NotBlank(message = "Email must not be blank.")
@@ -41,6 +41,7 @@ public class AdvertRequestDto {
 	@NotNull(message = "Fixed price must not be null.")
 	private Boolean fixedPrice;
 
+	@NotNull(message = "Image id must not be null.")
 	private Long imageId;
 	
 

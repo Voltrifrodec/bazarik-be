@@ -30,16 +30,16 @@ public class DistrictService {
 	}
 
 	public List<DistrictDetailDto> getAllDistricts() {
-        return mapToDistrictDtoList(districtRepository.findAll());
+        return mapToDistrictDetailList(districtRepository.findAll());
     }
 
 	public DistrictDetailDto getDistrictById(Long regionId) {
-		return mapToDistrictDetailDto(getDistrictEntityById(regionId));
+		return mapToDistrictDetail(getDistrictEntityById(regionId));
 	}
 
 	@Transactional
-	public Long createDistrict(DistrictRequestDto districtRequestDto) {
-		DistrictEntity regionEntity = mapToDistrictEntity(districtRequestDto);
+	public Long createDistrict(DistrictRequestDto districtRequest) {
+		DistrictEntity regionEntity = mapToDistrictEntity(districtRequest);
 
 		if (Objects.isNull(regionEntity)) {
 			throw new BazarikApplicationException("District must have valid region id.");
@@ -53,27 +53,28 @@ public class DistrictService {
 	}
 
 	@Transactional
-	public void updateDistrict(Long districtId, DistrictRequestDto districtRequestDto) {
-		DistrictEntity regionEntity = getDistrictEntityById(districtId);
+	public void updateDistrict(Long districtId, DistrictRequestDto districtRequest) {
+		DistrictEntity districtEntity = getDistrictEntityById(districtId);
         
-		if (! Strings.isEmpty(districtRequestDto.getName())) {
-			regionEntity.setName(districtRequestDto.getName());
+		if (! Strings.isEmpty(districtRequest.getName())) {
+			districtEntity.setName(districtRequest.getName());
 		}
 
-		if (! Objects.isNull(regionEntity.getRegion())) {
-			Optional<RegionEntity> districtEntity = regionRepository.findById(districtRequestDto.getRegionId());
-			if (districtEntity.isPresent()) {
-				regionEntity.setRegion(districtEntity.get());
+		if (! Objects.isNull(districtEntity.getRegion())) {
+			Optional<RegionEntity> regionEntity = regionRepository.findById(districtRequest.getRegionId());
+
+			if (regionEntity.isPresent()) {
+				districtEntity.setRegion(regionEntity.get());
 			} else {
 				throw new BazarikApplicationException("Region must have a valid id.");
 			}
 		}
 
-		if (! Strings.isEmpty(districtRequestDto.getPostcode())) {
-			regionEntity.setPostcode(districtRequestDto.getPostcode());
+		if (! Strings.isEmpty(districtRequest.getPostcode())) {
+			districtEntity.setPostcode(districtRequest.getPostcode());
 		}
 
-        districtRepository.save(regionEntity);
+        districtRepository.save(districtEntity);
 	}
 
 	@Transactional
@@ -82,22 +83,22 @@ public class DistrictService {
 	}
 
 	private DistrictEntity getDistrictEntityById(Long regionId) {
-		Optional<DistrictEntity> region = districtRepository.findById(regionId);
+		Optional<DistrictEntity> districtEntity = districtRepository.findById(regionId);
 
-        if (region.isEmpty()) {
+        if (districtEntity.isEmpty()) {
 			throw new BazarikApplicationException("Region must have a valid id.");
         }
 
-		return region.get();
+		return districtEntity.get();
 	}
 
-	private DistrictEntity mapToDistrictEntity(DistrictRequestDto districtRequestDto) {
+	private DistrictEntity mapToDistrictEntity(DistrictRequestDto districtRequest) {
 		DistrictEntity districtEntity = new DistrictEntity();
 		
-		districtEntity.setName(districtRequestDto.getName());
-		districtEntity.setPostcode(districtRequestDto.getPostcode());
+		districtEntity.setName(districtRequest.getName());
+		districtEntity.setPostcode(districtRequest.getPostcode());
 
-		Optional<RegionEntity> regionEntity = regionRepository.findById(districtRequestDto.getRegionId());
+		Optional<RegionEntity> regionEntity = regionRepository.findById(districtRequest.getRegionId());
 		if (regionEntity.isPresent()) {
 			districtEntity.setRegion(regionEntity.get());
 		}
@@ -105,48 +106,48 @@ public class DistrictService {
 		return districtEntity;
 	}
 
-	private List<DistrictDetailDto> mapToDistrictDtoList(Iterable<DistrictEntity> regionsEntities) {
-		List<DistrictDetailDto> regionEntityList = new ArrayList<>();
+	private List<DistrictDetailDto> mapToDistrictDetailList(Iterable<DistrictEntity> regionsEntities) {
+		List<DistrictDetailDto> districtEntityList = new ArrayList<>();
 
-		regionsEntities.forEach(region -> {
-			DistrictDetailDto regionDetailDto = mapToDistrictDetailDto(region);
-			regionEntityList.add(regionDetailDto);
+		regionsEntities.forEach(regionEntity -> {
+			DistrictDetailDto regionDetail = mapToDistrictDetail(regionEntity);
+			districtEntityList.add(regionDetail);
 		});
 
-		return regionEntityList;
+		return districtEntityList;
 	}
 
-	private DistrictDetailDto mapToDistrictDetailDto(DistrictEntity regionEntity) {
-		DistrictDetailDto region = new DistrictDetailDto();
+	private DistrictDetailDto mapToDistrictDetail(DistrictEntity districtEntity) {
+		DistrictDetailDto districtDetail = new DistrictDetailDto();
 
-		region.setId(regionEntity.getId());
-		region.setName(regionEntity.getName());
-		region.setPostcode(regionEntity.getPostcode());
-		region.setRegion(mapToCountryDetailDto(regionEntity.getRegion()));
+		districtDetail.setId(districtEntity.getId());
+		districtDetail.setName(districtEntity.getName());
+		districtDetail.setPostcode(districtEntity.getPostcode());
+		districtDetail.setRegion(mapToRegionDetail(districtEntity.getRegion()));
 
-		return region;
+		return districtDetail;
 	}
 
-	private RegionDetailDto mapToCountryDetailDto(RegionEntity regionEntity) {
-		RegionDetailDto regionDetailDto = new RegionDetailDto();
+	private RegionDetailDto mapToRegionDetail(RegionEntity regionEntity) {
+		RegionDetailDto regionDetail = new RegionDetailDto();
 
 		if (Objects.isNull(regionEntity)) {
-			throw new BazarikApplicationException("Category is missing!");
+			throw new BazarikApplicationException("Category must be valid.");
 		}
 
-		regionDetailDto.setId(regionEntity.getId());
-		regionDetailDto.setName(regionEntity.getName());
-		regionDetailDto.setCountry(mapToCountryDetailDto(regionEntity.getCountry()));
+		regionDetail.setId(regionEntity.getId());
+		regionDetail.setName(regionEntity.getName());
+		regionDetail.setCountry(mapToCountryDetail(regionEntity.getCountry()));
 
-		return regionDetailDto;
+		return regionDetail;
 	}
 
-	private CountryDetailDto mapToCountryDetailDto(CountryEntity countryEntity) {
-		CountryDetailDto country = new CountryDetailDto();
+	private CountryDetailDto mapToCountryDetail(CountryEntity countryEntity) {
+		CountryDetailDto countryDetail = new CountryDetailDto();
 		
-		country.setId(countryEntity.getId());
-		country.setName(countryEntity.getName());
+		countryDetail.setId(countryEntity.getId());
+		countryDetail.setName(countryEntity.getName());
 
-		return country;
+		return countryDetail;
 	}
 }

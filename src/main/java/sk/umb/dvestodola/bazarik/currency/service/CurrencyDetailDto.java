@@ -3,8 +3,8 @@ package sk.umb.dvestodola.bazarik.currency.service;
 
 public class CurrencyDetailDto {
 	private Long id;
-	private String name;
 	private String symbol;
+	private String name;
 
 
 	public Long getId() {

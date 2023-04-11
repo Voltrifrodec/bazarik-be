@@ -8,6 +8,10 @@ public class ImageDetailDto {
 	private String type;
 	private Long originalSizeBytes;
 	private Long sizeBytes;
+	private int originalWidth;
+	private int originalHeight;
+	private int width;
+	private int height;
     private Blob image;
 
 
@@ -57,5 +61,37 @@ public class ImageDetailDto {
 
 	public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
+	}
+
+	public int getOriginalWidth() {
+		return originalWidth;
+	}
+
+	public void setOriginalWidth(int originalWidth) {
+		this.originalWidth = originalWidth;
+	}
+
+	public int getOriginalHeight() {
+		return originalHeight;
+	}
+
+	public void setOriginalHeight(int originalHeight) {
+		this.originalHeight = originalHeight;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 }

@@ -18,10 +18,22 @@ public class ImageEntity {
 	
 	@Column(name= "type")
 	private String type;
+
+	@Column(name = "original_width")
+	private int originalWidth;
+
+	@Column(name = "original_height")
+	private int originalHeight;
 	
 	@Column(name = "original_size_bytes")
 	private Long originalSizeBytes;
 	
+	@Column(name = "width")
+	private int width;
+
+	@Column(name = "height")
+	private int height;
+
 	@Column(name = "size_bytes")
 	private Long sizeBytes;
 
@@ -75,5 +87,37 @@ public class ImageEntity {
 
 	public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
+	}
+
+	public int getOriginalWidth() {
+		return originalWidth;
+	}
+
+	public void setOriginalWidth(int originalWidth) {
+		this.originalWidth = originalWidth;
+	}
+
+	public int getOriginalHeight() {
+		return originalHeight;
+	}
+
+	public void setOriginalHeight(int originalHeight) {
+		this.originalHeight = originalHeight;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 }
