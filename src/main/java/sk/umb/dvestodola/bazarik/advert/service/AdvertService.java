@@ -455,7 +455,7 @@ public class AdvertService {
 		ContactDetailDto contactDetail = new ContactDetailDto();
 
 		contactDetail.setId(contactEntity.getId());
-		// contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
+		contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
 		contactDetail.setEmail(contactEntity.getEmail());
 		
 		return contactDetail;

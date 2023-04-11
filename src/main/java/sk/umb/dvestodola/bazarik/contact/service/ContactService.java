@@ -22,29 +22,19 @@ public class ContactService {
 	}
 
 	public List<ContactDetailDto> getAllContacts() {
-		return mapToConctactDetailList(contactRepository.findAll());
+		return mapToContactDetailList(contactRepository.findAll());
 	}
 
 	public List<ContactDetailDto> searchContactByPhoneNumber(String phoneNumber) {
-		return mapToConctactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
+		return mapToContactDetailList(contactRepository.findAllByPhoneNumber(phoneNumber));
 	}
 	
 	public List<ContactDetailDto> searchContactsByEmail(String email) {
-		return mapToConctactDetailList(contactRepository.findAllByEmail(email));
+		return mapToContactDetailList(contactRepository.findAllByEmail(email));
 	}
 
 	public ContactDetailDto getContactById(Long contactId) {
 		return mapToContactDetail(getContactEntityById(contactId));
-	}
-
-	public ContactEntity getContactEntityById(Long contactId) {
-		Optional<ContactEntity> contactEntity = contactRepository.findById(contactId);
-
-		if(contactEntity.isEmpty()) {
-			throw new BazarikApplicationException("Contact must have a valid id.");
-		}
-
-		return contactEntity.get();
 	}
 
 	@Transactional
@@ -61,6 +51,10 @@ public class ContactService {
 		if(! Strings.isEmpty(contactEntity.getEmail())) {
 			contactEntity.setEmail(contactRequest.getEmail());
 		}
+
+		if(! Strings.isEmpty(contactEntity.getPhoneNumber())) {
+			contactEntity.setEmail(contactRequest.getPhoneNumber());
+		}
 		
 		contactRepository.save(contactEntity);
 	}
@@ -70,24 +64,26 @@ public class ContactService {
 		contactRepository.deleteById(contactId);
 	}
 
+	public ContactEntity getContactEntityById(Long contactId) {
+		Optional<ContactEntity> contactEntity = contactRepository.findById(contactId);
+
+		if(contactEntity.isEmpty()) {
+			throw new BazarikApplicationException("Contact must have a valid id.");
+		}
+
+		return contactEntity.get();
+	}
+
 	private ContactEntity mapToContactEntity(ContactRequestDto contactRequest) {
 		ContactEntity contactEntity = new ContactEntity();
 
 		contactEntity.setEmail(contactRequest.getEmail());
+		contactEntity.setPhoneNumber(contactRequest.getPhoneNumber());
 
 		return contactEntity;
 	}
 
-	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
-		ContactDetailDto contactDetail = new ContactDetailDto();
-
-		contactDetail.setId(contactEntity.getId());
-		contactDetail.setEmail(contactEntity.getEmail());
-		
-		return contactDetail;
-	}
-
-	private List<ContactDetailDto> mapToConctactDetailList(Iterable<ContactEntity> contactEntities) {
+	private List<ContactDetailDto> mapToContactDetailList(Iterable<ContactEntity> contactEntities) {
 		List<ContactDetailDto> contactDetailList = new ArrayList<>();
 		
 		contactEntities.forEach(contactEntity -> {
@@ -96,5 +92,15 @@ public class ContactService {
 		});
 
 		return contactDetailList;
+	}
+
+	private ContactDetailDto mapToContactDetail(ContactEntity contactEntity) {
+		ContactDetailDto contactDetail = new ContactDetailDto();
+
+		contactDetail.setId(contactEntity.getId());
+		contactDetail.setEmail(contactEntity.getEmail());
+		contactDetail.setPhoneNumber(contactEntity.getPhoneNumber());
+		
+		return contactDetail;
 	}
 }
