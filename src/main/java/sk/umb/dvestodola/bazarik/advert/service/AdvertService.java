@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -79,7 +80,7 @@ public class AdvertService {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
-	public AdvertDetailDto getAdvertById(Long advertId) {
+	public AdvertDetailDto getAdvertById(UUID advertId) {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 
@@ -96,7 +97,7 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public Long createAdvert(AdvertRequestDto advertRequestDto) {
+	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
 
 		if (Objects.isNull(advertEntity)) {
@@ -107,7 +108,7 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void updateAdvert(Long advertId, AdvertRequestDto advertRequest) {
+	public void updateAdvert(UUID advertId, AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = getAdvertEntityById(advertId);
 
 		advertEntity.setDateModified(new Date());
@@ -227,11 +228,11 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void deleteAdvert(Long advertId) {
+	public void deleteAdvert(UUID advertId) {
 		advertRepository.deleteById(advertId);
 	}
 
-	private AdvertEntity getAdvertEntityById(Long advertId) {
+	private AdvertEntity getAdvertEntityById(UUID advertId) {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
         if (advertEntity.isEmpty()) {

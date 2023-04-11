@@ -1,6 +1,7 @@
 package sk.umb.dvestodola.bazarik.advert.service;
 
 import java.util.Date;
+import java.util.UUID;
 
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
 import sk.umb.dvestodola.bazarik.contact.service.ContactDetailDto;
@@ -11,7 +12,7 @@ import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 
 public class AdvertDetailDto {
-	private Long id;
+	private UUID id;
 	private String name;
 	private String description;
 	private String keywords;
@@ -43,10 +44,10 @@ public class AdvertDetailDto {
 	public void setImage(ImageDetailDto image) {
 		this.image = image;
 	}
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	public String getName() {

@@ -1,6 +1,7 @@
 package sk.umb.dvestodola.bazarik.advert.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,25 +47,25 @@ public class AdvertController {
 	}
 
 	@GetMapping("/api/adverts/{advertId}")
-	public AdvertDetailDto getAdvertById(@PathVariable Long advertId) {
+	public AdvertDetailDto getAdvertById(@PathVariable UUID advertId) {
 		System.out.println("Get advert was called, " + advertId);
 		return advertService.getAdvertById(advertId);
 	}
 
 	@PostMapping("/api/adverts")
-	public Long createAdvert(@Valid @RequestBody AdvertRequestDto advert) {
+	public UUID createAdvert(@Valid @RequestBody AdvertRequestDto advert) {
 		System.out.println("Create advert was called.");
 		return advertService.createAdvert(advert);
 	}
 
 	@PutMapping("/api/adverts/{advertId}")
-	public void updateAdvert(@PathVariable Long advertId, @Valid @RequestBody AdvertRequestDto advert) {
+	public void updateAdvert(@PathVariable UUID advertId, @Valid @RequestBody AdvertRequestDto advert) {
 		System.out.println("Update advert was called, " + advertId);
 		advertService.updateAdvert(advertId, advert);
 	}
 
 	@DeleteMapping("/api/adverts/{advertId}")
-	public void deleteAdvert(@PathVariable Long advertId) {
+	public void deleteAdvert(@PathVariable UUID advertId) {
 		System.out.println("Delete advert was called, " + advertId);
 		advertService.deleteAdvert(advertId);
 	}
