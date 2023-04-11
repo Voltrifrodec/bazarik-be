@@ -21,7 +21,7 @@ public class ContactController {
 
     @GetMapping("/api/contacts")
     public List<ContactDetailDto> searchContacts(@RequestParam(required = false) String email) {
-        System.out.println("Search customer (was) called, he wants his money back.");
+        System.out.println("Search contacts (was) called, he wants his money back.");
         return Strings.isEmpty(email) ?
 			contactService.getAllContacts() :
 			contactService.searchContactsByEmail(email);
