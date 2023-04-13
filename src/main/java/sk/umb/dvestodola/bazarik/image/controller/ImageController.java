@@ -40,7 +40,7 @@ public class ImageController {
         return imageService.createImage(imageRequest);
     } */
 
-	@PostMapping("api/uploadImage")
+	@PostMapping("api/images/upload")
 	public Long uploadImage(@Valid @RequestParam("file") MultipartFile file) {
 		try {
 			System.out.println("Upload image was called.");
