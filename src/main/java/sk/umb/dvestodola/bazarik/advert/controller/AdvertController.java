@@ -33,7 +33,7 @@ public class AdvertController {
 
 	@GetMapping("/api/search/{query}")
 	public List<AdvertDetailDto> getAllAdvertsByQuery(@PathVariable String query) {
-		System.out.println("Get all adverts by query was called.");
+		System.out.println("Get all adverts by query was called, " + query);
 		return advertService.getAllAdvertsByQuery(query);
 	}
 
