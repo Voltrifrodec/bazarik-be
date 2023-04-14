@@ -242,6 +242,11 @@ public class AdvertService {
 		return advertEntity.get();
 	}
 
+	public List<AdvertDetailDto> getAllAdvertsByQuery(String query) {
+		return null;
+	}
+
+
 	private AdvertEntity mapToAdvertEntity(AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = new AdvertEntity();
 
