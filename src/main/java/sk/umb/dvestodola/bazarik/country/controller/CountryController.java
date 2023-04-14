@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.country.service.CountryDetailDto;
 import sk.umb.dvestodola.bazarik.country.service.CountryRequestDto;
 import sk.umb.dvestodola.bazarik.country.service.CountryService;
+import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
 
 @RestController
 public class CountryController {
@@ -25,13 +26,19 @@ public class CountryController {
 	}
 
 	@GetMapping("/api/countries")
-	public List<CountryDetailDto> getCountries() {
+	public List<CountryDetailDto> getAllCountries() {
 		System.out.println("Get all countries was called.");
-		return countryService.getAllCategories();
+		return countryService.getAllCountries();
+	}
+
+	@GetMapping("/api/countries/{countryId}/regions")
+	public List<RegionDetailDto> getAllRegionsByCountryId(@PathVariable Long countryId) {
+		System.out.println("Get all countries was called.");
+		return countryService.getAllRegionsByCountryId(countryId);
 	}
 
 	@GetMapping("/api/countries/{countryId}")
-	public CountryDetailDto getCountry(@PathVariable Long countryId) {
+	public CountryDetailDto getCountryById(@PathVariable Long countryId) {
 		System.out.println("Get country was called, " + countryId);
 		return countryService.getCountryById(countryId);
 	}

@@ -12,19 +12,28 @@ import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.country.persistence.entity.CountryEntity;
 import sk.umb.dvestodola.bazarik.country.persistence.repository.CountryRepository;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
+import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
+import sk.umb.dvestodola.bazarik.region.persistence.repository.RegionRepository;
+import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
 
 @Service
 public class CountryService {
 	
 	private final CountryRepository countryRepository;
+	private final RegionRepository regionRepository;
 
-	CountryService(CountryRepository countryRepository) {
+	CountryService(CountryRepository countryRepository, RegionRepository regionRepository) {
 		this.countryRepository = countryRepository;
+		this.regionRepository = regionRepository;
 	}
 
-	public List<CountryDetailDto> getAllCategories() {
+	public List<CountryDetailDto> getAllCountries() {
         return mapToCountryDetailList(countryRepository.findAll());
     }
+
+	public List<RegionDetailDto> getAllRegionsByCountryId(Long countryId) {
+		return mapToRegionDetailList(regionRepository.findAllRegionsByCountryId(countryId));
+	}
 
 	public CountryDetailDto getCountryById(Long countryId) {
 		return mapToCountryDetail(getCountryEntityById(countryId));
@@ -73,14 +82,14 @@ public class CountryService {
 	}
 
 	private List<CountryDetailDto> mapToCountryDetailList(Iterable<CountryEntity> countryEntities) {
-		List<CountryDetailDto> countryEntityList = new ArrayList<>();
+		List<CountryDetailDto> countryDetailList = new ArrayList<>();
 
 		countryEntities.forEach(countryEntity -> {
 			CountryDetailDto countryDetail = mapToCountryDetail(countryEntity);
-			countryEntityList.add(countryDetail);
+			countryDetailList.add(countryDetail);
 		});
 
-		return countryEntityList;
+		return countryDetailList;
 	}
 
 	private CountryDetailDto mapToCountryDetail(CountryEntity countryEntity) {
@@ -90,5 +99,26 @@ public class CountryService {
 		countryDetail.setName(countryEntity.getName());
 
 		return countryDetail;
+	}
+
+	private List<RegionDetailDto> mapToRegionDetailList(Iterable<RegionEntity> regionEntityList) {
+		List<RegionDetailDto> regionDetailList = new ArrayList<>();
+
+		regionEntityList.forEach(regionEntity -> {
+			RegionDetailDto regionDetail = mapToRegionDetail(regionEntity);
+			regionDetailList.add(regionDetail);
+		});
+
+		return regionDetailList;
+	}
+
+	private RegionDetailDto mapToRegionDetail(RegionEntity regionEntity) {
+		RegionDetailDto regionDetail = new RegionDetailDto();
+
+		regionDetail.setId(regionEntity.getId());
+		regionDetail.setName(regionEntity.getName());
+		regionDetail.setCountry(mapToCountryDetail(regionEntity.getCountry()));
+
+		return regionDetail;
 	}
 }

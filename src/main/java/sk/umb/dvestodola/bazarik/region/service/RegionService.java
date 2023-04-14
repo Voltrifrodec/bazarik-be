@@ -52,14 +52,6 @@ public class RegionService {
 	public Long createRegion(RegionRequestDto regionRequest) {
 		RegionEntity regionEntity = mapToRegionEntity(regionRequest);
 
-		if (Objects.isNull(regionEntity)) {
-			throw new BazarikApplicationException("Region must be valid.");
-		}
-
-		if (Objects.isNull(regionEntity.getCountry())) {
-			throw new BazarikApplicationException("Region must be valid.");
-		}
-
 		return regionRepository.save(regionEntity).getId();
 	}
 
@@ -108,6 +100,8 @@ public class RegionService {
 
 		if (countryEntity.isPresent()) {
 			regionEntity.setCountry(countryEntity.get());
+		} else {
+			throw new BazarikApplicationException("Country must have a valid id.");
 		}
 
 		return regionEntity;

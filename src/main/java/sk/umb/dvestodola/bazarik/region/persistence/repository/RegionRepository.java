@@ -8,4 +8,6 @@ import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
 @Repository
 public interface RegionRepository extends CrudRepository<RegionEntity, Long> {
 	Iterable<RegionEntity> findAllById(Long regionId);
+
+	Iterable<RegionEntity> findAllRegionsByCountryId(Long countryId);
 }
