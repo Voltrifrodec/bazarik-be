@@ -84,6 +84,13 @@ public class AdvertService {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 
+	// @Transactional
+	public List<AdvertDetailDto> getAllAdvertsByQuery(String query) {
+		query = query.toLowerCase();
+		
+		return mapToAdvertDetailList(advertRepository.findAllAdvertsByQuery(query));
+	}
+
 	public List<AdvertDetailDto> getAllAdvertsByCategoryId(Long categoryId) {
 		return mapToAdvertDetailList(advertRepository.findAllAdvertsByCategoryId(categoryId));
 	}
@@ -231,6 +238,7 @@ public class AdvertService {
 	public void deleteAdvert(UUID advertId) {
 		advertRepository.deleteById(advertId);
 	}
+
 
 	private AdvertEntity getAdvertEntityById(UUID advertId) {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
