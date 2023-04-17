@@ -1,6 +1,9 @@
 ### For security reasons
 docs/images
 
+# Environment variables
+.env
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
