@@ -13,11 +13,12 @@ public class EmailService {
 	public void sendEmail(String toEmailAdress, String subject, String body) {
 		SimpleMailMessage mail = new SimpleMailMessage();
 
-		// TODO: Doplniť e-mailovú adresu
 		mail.setFrom("bazarik.noreply@gmail.com");
 		mail.setTo(toEmailAdress);
 		mail.setText(body);
 		mail.setSubject(subject);
+
+		// TODO: Zmeniť na Message message = new MimeMessage(session);
 
 		mailSender.send(mail);
 
