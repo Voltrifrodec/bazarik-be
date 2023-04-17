@@ -14,7 +14,7 @@ public class EmailService {
 		SimpleMailMessage mail = new SimpleMailMessage();
 
 		// TODO: Doplniť e-mailovú adresu
-		mail.setFrom("");
+		mail.setFrom("bazarik.noreply@gmail.com");
 		mail.setTo(toEmailAdress);
 		mail.setText(body);
 		mail.setSubject(subject);
