@@ -19,6 +19,7 @@ public class EmailService {
 		mail.setSubject(subject);
 
 		// TODO: Zmeniť na Message message = new MimeMessage(session);
+		// https://www.tutorialspoint.com/javamail_api/javamail_api_send_html_in_email.htm
 
 		mailSender.send(mail);
 
