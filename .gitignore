@@ -2,7 +2,7 @@
 docs/images
 
 # Environment variables
-.env
+*.env
 
 HELP.md
 target/
