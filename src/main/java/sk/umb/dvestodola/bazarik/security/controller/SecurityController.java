@@ -24,6 +24,7 @@ public class SecurityController {
 
 	@PostMapping("/api/security/check")
 	public Boolean checkCode(@RequestBody SecurityRequestDto securityRequest) {
+		System.out.println("Check code with hash was called");
 		return this.securityService.checkHash(securityRequest);
 	}
 
