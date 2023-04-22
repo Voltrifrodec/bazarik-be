@@ -21,16 +21,15 @@ public class SecurityService {
 	@Transactional
 	public String createHashFromAdvert(AdvertRequestDto advertRequest) {
 		Random random = new Random();
-		Long randomNumber = (long)random.nextInt(MIN_VALUE, MAX_VALUE);
-		String code = randomNumber.toString();
+		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 
 		String email = advertRequest.getContactEmail();
 		
 		String hash = this.hashFunction(code);
-
-		// this.emailService.sendKey(email, code);
-		System.out.println("Posielam na mail: " + email + ", code: " + code);
-
+		
+		this.emailService.sendCode(email, code);
+		// System.out.println("Posielam na mail: " + email + ", code: " + code);
+		
 		return hash;
 	}
 
