@@ -22,6 +22,12 @@ public class SecurityController {
 		return this.securityService.createHashFromAdvert(advertRequest);
 	}
 
+	@PostMapping("/api/security/hash")
+	public String createHashForUpdate(@RequestBody UUID advertId) {
+		System.out.println("Create hash for advert update was called, " + advertId);
+		return this.securityService.createHashForUpdate(advertId);
+	}
+
 	@PostMapping("/api/security/check")
 	public Boolean checkCode(@RequestBody SecurityRequestDto securityRequest) {
 		System.out.println("Check code with hash was called");
