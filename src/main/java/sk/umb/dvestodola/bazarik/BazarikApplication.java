@@ -44,14 +44,4 @@ public class BazarikApplication implements CommandLineRunner {
 		currencyRepository.save(currencyEntity);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
-	public void testSendEmail() {
-		Random r = new Random();
-
-		String toEmailAdress = "";
-		String subject = "Bazarik - Overovací kód";
-		String body = "Pre pridanie inzerátu zadajte overovací kód: \n\n" + r.nextInt(1000, 9999);
-
-		this.emailService.sendEmail(toEmailAdress, subject, body);
-	}
 }
