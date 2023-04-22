@@ -1,7 +1,5 @@
 package sk.umb.dvestodola.bazarik.security.service;
 
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotBlank;
 
 public class SecurityUpdateDto {
