@@ -44,23 +44,27 @@ public class SecurityService {
 	}
 
 	@Transactional
-	public String createHashForUpdate(UUID advertId) {
+	public String createHashForUpdate(SecurityUpdateDto securityUpdateDto) {
+		UUID advertId = UUID.fromString(securityUpdateDto.getAdvertId());
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
-		String email = "";
+		String checkEmail = securityUpdateDto.getEmail();
+		String advertEmail = "";
 
 		Optional<AdvertEntity> advertEntity = this.advertRepository.findById(advertId);
 		if (advertEntity.isPresent()) {
-			email = advertEntity.get().getContact().getEmail();
+			if (checkEmail.equals(advertEntity.get().getContact().getEmail())) {
+				advertEmail = advertEntity.get().getContact().getEmail();
+			} else {
+				throw new BazarikApplicationException("E-mails must match.");
+			}
 		} else {
 			throw new BazarikApplicationException("Advert could not be found by id.");
 		}
 
-		String hash = this.hashFunction(code);
+		this.emailService.sendCodeUpdate(advertEmail, code);
 
-		this.emailService.sendCodeUpdate(email, code);
-
-		return hash;
+		return this.hashFunction(code);
 	}
 
 	@Transactional
