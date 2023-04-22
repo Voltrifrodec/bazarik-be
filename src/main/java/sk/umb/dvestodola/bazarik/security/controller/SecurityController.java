@@ -19,6 +19,7 @@ public class SecurityController {
 
 	@PostMapping("/api/security/hash")
 	public String createHashFromAdvert(@Valid @RequestBody AdvertRequestDto advertRequest) {
+		System.out.println("Create hash for advert create was called");
 		return this.securityService.createHashFromAdvert(advertRequest);
 	}
 
