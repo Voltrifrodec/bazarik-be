@@ -3,6 +3,7 @@ docs/images
 
 # Environment variables
 *.env
+application.yml
 
 HELP.md
 target/
