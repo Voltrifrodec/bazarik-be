@@ -12,23 +12,21 @@ public class EmailService {
 
 	private String fromEmail = "bazarik.noreply@gmail.com";
 
-	public void sendEmail(String toEmailAdress, String subject, String body) {
+	public void sendCodeUpdate(String toEmail, String code) {
 		SimpleMailMessage mail = new SimpleMailMessage();
 
+		String body = "Pre úpravu inzerátu zadajte overovací kód: \n\n" + code;
+		String subject = "Bazarik - Overovací kód";
+		
 		mail.setFrom(this.fromEmail);
-		mail.setTo(toEmailAdress);
+		mail.setTo(toEmail);
 		mail.setText(body);
 		mail.setSubject(subject);
 
-		// TODO: Zmeniť na Message message = new MimeMessage(session);
-		// https://www.tutorialspoint.com/javamail_api/javamail_api_send_html_in_email.htm
-
 		mailSender.send(mail);
-
-		System.out.println("E-mail was sent successfully to " + toEmailAdress);
 	}
 
-	public void sendCode(String toEmail, String code) {
+	public void sendCodeCreate(String toEmail, String code) {
 		SimpleMailMessage mail = new SimpleMailMessage();
 
 		String body = "Pre pridanie inzerátu zadajte overovací kód: \n\n" + code;
