@@ -1,13 +1,18 @@
 package sk.umb.dvestodola.bazarik.security.service;
 
+import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
+import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 import sk.umb.dvestodola.bazarik.email.service.EmailService;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
 @Service
 public class SecurityService {
@@ -18,6 +23,12 @@ public class SecurityService {
 	@Autowired
 	private EmailService emailService;
 
+	private AdvertRepository advertRepository;
+
+	public SecurityService(AdvertRepository advertRepository) {
+		this.advertRepository = advertRepository;
+	}
+
 	@Transactional
 	public String createHashFromAdvert(AdvertRequestDto advertRequest) {
 		Random random = new Random();
@@ -27,9 +38,28 @@ public class SecurityService {
 		
 		String hash = this.hashFunction(code);
 		
-		this.emailService.sendCode(email, code);
-		// System.out.println("Posielam na mail: " + email + ", code: " + code);
+		this.emailService.sendCodeCreate(email, code);
 		
+		return hash;
+	}
+
+	@Transactional
+	public String createHashForUpdate(UUID advertId) {
+		Random random = new Random();
+		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
+		String email = "";
+
+		Optional<AdvertEntity> advertEntity = this.advertRepository.findById(advertId);
+		if (advertEntity.isPresent()) {
+			email = advertEntity.get().getContact().getEmail();
+		} else {
+			throw new BazarikApplicationException("Advert could not be found by id.");
+		}
+
+		String hash = this.hashFunction(code);
+
+		this.emailService.sendCodeUpdate(email, code);
+
 		return hash;
 	}
 
