@@ -14,7 +14,7 @@ public class AdvertRepositoryImplementation {
 	// @Override
 	// https://www.baeldung.com/jpa-limit-query-results
 	public Iterable<AdvertEntity> findRecent(Long count) {
-		return entityManager.createQuery("SELECT a FROM advert a ORDER BY a.dateAdded", 
+		return entityManager.createQuery("SELECT a FROM advert a ORDER BY a.dateAdded DESC",
 			AdvertEntity.class).setMaxResults(count.intValue()).getResultList();
 	}
 
