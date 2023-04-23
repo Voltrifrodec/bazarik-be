@@ -23,7 +23,7 @@ public class AdvertEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "id_advert", unique = true)
-	private UUID id;
+	private String id;
 
 	@Column(name = "name")
 	private String name;
@@ -83,11 +83,11 @@ public class AdvertEntity {
 		this.dateModified = dateModified;
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

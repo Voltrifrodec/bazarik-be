@@ -84,7 +84,7 @@ public class AdvertService {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
-	public AdvertDetailDto getAdvertById(UUID advertId) {
+	public AdvertDetailDto getAdvertById(String advertId) {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 
@@ -115,7 +115,7 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
+	public String createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
 
 		if (Objects.isNull(advertEntity)) {
@@ -126,7 +126,7 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void updateAdvert(UUID advertId, AdvertRequestDto advertRequest) {
+	public void updateAdvert(String advertId, AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = getAdvertEntityById(advertId);
 
 		advertEntity.setDateModified(new Date());
@@ -246,12 +246,12 @@ public class AdvertService {
 	}
 
 	@Transactional
-	public void deleteAdvert(UUID advertId) {
+	public void deleteAdvert(String advertId) {
 		advertRepository.deleteById(advertId);
 	}
 
 
-	private AdvertEntity getAdvertEntityById(UUID advertId) {
+	private AdvertEntity getAdvertEntityById(String advertId) {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
         if (advertEntity.isEmpty()) {

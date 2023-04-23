@@ -12,7 +12,7 @@ import sk.umb.dvestodola.bazarik.subcategory.service.SubcategoryDetailDto;
 import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 
 public class AdvertDetailDto {
-	private UUID id;
+	private String id;
 	private String name;
 	private String description;
 	private String keywords;
@@ -44,10 +44,10 @@ public class AdvertDetailDto {
 	public void setImage(ImageDetailDto image) {
 		this.image = image;
 	}
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName() {

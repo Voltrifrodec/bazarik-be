@@ -47,7 +47,7 @@ public class SecurityService {
 
 	@Transactional
 	public String createHashForUpdate(SecurityUpdateDto securityUpdateDto) {
-		UUID advertId = UUID.fromString(securityUpdateDto.getAdvertId());
+		String advertId = securityUpdateDto.getAdvertId();
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String checkEmail = securityUpdateDto.getEmail();
