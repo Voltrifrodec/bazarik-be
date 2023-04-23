@@ -12,10 +12,10 @@ public class EmailService {
 
 	private String fromEmail = "bazarik.noreply@gmail.com";
 
-	public void sendCodeUpdate(String toEmail, String code) {
+	public void sendEmail(String toEmail, String code, String message) {
 		SimpleMailMessage mail = new SimpleMailMessage();
 
-		String body = "Pre úpravu inzerátu zadajte overovací kód: \n\n" + code;
+		String body = message + "\n\n" + code;
 		String subject = "Bazarik - Overovací kód";
 		
 		mail.setFrom(this.fromEmail);
@@ -25,31 +25,4 @@ public class EmailService {
 
 		mailSender.send(mail);
 	}
-
-	public void sendCodeCreate(String toEmail, String code) {
-		SimpleMailMessage mail = new SimpleMailMessage();
-
-		String body = "Pre pridanie inzerátu zadajte overovací kód: \n\n" + code;
-		String subject = "Bazarik - Overovací kód";
-		
-		mail.setFrom(this.fromEmail);
-		mail.setTo(toEmail);
-		mail.setText(body);
-		mail.setSubject(subject);
-
-		mailSender.send(mail);
-	}
-
-	
-	/* @EventListener(ApplicationReadyEvent.class)
-	public void testSendEmail() {
-		Random r = new Random();
-
-		String toEmailAdress = "";
-		String subject = "Bazarik - Overovací kód";
-		String body = "Pre pridanie inzerátu zadajte overovací kód: \n\n" + r.nextInt(1000, 9999);
-
-		this.emailService.sendEmail(toEmailAdress, subject, body);
-	} */
-	
 }

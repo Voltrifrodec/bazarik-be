@@ -17,8 +17,8 @@ import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 @Service
 public class SecurityService {
 
-	private int MIN_VALUE = 100;
-	private int MAX_VALUE = 999;
+	private final int MIN_VALUE = 100;
+	private final int MAX_VALUE = 999;
 
 	@Autowired
 	private EmailService emailService;
@@ -35,10 +35,12 @@ public class SecurityService {
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 
 		String email = advertRequest.getContactEmail();
+
+		String message = "Pre overenie inzerátu zadajte overovací kód:";
 		
 		String hash = this.hashFunction(code);
 		
-		this.emailService.sendCodeCreate(email, code);
+		this.emailService.sendEmail(email, code, message);
 		
 		return hash;
 	}
@@ -50,6 +52,7 @@ public class SecurityService {
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String checkEmail = securityUpdateDto.getEmail();
 		String advertEmail = "";
+		String message = "Pre overenie inzerátu zadajte overovací kód:";
 
 		Optional<AdvertEntity> advertEntity = this.advertRepository.findById(advertId);
 		if (advertEntity.isPresent()) {
@@ -62,7 +65,7 @@ public class SecurityService {
 			throw new BazarikApplicationException("Advert could not be found by id.");
 		}
 
-		this.emailService.sendCodeUpdate(advertEmail, code);
+		this.emailService.sendEmail(advertEmail, code, message);
 
 		return this.hashFunction(code);
 	}
