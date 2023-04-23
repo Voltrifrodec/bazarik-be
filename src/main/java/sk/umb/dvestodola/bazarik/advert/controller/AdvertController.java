@@ -1,6 +1,7 @@
 package sk.umb.dvestodola.bazarik.advert.controller;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +30,12 @@ public class AdvertController {
 	public List<AdvertDetailDto> getAllAdverts() {
 		System.out.println("Get all adverts was called.");
 		return advertService.getAllAdverts();
+	}
+
+	@GetMapping("/api/adverts/recent/{count}")
+	public List<AdvertDetailDto> getRecentAdverts(@PathVariable(required = false) Long count) {
+		System.out.println("Get all recent adverts was called, " + count);
+		return advertService.getRecentAdverts((Objects.isNull(count)) ? 4L : count);
 	}
 
 	@GetMapping("/api/search/{query}")

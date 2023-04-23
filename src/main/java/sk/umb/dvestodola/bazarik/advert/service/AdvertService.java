@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
+import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepositoryImplementation;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 import sk.umb.dvestodola.bazarik.category.persistence.repository.CategoryRepository;
 import sk.umb.dvestodola.bazarik.category.service.CategoryDetailDto;
@@ -48,6 +49,7 @@ import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 public class AdvertService {
 
 	private final AdvertRepository advertRepository;
+	private final AdvertRepositoryImplementation advertRepositoryImplementation;
 	private final CategoryRepository categoryRepository;
 	private final SubcategoryRepository subcategoryRepository;
 	private final SubsubcategoryRepository subsubcategoryRepository;
@@ -58,6 +60,7 @@ public class AdvertService {
 
 	public AdvertService(
 		AdvertRepository advertRepository,
+		AdvertRepositoryImplementation advertRepositoryImplementation,
 		CategoryRepository categoryRepository,
 		SubcategoryRepository subcategoryRepository,
 		SubsubcategoryRepository subsubcategoryRepository,
@@ -67,6 +70,7 @@ public class AdvertService {
 		CurrencyRepository currencyRepository
 	) {
 		this.advertRepository = advertRepository;
+		this.advertRepositoryImplementation = advertRepositoryImplementation;
 		this.categoryRepository = categoryRepository;
 		this.subcategoryRepository = subcategoryRepository;
 		this.subsubcategoryRepository = subsubcategoryRepository;
@@ -82,6 +86,13 @@ public class AdvertService {
 
 	public AdvertDetailDto getAdvertById(UUID advertId) {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
+	}
+
+	
+	public List<AdvertDetailDto> getRecentAdverts(Long count) {
+		if (count < 1) throw new BazarikApplicationException("Count limit for recent adverts must be bigger than 0.");
+
+		return mapToAdvertDetailList(advertRepositoryImplementation.findRecent(count));
 	}
 
 	// @Transactional
