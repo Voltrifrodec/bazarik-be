@@ -91,16 +91,19 @@ public class BazarikApplication implements CommandLineRunner {
         categoryRepository.save(categoryEntity);
 
         // for(String subcategory : subcategories) {
-        //     SubcategoryEntity subcategoryEntity = new SubcategoryEntity();
-        //     // subcategoryEntity.setCategory(categoryEntity);
-        //     subcategoryEntity.setName(subcategory);
+        //    SubcategoryEntity subcategoryEntity = new SubcategoryEntity();
+        //    subcategoryEntity.setCategory(categoryEntity);
+        //    System.out.println("Inserting new subcategory into " + categoryName + ": " + subcategory);
+        //    subcategoryEntity.setName(subcategory);
             
-        //     // for(String subsubcategory : subsubcategories) {
-        //     //     SubsubcategoryEntity subsubcategoryEntity = new SubsubcategoryEntity();
-        //     //     subsubcategoryEntity.setCategory(subcategoryEntity);
-        //     //     subsubcategoryEntity.setName(subsubcategory);
-        //     //     subsubcategoryRepository.save(subsubcategoryEntity);
-        //     // }
+        //    if(subcategory == subcategories[0]) {
+        //        for(String subsubcategory : subsubcategories) {
+        //            SubsubcategoryEntity subsubcategoryEntity = new SubsubcategoryEntity();
+        //            subsubcategoryEntity.setCategory(subcategoryEntity);
+        //            subsubcategoryEntity.setName(subsubcategory);
+        //            subsubcategoryRepository.save(subsubcategoryEntity);
+        //        }
+        //    }
 
         //     subcategoryRepository.save(subcategoryEntity);
         // }
