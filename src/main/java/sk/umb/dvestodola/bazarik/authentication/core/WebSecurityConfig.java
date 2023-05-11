@@ -29,7 +29,8 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
 				.cors(withDefaults())
-				.authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
+				// .authorizeHttpRequests(authz)
+				.authorizeHttpRequests(authz -> authz.anyRequest().permitAll())
 				.exceptionHandling().authenticationEntryPoint(demoAuthenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(new DemoAuthenticationFilter(authenticationService),

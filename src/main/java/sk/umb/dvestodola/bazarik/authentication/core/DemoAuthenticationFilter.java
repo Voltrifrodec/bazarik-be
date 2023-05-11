@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -14,6 +15,7 @@ import sk.umb.dvestodola.bazarik.authentication.service.AuthenticationService;
 import sk.umb.dvestodola.bazarik.authentication.service.UserRolesDto;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,14 @@ public class DemoAuthenticationFilter extends OncePerRequestFilter {
 		String authorizationHeader = request.getHeader("Authorization");
 
 		if (!StringUtils.hasLength(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
-			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+			SimpleGrantedAuthority role = new SimpleGrantedAuthority("ROLE_USER");
+			List<SimpleGrantedAuthority> roles = new ArrayList<>();
+			roles.add(role);
+			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("user", null, roles);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			filterChain.doFilter(request, response);
+			// throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+			return;
 		}
 
 		String token = tokenExtract(authorizationHeader);
