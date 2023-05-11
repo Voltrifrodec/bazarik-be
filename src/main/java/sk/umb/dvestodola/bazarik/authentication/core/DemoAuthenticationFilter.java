@@ -18,40 +18,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DemoAuthenticationFilter extends OncePerRequestFilter {
-    private final AuthenticationService authenticationService;
+	private final AuthenticationService authenticationService;
 
-    public DemoAuthenticationFilter(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
+	public DemoAuthenticationFilter(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+	@Override
+	protected void doFilterInternal(HttpServletRequest request,
+			HttpServletResponse response,
+			FilterChain filterChain) throws ServletException, IOException {
+		String authorizationHeader = request.getHeader("Authorization");
 
-        if ( ! StringUtils.hasLength(authorizationHeader) || ! authorizationHeader.startsWith("Bearer ")) {
-            throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
-        }
+		if (!StringUtils.hasLength(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
+			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+		}
 
-        String token = tokenExtract(authorizationHeader);
-        UserRolesDto userRoles = authenticationService.authenticate(token);
+		String token = tokenExtract(authorizationHeader);
+		UserRolesDto userRoles = authenticationService.authenticate(token);
 
-        List<SimpleGrantedAuthority> roles = userRoles.getRoles()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role))
-                .collect(Collectors.toList());
+		List<SimpleGrantedAuthority> roles = userRoles.getRoles()
+				.stream()
+				.map(role -> new SimpleGrantedAuthority(role))
+				.collect(Collectors.toList());
 
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(userRoles.getUserName(),null, roles);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+				userRoles.getUserName(), null, roles);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 
-    private static String tokenExtract(String bearerToken) {
-        return bearerToken.substring("Bearer".length()).trim();
-    }
+	private static String tokenExtract(String bearerToken) {
+		return bearerToken.substring("Bearer".length()).trim();
+	}
 
 }

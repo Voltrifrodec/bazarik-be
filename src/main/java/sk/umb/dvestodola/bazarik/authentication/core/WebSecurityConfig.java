@@ -16,34 +16,35 @@ import sk.umb.dvestodola.bazarik.authentication.service.AuthenticationService;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    private final DemoAuthenticationEntryPoint demoAuthenticationEntryPoint;
-    private final AuthenticationService authenticationService;
+	private final DemoAuthenticationEntryPoint demoAuthenticationEntryPoint;
+	private final AuthenticationService authenticationService;
 
-    public WebSecurityConfig(DemoAuthenticationEntryPoint demoAuthenticationEntryPoint,
-                             AuthenticationService authenticationService) {
-        this.demoAuthenticationEntryPoint = demoAuthenticationEntryPoint;
-        this.authenticationService = authenticationService;
-    }
+	public WebSecurityConfig(DemoAuthenticationEntryPoint demoAuthenticationEntryPoint,
+			AuthenticationService authenticationService) {
+		this.demoAuthenticationEntryPoint = demoAuthenticationEntryPoint;
+		this.authenticationService = authenticationService;
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
-                .cors(withDefaults())
-                .authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
-                .exceptionHandling().authenticationEntryPoint(demoAuthenticationEntryPoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterBefore(new DemoAuthenticationFilter(authenticationService), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(withDefaults())
-                .build();
-    }
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http.csrf().disable()
+				.cors(withDefaults())
+				.authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
+				.exceptionHandling().authenticationEntryPoint(demoAuthenticationEntryPoint).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(new DemoAuthenticationFilter(authenticationService),
+						UsernamePasswordAuthenticationFilter.class)
+				.httpBasic(withDefaults())
+				.build();
+	}
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(HttpMethod.POST, "/api/token")
-                .requestMatchers("/swagger-ui/**",
-                                 "/v3/api-docs/swagger-config",
-                                 "/v3/api-docs",
-                                 "/swagger-resources/**");
-    }
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring()
+				.requestMatchers(HttpMethod.POST, "/api/token")
+				.requestMatchers("/swagger-ui/**",
+						"/v3/api-docs/swagger-config",
+						"/v3/api-docs",
+						"/swagger-resources/**");
+	}
 }

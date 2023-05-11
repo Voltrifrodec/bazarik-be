@@ -23,9 +23,8 @@ public class AuthenticationController {
 
 	@PostMapping("/api/token")
 	public void login(
-		@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication,
-		HttpServletResponse response
-	) {
+			@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication,
+			HttpServletResponse response) {
 		if (authentication.isEmpty()) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 			return;
