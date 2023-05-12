@@ -48,6 +48,8 @@ import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 @Service
 public class AdvertService {
 
+	private final int MINIMUM_QUERY_LENGTH = 3;
+
 	private final AdvertRepository advertRepository;
 	private final AdvertRepositoryImplementation advertRepositoryImplementation;
 	private final CategoryRepository categoryRepository;
@@ -98,6 +100,10 @@ public class AdvertService {
 	// @Transactional
 	public List<AdvertDetailDto> getAllAdvertsByQuery(String query) {
 		query = query.toLowerCase();
+
+		if (query.trim().length() < MINIMUM_QUERY_LENGTH) {
+			throw new BazarikApplicationException("Query must have more than 3 (three) characters.");
+		}
 		
 		return mapToAdvertDetailList(advertRepository.findAllAdvertsByQuery(query));
 	}
