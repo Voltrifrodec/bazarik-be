@@ -3,6 +3,7 @@ package sk.umb.dvestodola.bazarik.contact.controller;
 import java.util.List;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -39,12 +40,14 @@ public class ContactController {
         return contactService.createContact(contactRequest);
     }
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/api/contacts/{contactId}")
     public void updateContact(@PathVariable Long contactId, @Valid @RequestBody ContactRequestDto contactRequest) {
         System.out.println("Update contact was called, " + contactId);
         contactService.updateContact(contactId, contactRequest);
     }
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/api/contacts/{contactId}")
     public void deleteContact(@PathVariable Long contactId) {
         System.out.println("Delete contact was called, " + contactId);
