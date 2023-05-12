@@ -49,13 +49,15 @@ public class CategoryController {
 		System.out.println("Get subcategories by categoryId was called, " + categoryId);
 		return subcategoryService.getSubcategoriesByCategoryId(categoryId);
 	}
-
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/categories")
 	public Long createCategory(@Valid @RequestBody CategoryRequestDto category) {
 		System.out.println("Create category was called.");
 		return categoryService.createCategory(category);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/categories/{categoryId}")
 	public void updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryRequestDto category) {
 		System.out.println("Update category was called, " + categoryId);
