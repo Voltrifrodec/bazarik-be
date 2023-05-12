@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.country.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,18 +44,21 @@ public class CountryController {
 		return countryService.getCountryById(countryId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/countries")
 	public Long createCountry(@Valid @RequestBody CountryRequestDto countryRequest) {
 		System.out.println("Create country was called.");
 		return countryService.createCountry(countryRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/countries/{countryId}")
 	public void updateCountry(@PathVariable Long countryId, @Valid @RequestBody CountryRequestDto countryRequest) {
 		System.out.println("Update country was called, " + countryId);
 		countryService.updateCountry(countryId, countryRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/countries/{countryId}")
 	public void deleteCountry(@PathVariable Long countryId) {
 		System.out.println("Delete country was called, " + countryId);
