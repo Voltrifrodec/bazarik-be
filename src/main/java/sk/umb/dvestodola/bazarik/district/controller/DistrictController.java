@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.district.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,18 +37,21 @@ public class DistrictController {
 		return districtService.getDistrictById(districtId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/districts")
 	public Long createDistrict(@Valid @RequestBody DistrictRequestDto districtRequest) {
 		System.out.println("Create district was called.");
 		return districtService.createDistrict(districtRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/districts/{districtId}")
 	public void updateDistrict(@PathVariable Long districtId, @Valid @RequestBody DistrictRequestDto districtRequest) {
 		System.out.println("Update district was called, " + districtId);
 		districtService.updateDistrict(districtId, districtRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/districts/{districtId}")
 	public void deleteDistrict(@PathVariable Long districtId) {
 		System.out.println("Delete district was called, " + districtId);

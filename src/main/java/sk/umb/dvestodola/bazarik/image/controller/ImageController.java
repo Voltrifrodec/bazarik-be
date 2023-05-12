@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/api/images")
 	public List<ImageDetailDto> getAllImages() {
         System.out.println("Get all images was called.");
@@ -51,6 +53,8 @@ public class ImageController {
 		}
 	}
 
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/api/images/{imageId}")
     public void updateImage(@PathVariable Long imageId, @Valid @RequestBody ImageRequestDto imageRequest) {
         System.out.println("Update image was called, " + imageId);
@@ -58,12 +62,14 @@ public class ImageController {
         // imageService.updateImage(imageId, imageRequest);
     }
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/api/images/{imageId}")
     public void deleteImage(@PathVariable Long imageId) {
         System.out.println("Delete image was called, " + imageId);
         imageService.deleteImage(imageId);
     }
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/images")
     public void deleteAllImages() {
         System.out.println("Delete all images was called.");

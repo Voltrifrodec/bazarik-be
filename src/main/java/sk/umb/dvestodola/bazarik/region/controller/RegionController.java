@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.region.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,18 +44,21 @@ public class RegionController {
 		return regionService.getRegionById(regionId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/regions")
 	public Long createRegion(@Valid @RequestBody RegionRequestDto regionRequest) {
 		System.out.println("Create region was called.");
 		return regionService.createRegion(regionRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/regions/{regionId}")
 	public void updateRegion(@PathVariable Long regionId, @Valid @RequestBody RegionRequestDto regionRequest) {
 		System.out.println("Update region was called, " + regionId);
 		regionService.updateRegion(regionId, regionRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/regions/{regionId}")
 	public void deleteRegion(@PathVariable Long regionId) {
 		System.out.println("Delete region was called, " + regionId);

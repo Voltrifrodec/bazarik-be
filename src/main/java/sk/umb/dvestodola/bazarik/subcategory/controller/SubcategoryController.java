@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.subcategory.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class SubcategoryController {
 		this.subsubcategoryService = subsubcategoryService;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/api/subcategories")
 	public List<SubcategoryDetailDto> getAllSubcategories() {
 		System.out.println("Get all subcategories was called.");
@@ -46,18 +48,21 @@ public class SubcategoryController {
 		return subsubcategoryService.getAllSubsubcategoriesBySubcategoryId(subcategoryId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/subcategories")
 	public Long createSubcategory(@Valid @RequestBody SubcategoryRequestDto subcategoryRequest) {
 		System.out.println("Create subcategory was called.");
 		return subcategoryService.createSubcategory(subcategoryRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/subcategories/{subcategoryId}")
 	public void updateSubcategory(@PathVariable Long subcategoryId, @Valid @RequestBody SubcategoryRequestDto subcategoryRequest) {
 		System.out.println("Update subcategory was called, " + subcategoryId);
 		subcategoryService.updateSubcategory(subcategoryId, subcategoryRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/subcategories/{subcategoryId}")
 	public void deleteSubcategory(@PathVariable Long subcategoryId) {
 		System.out.println("Delete subcategory was called, " + subcategoryId);

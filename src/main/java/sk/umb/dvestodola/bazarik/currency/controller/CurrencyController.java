@@ -2,6 +2,7 @@ package sk.umb.dvestodola.bazarik.currency.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,18 +37,21 @@ public class CurrencyController {
 		return currencyService.getCurrencyById(currencyId);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/api/currencies")
 	public Long createCurrency(@Valid @RequestBody CurrencyRequestDto currencyRequest) {
 		System.out.println("Create currency was called.");
 		return currencyService.createCurrency(currencyRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/api/currencies/{currencyId}")
 	public void updateCurrency(@PathVariable Long currencyId, @Valid @RequestBody CurrencyRequestDto currencyRequest) {
 		System.out.println("Update currency was called, " + currencyId);
 		currencyService.updateCurrency(currencyId, currencyRequest);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/api/currencies/{currencyId}")
 	public void deleteCurrency(@PathVariable Long currencyId) {
 		System.out.println("Delete currency was called, " + currencyId);
