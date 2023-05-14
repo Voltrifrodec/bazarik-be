@@ -23,8 +23,9 @@ public class AuthenticationController {
 
 	@PostMapping("/api/token")
 	public void login(
-			@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication,
-			HttpServletResponse response) {
+		@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication,
+		HttpServletResponse response
+	) {
 		if (authentication.isEmpty()) {
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 			return;
@@ -34,8 +35,9 @@ public class AuthenticationController {
 
 		String token = authenticationService.authenticate(credentials[0], credentials[1]);
 
-		response.setStatus(HttpStatus.OK.value());
+		response.addHeader("Access-Control-Expose-Headers", AUTHORIZATION_HEADER);
 		response.addHeader(AUTHORIZATION_HEADER, "Bearer " + token);
+		response.setStatus(HttpStatus.OK.value());
 	}
 
 	private static String[] credentialsDecode(String authorization) {

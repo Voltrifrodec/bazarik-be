@@ -30,7 +30,7 @@ public class DemoAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response,
 			FilterChain filterChain) throws ServletException, IOException {
-		String authorizationHeader = request.getHeader("Authorization");
+		String authorizationHeader = request.getHeader("authorization");
 
 		if (!StringUtils.hasLength(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
 			SimpleGrantedAuthority role = new SimpleGrantedAuthority("ROLE_USER");

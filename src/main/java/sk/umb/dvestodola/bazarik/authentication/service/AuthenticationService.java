@@ -39,8 +39,7 @@ public class AuthenticationService {
 			throw new AuthenticationCredentialsNotFoundException("Username and/or password do not match!");
 		}
 
-		if (!passwordEncoder.matches(password,
-				optionalUser.get().getPasswordHash())) {
+		if (!passwordEncoder.matches(password, optionalUser.get().getPasswordHash())) {
 			throw new AuthenticationCredentialsNotFoundException("Username and/or password do not match!");
 		}
 
