@@ -29,8 +29,8 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
 				.cors(withDefaults())
-				.authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
-				// .authorizeHttpRequests(authz -> authz.anyRequest().permitAll())
+				// .authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
+				.authorizeHttpRequests(authz -> authz.anyRequest().permitAll())
 				.exceptionHandling().authenticationEntryPoint(demoAuthenticationEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.addFilterBefore(new DemoAuthenticationFilter(authenticationService),
@@ -42,10 +42,12 @@ public class WebSecurityConfig {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring()
-				.requestMatchers(HttpMethod.POST, "/api/token")
-				.requestMatchers("/swagger-ui/**",
-						"/v3/api-docs/swagger-config",
-						"/v3/api-docs",
-						"/swagger-resources/**");
+			.requestMatchers(HttpMethod.POST, "/api/token")
+			.requestMatchers(
+				"/swagger-ui/**",
+				"/v3/api-docs/swagger-config",
+				"/v3/api-docs",
+				"/swagger-resources/**"
+			);
 	}
 }
