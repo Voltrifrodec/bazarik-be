@@ -103,6 +103,10 @@ public class AdvertService {
 	}
 
 	public Long getNumberOfAdvertsInCategoryByCategoryId(Long categoryId) {
+		if (! categoryRepository.findById(categoryId).isPresent()) {
+			throw new BazarikApplicationException("Category must have a valid id.");
+		}
+		
 		return advertRepository.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
 	}
 
