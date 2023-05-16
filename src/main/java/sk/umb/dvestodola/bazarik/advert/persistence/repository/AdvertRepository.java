@@ -19,4 +19,7 @@ public interface AdvertRepository extends CrudRepository<AdvertEntity, UUID> {
 	// HOW TO: ImageRepository.java
 	@Query(value = "SELECT a FROM advert a WHERE LOWER(a.name) LIKE %:query% OR LOWER(a.description) LIKE %:query%")
 	Iterable<AdvertEntity> findAllAdvertsByQuery(@Param("query") String query);
+
+	@Query(value = "SELECT COUNT(a.id_advert) FROM advert a WHERE a.category.id_category = :categoryId")
+	Long getNumberOfAdvertsInCategoryByCategoryId(@Param("categoryId") Long categoryId);
 }
