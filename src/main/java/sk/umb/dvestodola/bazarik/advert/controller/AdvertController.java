@@ -44,6 +44,12 @@ public class AdvertController {
 		return advertService.getAllAdvertsByQuery(query);
 	}
 
+	@GetMapping("/api/categories/{categoryId}/adverts/count")
+	public Long getNumberOfAdvertsInCategoryByCategoryId(@PathVariable Long categoryId) {
+		System.out.println("Get number of adverts in category by categoryId was called, " + categoryId);
+		return advertService.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
+	}
+
 	@GetMapping("/api/categories/{categoryId}/adverts")
 	public List<AdvertDetailDto> getAllAdvertsByCategoryId(@PathVariable Long categoryId) {
 		return advertService.getAllAdvertsByCategoryId(categoryId);
