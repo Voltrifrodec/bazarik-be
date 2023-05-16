@@ -108,6 +108,10 @@ public class AdvertService {
 		return mapToAdvertDetailList(advertRepository.findAllAdvertsByQuery(query));
 	}
 
+	public Long getNumberOfAdvertsInCategoryByCategoryId(Long categoryId) {
+		return advertRepository.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
+	}
+
 	public List<AdvertDetailDto> getAllAdvertsByCategoryId(Long categoryId) {
 		return mapToAdvertDetailList(advertRepository.findAllAdvertsByCategoryId(categoryId));
 	}
