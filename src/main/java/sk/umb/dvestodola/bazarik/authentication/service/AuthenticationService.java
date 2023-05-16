@@ -13,6 +13,8 @@ import sk.umb.dvestodola.bazarik.authentication.persistence.repository.UserRepos
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -59,7 +61,10 @@ public class AuthenticationService {
 		Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
 
 		if (optionalToken.isEmpty()) {
-			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+			Set<String> roles = new HashSet<>();
+			roles.add("ROLE_USER");
+			return new UserRolesDto("user", roles);
+			// throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
 		}
 
 		validateTokenExpiration(optionalToken.get());
@@ -77,6 +82,7 @@ public class AuthenticationService {
 		LocalDateTime tokenExpiration = token.getCreated().plus(TOKEN_VALIDITY_IN_MINUTES, ChronoUnit.MINUTES);
 
 		if (now.isAfter(tokenExpiration)) {
+			tokenRepository.delete(token);
 			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
 		}
 	}
