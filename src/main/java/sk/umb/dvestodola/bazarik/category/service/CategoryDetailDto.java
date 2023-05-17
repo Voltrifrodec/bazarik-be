@@ -4,8 +4,14 @@ public class CategoryDetailDto {
 	private Long id;
 	private String name;
 	private String emoji;
-
-
+	private Long numberOfAdverts;
+	
+	public Long getNumberOfAdverts() {
+		return numberOfAdverts;
+	}
+	public void setNumberOfAdverts(Long numberOfAdverts) {
+		this.numberOfAdverts = numberOfAdverts;
+	}
 	public Long getId() {
 		return id;
 	}

@@ -40,6 +40,18 @@ public class AuthenticationController {
 		response.setStatus(HttpStatus.OK.value());
 	}
 
+	@PostMapping("/api/token/check")
+	public boolean checkToken(
+		@RequestHeader(value = AUTHORIZATION_HEADER, required = true) Optional<String> auth
+	) {
+		if (auth.isPresent()) {
+			if (this.authenticationService.validateAdminToken(auth.get())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static String[] credentialsDecode(String authorization) {
 		String base64Credentials = authorization.substring("Basic".length()).trim();
 		byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);

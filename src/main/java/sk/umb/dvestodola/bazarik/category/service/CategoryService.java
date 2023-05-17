@@ -74,14 +74,14 @@ public class CategoryService {
 	}
 
 	private List<CategoryDetailDto> mapToCategoryDetailList(Iterable<CategoryEntity> categoryEntities) {
-		List<CategoryDetailDto> categoryEntityList = new ArrayList<>();
+		List<CategoryDetailDto> categoryDetailList = new ArrayList<>();
 
 		categoryEntities.forEach(categoryEntity -> {
-			CategoryDetailDto categoryDetailDto = mapToCategoryDetail(categoryEntity);
-			categoryEntityList.add(categoryDetailDto);
+			CategoryDetailDto categoryDetail = mapToCategoryDetail(categoryEntity);
+			categoryDetailList.add(categoryDetail);
 		});
 
-		return categoryEntityList;
+		return categoryDetailList;
 	}
 
 	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {
@@ -90,6 +90,7 @@ public class CategoryService {
 		categoryDetail.setId(categoryEntity.getId());
 		categoryDetail.setName(categoryEntity.getName());
 		categoryDetail.setEmoji(categoryEntity.getEmoji());
+		categoryDetail.setNumberOfAdverts(categoryEntity.getNumberOfAdverts());
 
 		return categoryDetail;
 	}

@@ -13,6 +13,7 @@ import sk.umb.dvestodola.bazarik.authentication.persistence.repository.UserRepos
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthenticationService {
-	private static final int TOKEN_VALIDITY_IN_MINUTES = 15;
+	private static final int TOKEN_VALIDITY_IN_MINUTES = 120;
 	private final UserRepository userRepository;
 	private final TokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -59,7 +60,10 @@ public class AuthenticationService {
 		Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
 
 		if (optionalToken.isEmpty()) {
-			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+			Set<String> roles = new HashSet<>();
+			roles.add("ROLE_USER");
+			return new UserRolesDto("user", roles);
+			// throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
 		}
 
 		validateTokenExpiration(optionalToken.get());
@@ -72,11 +76,18 @@ public class AuthenticationService {
 		return new UserRolesDto(optionalToken.get().getUser().getUsername(), roleNames);
 	}
 
+	@Transactional
+	public boolean validateAdminToken(String token) {
+		String extractedToken = token.split("Bearer")[1].strip();
+		return this.tokenRepository.findByToken(extractedToken).isPresent();
+	}
+
 	private void validateTokenExpiration(TokenEntity token) {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime tokenExpiration = token.getCreated().plus(TOKEN_VALIDITY_IN_MINUTES, ChronoUnit.MINUTES);
 
 		if (now.isAfter(tokenExpiration)) {
+			tokenRepository.delete(token);
 			throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
 		}
 	}
