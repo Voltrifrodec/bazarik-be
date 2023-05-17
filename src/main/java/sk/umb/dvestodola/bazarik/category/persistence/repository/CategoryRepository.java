@@ -19,7 +19,7 @@ public interface CategoryRepository extends CrudRepository<CategoryEntity, Long>
 
 		SELECT c.id_category, c.name, COUNT(a.id_advert) AS number_of_adverts
 		FROM advert a
-		LEFT JOIN category c ON a.id_category  = c.id_category
+		RIGHT JOIN category c ON a.id_category  = c.id_category
 		GROUP BY c.id_category
 	""", nativeQuery = true)
 	Iterable<CategoryEntity> findAll();
