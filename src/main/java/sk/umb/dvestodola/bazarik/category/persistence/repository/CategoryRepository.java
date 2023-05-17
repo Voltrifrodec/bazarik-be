@@ -10,7 +10,7 @@ import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
 public interface CategoryRepository extends CrudRepository<CategoryEntity, Long> {
 	@Override
 	@Query(value = """
-		SELECT c.id_category, c.name, COUNT(a.id_advert) AS number_of_adverts
+		SELECT c.id_category, c.name, c.emoji, COUNT(a.id_advert) AS number_of_adverts
 		FROM category c
 		LEFT JOIN advert a ON a.id_category  = c.id_category
 		GROUP BY c.id_category;
