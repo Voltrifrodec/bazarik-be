@@ -13,14 +13,7 @@ public interface CategoryRepository extends CrudRepository<CategoryEntity, Long>
 		SELECT c.id_category, c.name, c.emoji, COUNT(a.id_advert) AS number_of_adverts
 		FROM category c
 		LEFT JOIN advert a ON a.id_category  = c.id_category
-		GROUP BY c.id_category
-
-		UNION
-
-		SELECT c.id_category, c.name, c.emoji, COUNT(a.id_advert) AS number_of_adverts
-		FROM advert a
-		RIGHT JOIN category c ON a.id_category  = c.id_category
-		GROUP BY c.id_category
+		GROUP BY c.id_category;
 	""", nativeQuery = true)
 	Iterable<CategoryEntity> findAll();
 }
