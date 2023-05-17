@@ -15,6 +15,9 @@ public class CategoryEntity {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "emoji")
+	private String emoji;
+
 
 	public Long getId() {
 		return this.id;
@@ -30,5 +33,13 @@ public class CategoryEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getEmoji() {
+		return this.emoji;
+	}
+
+	public void setEmoji(String emoji) {
+		this.emoji = emoji;
 	}
 }

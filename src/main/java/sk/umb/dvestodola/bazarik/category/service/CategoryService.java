@@ -68,6 +68,7 @@ public class CategoryService {
 		CategoryEntity categoryEntity = new CategoryEntity();
 
 		categoryEntity.setName(categoryRequest.getName());
+		categoryEntity.setEmoji(categoryRequest.getEmoji());
 
 		return categoryEntity;
 	}
@@ -88,6 +89,7 @@ public class CategoryService {
 
 		categoryDetail.setId(categoryEntity.getId());
 		categoryDetail.setName(categoryEntity.getName());
+		categoryDetail.setEmoji(categoryEntity.getEmoji());
 
 		return categoryDetail;
 	}
