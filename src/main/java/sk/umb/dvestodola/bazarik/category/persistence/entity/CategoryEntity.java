@@ -15,6 +15,17 @@ public class CategoryEntity {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "number_of_adverts")
+	private Long numberOfAdverts;
+
+
+	public Long getNumberOfAdverts() {
+		return numberOfAdverts;
+	}
+
+	public void setNumberOfAdverts(Long numberOfAdverts) {
+		this.numberOfAdverts = numberOfAdverts;
+	}
 
 	public Long getId() {
 		return this.id;
