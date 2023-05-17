@@ -88,6 +88,7 @@ public class CategoryService {
 
 		categoryDetail.setId(categoryEntity.getId());
 		categoryDetail.setName(categoryEntity.getName());
+		categoryDetail.setNumberOfAdverts(categoryEntity.getNumberOfAdverts());
 
 		return categoryDetail;
 	}
