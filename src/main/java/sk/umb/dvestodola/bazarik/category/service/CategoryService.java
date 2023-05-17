@@ -73,14 +73,14 @@ public class CategoryService {
 	}
 
 	private List<CategoryDetailDto> mapToCategoryDetailList(Iterable<CategoryEntity> categoryEntities) {
-		List<CategoryDetailDto> categoryEntityList = new ArrayList<>();
+		List<CategoryDetailDto> categoryDetailList = new ArrayList<>();
 
 		categoryEntities.forEach(categoryEntity -> {
-			CategoryDetailDto categoryDetailDto = mapToCategoryDetail(categoryEntity);
-			categoryEntityList.add(categoryDetailDto);
+			CategoryDetailDto categoryDetail = mapToCategoryDetail(categoryEntity);
+			categoryDetailList.add(categoryDetail);
 		});
 
-		return categoryEntityList;
+		return categoryDetailList;
 	}
 
 	private CategoryDetailDto mapToCategoryDetail(CategoryEntity categoryEntity) {
