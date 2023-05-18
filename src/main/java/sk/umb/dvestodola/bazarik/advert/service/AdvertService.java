@@ -131,12 +131,16 @@ public class AdvertService {
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
-	public List<AdvertDetailDto> getAllAdvertsBySubcategoryId(Long subcategoryId) {
-		return mapToAdvertDetailList(advertRepository.findAllAdvertsBySubcategoryId(subcategoryId));
+	public Page<AdvertDetailDto> getPaginatedAdvertsBySubcategoryId(Long subcategoryId, Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllBySubcategoryId(subcategoryId, pageable);
+
+		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
-	public List<AdvertDetailDto> getAllAdvertsBySubsubcategoryId(Long subsubcategoryId) {
-		return mapToAdvertDetailList(advertRepository.findAllAdvertsBySubsubcategoryId(subsubcategoryId));
+	public Page<AdvertDetailDto> getPaginatedAdvertsBySubsubcategoryId(Long subsubcategoryId, Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllBySubsubcategoryId(subsubcategoryId, pageable);
+
+		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
 	@Transactional
