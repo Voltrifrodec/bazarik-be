@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class SecurityService {
 	private final int MIN_VALUE = 100;
 	private final int MAX_VALUE = 999;
 
+	// Áno viem, nie je to bezpečné
+	private final String SALT = "Ab/N#w5|~+bm>+Cj";
+
 	@Autowired
 	private EmailService emailService;
 
@@ -30,23 +34,26 @@ public class SecurityService {
 	}
 
 	@Transactional
-	public String createHashFromAdvert(AdvertRequestDto advertRequest) {
+	public SecurityDetailDto createHashFromAdvert(AdvertRequestDto advertRequest) {
+		SecurityDetailDto securityDetail = new SecurityDetailDto();
+
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
-
 		String email = advertRequest.getContactEmail();
-
 		String message = "Pre overenie inzerátu zadajte overovací kód:";
-		
 		String hash = this.hashFunction(code);
 		
 		this.emailService.sendEmail(email, code, message);
 		
-		return hash;
+		securityDetail.setHash(hash);
+
+		return securityDetail;
 	}
 
 	@Transactional
-	public String createHashForUpdate(SecurityUpdateDto securityUpdateDto) {
+	public SecurityDetailDto createHashForUpdate(SecurityUpdateDto securityUpdateDto) {
+		SecurityDetailDto securityDetail = new SecurityDetailDto();
+
 		UUID advertId = UUID.fromString(securityUpdateDto.getAdvertId());
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
@@ -67,26 +74,22 @@ public class SecurityService {
 
 		this.emailService.sendEmail(advertEmail, code, message);
 
-		return this.hashFunction(code);
+		securityDetail.setHash(this.hashFunction(code));
+
+		return securityDetail;
 	}
 
 	@Transactional
 	public Boolean checkHash(SecurityRequestDto securityRequest) {
 		String code = securityRequest.getCode();
 		String hash = securityRequest.getHash();
+		System.out.println(code + " " + hash);
 		return hash.equals(this.hashFunction(code));
 	}
 
-	private String hashFunction(String s) {
-		int hash = s.charAt(0);
-		int i = 1;
-
-		while (i < s.length()) {
-			hash = hash*31 + s.charAt(i);
-			i++;
-		}
-
-		return String.valueOf(hash);
+	// https://www.baeldung.com/sha-256-hashing-java
+	public String hashFunction(String stringToHash) {
+		return new DigestUtils("SHA3-256").digestAsHex(SALT + stringToHash);
 	}
 	
 }
