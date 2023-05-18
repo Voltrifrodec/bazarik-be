@@ -2,10 +2,12 @@ package sk.umb.dvestodola.bazarik.advert.controller;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,27 +36,23 @@ public class AdvertController {
 		this.advertService = advertService;
 	}
 
-	/* @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping("/api/adverts")
-	public List<AdvertDetailDto> getAllAdverts() {
-		System.out.println("Get all adverts was called.");
-		return advertService.getAllAdverts();
-	} */
-
 	// https://www.baeldung.com/spring-data-jpa-pagination-sorting
 	@GetMapping("/api/adverts")
 	public Page<AdvertDetailDto> findPaginated(
 		@RequestParam("page") int page,
 		@RequestParam("size") int size,
+		@RequestParam("query") Optional<String> query,
 		UriComponentsBuilder uriComponentsBuilder,
 		HttpServletResponse response
 	) {
+		System.out.println("Get paginated adverts was called, page: " + page + ", size: " + size);
+
 		if (size > 25) {
 			throw new BazarikApplicationException("Paginable size must not exceed 25!");
 		}
-
-		System.out.println("Get paginated adverts was called, page: " + page + ", size: " + size);
-		return advertService.getPaginatedAdverts(PageRequest.of(page, size));
+		
+		Pageable pageable = PageRequest.of(page, size);
+		return advertService.getPaginatedAdverts(pageable);
 	}
 
 	@GetMapping("/api/adverts/recent/{count}")
