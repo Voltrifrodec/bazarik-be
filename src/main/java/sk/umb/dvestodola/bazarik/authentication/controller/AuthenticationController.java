@@ -42,13 +42,16 @@ public class AuthenticationController {
 
 	@PostMapping("/api/token/check")
 	public boolean checkToken(
-		@RequestHeader(value = AUTHORIZATION_HEADER, required = true) Optional<String> auth
+		@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> auth,
+		HttpServletResponse response
 	) {
 		if (auth.isPresent()) {
 			if (this.authenticationService.validateAdminToken(auth.get())) {
+				response.setStatus(HttpStatus.OK.value());
 				return true;
 			}
 		}
+		response.setStatus(HttpStatus.FORBIDDEN.value());
 		return false;
 	}
 
