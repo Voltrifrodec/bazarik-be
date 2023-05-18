@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertService;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
+import sk.umb.dvestodola.bazarik.page.service.PageRequestDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertDetailDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
