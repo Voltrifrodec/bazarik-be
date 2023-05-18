@@ -110,7 +110,7 @@ public class AdvertController {
 		System.out.println("Get paginated adverts by subsubcategory id was called, subsubcategoryId: " + subsubcategoryId + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
 
 		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
-		return advertService.getPaginatedAdvertsByCategoryId(subsubcategoryId, pageable);
+		return advertService.getPaginatedAdvertsBySubsubcategoryId(subsubcategoryId, pageable);
 	}
 
 	@GetMapping("/api/adverts/{advertId}")
