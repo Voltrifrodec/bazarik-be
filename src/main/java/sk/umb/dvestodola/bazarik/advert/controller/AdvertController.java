@@ -87,13 +87,29 @@ public class AdvertController {
 	}
 
 	@GetMapping("/api/subcategories/{subcategoryId}/adverts")
-	public List<AdvertDetailDto> getAllAdvertsBySubcategoryId(@PathVariable Long subcategoryId) {
-		return advertService.getAllAdvertsBySubcategoryId(subcategoryId);
+	public Page<AdvertDetailDto> findPaginatedBySubcategoryId(
+		@PathVariable Long subcategoryId,
+		PageRequestDto pageRequest,
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response
+	) {
+		System.out.println("Get paginated adverts by subcategory id was called, subcategoryId: " + subcategoryId + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+
+		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+		return advertService.getPaginatedAdvertsBySubcategoryId(subcategoryId, pageable);
 	}
 
 	@GetMapping("/api/subsubcategories/{subsubcategoryId}/adverts")
-	public List<AdvertDetailDto> getAllAdvertsBySubsubcategoryId(@PathVariable Long subsubcategoryId) {
-		return advertService.getAllAdvertsBySubsubcategoryId(subsubcategoryId);
+	public Page<AdvertDetailDto> findPaginatedBySubsubcategoryId(
+		@PathVariable Long subsubcategoryId,
+		PageRequestDto pageRequest,
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response
+	) {
+		System.out.println("Get paginated adverts by subsubcategory id was called, subsubcategoryId: " + subsubcategoryId + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+
+		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+		return advertService.getPaginatedAdvertsByCategoryId(subsubcategoryId, pageable);
 	}
 
 	@GetMapping("/api/adverts/{advertId}")
