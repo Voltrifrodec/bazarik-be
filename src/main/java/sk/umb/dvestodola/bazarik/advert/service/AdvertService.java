@@ -102,16 +102,7 @@ public class AdvertService {
 	public Page<AdvertDetailDto> getPaginatedAdverts(Pageable pageable) {
 		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAll(pageable);
 
-		Page<AdvertDetailDto> advertDetailPage = new PageImpl<>(
-			advertEntityPage
-				.getContent().stream()
-				.map(advertDetail -> mapToAdvertDetail(advertDetail))
-				.collect(Collectors.toList()),
-			pageable,
-			advertEntityPage.getTotalElements()
-		);
-		
-		return advertDetailPage;
+		return mapToPageAdvertDetail(advertEntityPage);
 	}
 	
 	public List<AdvertDetailDto> getRecentAdverts(Long count) {
