@@ -134,8 +134,10 @@ public class AdvertService {
 		return advertRepository.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
 	}
 
-	public List<AdvertDetailDto> getAllAdvertsByCategoryId(Long categoryId) {
-		return mapToAdvertDetailList(advertRepository.findAllAdvertsByCategoryId(categoryId));
+	public Page<AdvertDetailDto> getPaginatedAdvertsByCategoryId(Long categoryId, Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByCategoryId(categoryId, pageable);
+
+		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
 	public List<AdvertDetailDto> getAllAdvertsBySubcategoryId(Long subcategoryId) {
