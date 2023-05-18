@@ -8,14 +8,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
+import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertPageRepository;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepositoryImplementation;
 import sk.umb.dvestodola.bazarik.category.persistence.entity.CategoryEntity;
@@ -59,6 +64,7 @@ public class AdvertService {
 	private final DistrictRepository districtRepository;
 	private final ImageRepository imageRepository;
 	private final CurrencyRepository currencyRepository;
+	private final AdvertPageRepository advertPageRepository;
 
 	public AdvertService(
 		AdvertRepository advertRepository,
@@ -69,7 +75,8 @@ public class AdvertService {
 		ContactRepository contactRepository,
 		DistrictRepository districtRepository,
 		ImageRepository imageRepository,
-		CurrencyRepository currencyRepository
+		CurrencyRepository currencyRepository,
+		AdvertPageRepository advertPageRepository
 	) {
 		this.advertRepository = advertRepository;
 		this.advertRepositoryImplementation = advertRepositoryImplementation;
@@ -80,6 +87,7 @@ public class AdvertService {
 		this.districtRepository = districtRepository;
 		this.imageRepository = imageRepository;
 		this.currencyRepository = currencyRepository;
+		this.advertPageRepository = advertPageRepository;
 	}
 
 	public List<AdvertDetailDto> getAllAdverts() {
@@ -89,7 +97,22 @@ public class AdvertService {
 	public AdvertDetailDto getAdvertById(UUID advertId) {
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
-
+	
+	// https://stackoverflow.com/questions/53601006/how-to-modify-page-type-result-of-spring-repository-search-for-rest-api
+	public Page<AdvertDetailDto> getPaginatedAdverts(Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAll(pageable);
+		
+		Page<AdvertDetailDto> advertDetailPage = new PageImpl<>(
+			advertEntityPage
+				.getContent().stream()
+				.map(advertDetail -> mapToAdvertDetail(advertDetail))
+				.collect(Collectors.toList()),
+			pageable,
+			advertEntityPage.getTotalElements()
+		);
+		
+		return advertDetailPage;
+	}
 	
 	public List<AdvertDetailDto> getRecentAdverts(Long count) {
 		if (count < 1) throw new BazarikApplicationException("Count limit for recent adverts must be bigger than 0.");
