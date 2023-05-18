@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import sk.umb.dvestodola.bazarik.security.service.SecurityDetailDto;
 import sk.umb.dvestodola.bazarik.security.service.SecurityRequestDto;
 import sk.umb.dvestodola.bazarik.security.service.SecurityService;
 import sk.umb.dvestodola.bazarik.security.service.SecurityUpdateDto;
@@ -19,13 +20,13 @@ public class SecurityController {
 	}
 
 	@PostMapping("/api/security/create")
-	public String createHashFromAdvert(@Valid @RequestBody AdvertRequestDto advertRequest) {
+	public SecurityDetailDto createHashFromAdvert(@Valid @RequestBody AdvertRequestDto advertRequest) {
 		System.out.println("Create hash for advert create was called");
 		return this.securityService.createHashFromAdvert(advertRequest);
 	}
 
 	@PostMapping("/api/security/update")
-	public String createHashForUpdate(@RequestBody SecurityUpdateDto securityUpdateDto) {
+	public SecurityDetailDto createHashForUpdate(@RequestBody SecurityUpdateDto securityUpdateDto) {
 		System.out.println("Create hash for advert update was called, " + securityUpdateDto.getAdvertId());
 		return this.securityService.createHashForUpdate(securityUpdateDto);
 	}
