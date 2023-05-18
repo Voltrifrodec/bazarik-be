@@ -4,17 +4,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertService;
+import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertDetailDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
@@ -23,15 +28,33 @@ public class AdvertController {
 
 	private final AdvertService advertService;
 
-	public AdvertController(AdvertService advertService) {
+	public AdvertController(
+		AdvertService advertService
+	) {
 		this.advertService = advertService;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	/* @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/api/adverts")
 	public List<AdvertDetailDto> getAllAdverts() {
 		System.out.println("Get all adverts was called.");
 		return advertService.getAllAdverts();
+	} */
+
+	// https://www.baeldung.com/spring-data-jpa-pagination-sorting
+	@GetMapping("/api/adverts")
+	public Page<AdvertDetailDto> findPaginated(
+		@RequestParam("page") int page,
+		@RequestParam("size") int size,
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response
+	) {
+		if (size > 25) {
+			throw new BazarikApplicationException("Paginable size must not exceed 25!");
+		}
+
+		System.out.println("Get paginated adverts was called, page: " + page + ", size: " + size);
+		return advertService.getPaginatedAdverts(PageRequest.of(page, size));
 	}
 
 	@GetMapping("/api/adverts/recent/{count}")
