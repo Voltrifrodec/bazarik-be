@@ -74,8 +74,16 @@ public class AdvertController {
 	}
 
 	@GetMapping("/api/categories/{categoryId}/adverts")
-	public List<AdvertDetailDto> getAllAdvertsByCategoryId(@PathVariable Long categoryId) {
-		return advertService.getAllAdvertsByCategoryId(categoryId);
+	public Page<AdvertDetailDto> findPaginatedByCategoryId(
+		@PathVariable Long categoryId,
+		PageRequestDto pageRequest,
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response
+	) {
+		System.out.println("Get paginated adverts by category id was called, categoryId: " + categoryId + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+
+		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+		return advertService.getPaginatedAdvertsByCategoryId(categoryId, pageable);
 	}
 
 	@GetMapping("/api/subcategories/{subcategoryId}/adverts")
