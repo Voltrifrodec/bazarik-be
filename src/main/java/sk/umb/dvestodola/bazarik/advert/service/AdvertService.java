@@ -120,7 +120,6 @@ public class AdvertService {
 		return mapToAdvertDetailList(advertRepositoryImplementation.findRecent(count));
 	}
 
-	// @Transactional
 	public List<AdvertDetailDto> getAllAdvertsByQuery(String query) {
 		query = query.toLowerCase();
 
