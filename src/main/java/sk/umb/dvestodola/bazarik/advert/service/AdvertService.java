@@ -276,6 +276,19 @@ public class AdvertService {
 	}
 
 
+	private Page<AdvertDetailDto> mapToPageAdvertDetail(Page<AdvertEntity> advertEntityPage) {
+		Page<AdvertDetailDto> advertDetailPage = new PageImpl<>(
+			advertEntityPage
+				.getContent().stream()
+				.map(advertDetail -> mapToAdvertDetail(advertDetail))
+				.collect(Collectors.toList()),
+			advertEntityPage.getPageable(),
+			advertEntityPage.getTotalElements()
+		);
+		
+		return advertDetailPage;
+	}
+
 	private AdvertEntity getAdvertEntityById(UUID advertId) {
 		Optional<AdvertEntity> advertEntity = advertRepository.findById(advertId);
 
