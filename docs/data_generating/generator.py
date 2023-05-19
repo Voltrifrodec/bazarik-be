@@ -2,6 +2,8 @@
 import mariadb
 import sys
 
+import uuid
+
 # Connect to MariaDB Platform
 try:
 	connection = mariadb.connect(
@@ -26,6 +28,37 @@ def getImageIds():
 	except mariadb.Error as e:
 		print(f'Error: {e}')
 
+def getRandomUuid() -> str:
+	return str(uuid.uuid4())
+
+class Advert:
+	def __init__(self) -> None:
+		self.id_advert: str
+		self.date_added: str
+		self.date_modified: str
+		self.description: str
+		self.fixed_price: bool
+		self.keywords: str
+		self.name: str
+		self.price_eur: int
+		
+		self.id_category: int
+		self.id_subcategory: int
+		self.id_subsubcategory: int
+
+		self.id_contact: int
+		self.id_currency: int
+		self.id_district: int
+
+		self.id_image: int
+
+		pass
+	
+	def generateQuery() -> str:
+		# TODO: generate sql query
+		pass
+
+print(len(getRandomUuid()))
 
 imageIdsSet = set(getImageIds())
 print(imageIdsSet)
