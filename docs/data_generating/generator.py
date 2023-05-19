@@ -32,6 +32,7 @@ def getRandomUuid() -> str:
 	return str(uuid.uuid4())
 
 class Advert:
+	# TODO: Add constructor parameters
 	def __init__(self) -> None:
 		self.id_advert: str
 		self.date_added: str
