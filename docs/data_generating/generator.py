@@ -4,6 +4,17 @@ import sys
 
 import uuid
 
+from itertools import permutations
+
+c = permutations([{123, 345}, {213, 123}, {654, 231, 111}], 2)
+
+print([x for x in c])
+
+'''
+
+
+'''
+
 # Connect to MariaDB Platform
 try:
 	connection = mariadb.connect(
