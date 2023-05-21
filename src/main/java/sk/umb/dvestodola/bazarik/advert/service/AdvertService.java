@@ -125,9 +125,12 @@ public class AdvertService {
 		return advertRepository.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
 	}
 
-	
 	public Long getNumberOfAdvertsInSubcategoryBySubcategoryId(Long subcategoryId) {		
 		return advertRepository.getNumberOfAdvertsInSubcategoryBySubcategoryId(subcategoryId);
+	}
+
+	public Long getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(Long subsubcategoryId) {		
+		return advertRepository.getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(subsubcategoryId);
 	}
 
 	public Page<AdvertDetailDto> getPaginatedAdvertsByCategoryId(Long categoryId, Pageable pageable) {
