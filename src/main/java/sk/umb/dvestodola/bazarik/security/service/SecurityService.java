@@ -47,6 +47,8 @@ public class SecurityService {
 		
 		securityDetail.setHash(hash);
 
+		System.out.println("Code: " + code + ", hash: " + hash);
+
 		return securityDetail;
 	}
 
@@ -75,6 +77,8 @@ public class SecurityService {
 		this.emailService.sendEmail(advertEmail, code, message);
 
 		securityDetail.setHash(this.hashFunction(code));
+		
+		System.out.println("Code: " + code + ", hash: " + securityDetail.getHash());
 
 		return securityDetail;
 	}
