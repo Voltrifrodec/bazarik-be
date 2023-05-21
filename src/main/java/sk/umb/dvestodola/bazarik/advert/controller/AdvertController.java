@@ -82,8 +82,8 @@ public class AdvertController {
 
 	@GetMapping("/api/subcategories/{subcategoryId}/adverts/count")
 	public Long getNumberOfAdvertsInSubcategoryBySubcategoryId(@PathVariable Long subcategoryId) {
-		System.out.println("Get number of adverts in category by categoryId was called, " + subcategoryId);
-		return advertService.getNumberOfAdvertsInCategoryByCategoryId(subcategoryId);
+		System.out.println("Get number of adverts in subcategory by subcategoryId was called, " + subcategoryId);
+		return advertService.getNumberOfAdvertsInSubcategoryBySubcategoryId(subcategoryId);
 	}
 
 	@GetMapping("/api/categories/{categoryId}/adverts")
