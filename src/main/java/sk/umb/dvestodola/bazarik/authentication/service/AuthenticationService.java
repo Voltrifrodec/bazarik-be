@@ -78,6 +78,8 @@ public class AuthenticationService {
 
 	@Transactional
 	public boolean validateAdminToken(String token) {
+		if (token.equals("null")) return false;
+
 		String extractedToken = token.split("Bearer")[1].strip();
 		return this.tokenRepository.findByToken(extractedToken).isPresent();
 	}
