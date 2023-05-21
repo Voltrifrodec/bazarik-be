@@ -59,6 +59,12 @@ public class AdvertController {
 
 	@GetMapping("/api/adverts/recent/{count}")
 	public List<AdvertDetailDto> getRecentAdverts(@PathVariable(required = false) Long count) {
+		if (count <= 0) {
+			throw new BazarikApplicationException("Recent advert count must be above 0!");
+		}
+		if (count > 5) {
+			throw new BazarikApplicationException("Recent advert count must not exceed 5!");
+		}
 		System.out.println("Get all recent adverts was called, " + count);
 		return advertService.getRecentAdverts((Objects.isNull(count)) ? 4L : count);
 	}
