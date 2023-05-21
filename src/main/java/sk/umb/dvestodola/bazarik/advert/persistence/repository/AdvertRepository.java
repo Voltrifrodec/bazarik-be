@@ -22,4 +22,7 @@ public interface AdvertRepository extends CrudRepository<AdvertEntity, UUID> {
 
 	@Query(value = "SELECT COUNT(a) FROM advert a WHERE a.category.id = :categoryId")
 	Long getNumberOfAdvertsInCategoryByCategoryId(@Param("categoryId") Long categoryId);
+
+	@Query(value = "SELECT COUNT(a) FROM advert a WHERE a.subcategory.id = :subcategoryId")
+	Long getNumberOfAdvertsInSubcategoryBySubcategoryId(@Param("subcategoryId") Long subcategoryId);
 }
