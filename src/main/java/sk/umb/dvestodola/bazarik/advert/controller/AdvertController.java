@@ -86,6 +86,12 @@ public class AdvertController {
 		return advertService.getNumberOfAdvertsInSubcategoryBySubcategoryId(subcategoryId);
 	}
 
+	@GetMapping("/api/subsubcategories/{subsubcategoryId}/adverts/count")
+	public Long getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(@PathVariable Long subsubcategoryId) {
+		System.out.println("Get number of adverts in subsubcategory by subsubcategoryId was called, " + subsubcategoryId);
+		return advertService.getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(subsubcategoryId);
+	}
+
 	@GetMapping("/api/categories/{categoryId}/adverts")
 	public Page<AdvertDetailDto> findPaginatedByCategoryId(
 		@PathVariable Long categoryId,
