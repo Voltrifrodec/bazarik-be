@@ -10,21 +10,22 @@ import sk.umb.dvestodola.bazarik.subsubcategory.persistence.entity.Subsubcategor
 @Repository
 public interface SubsubcategoryRepository extends CrudRepository<SubsubcategoryEntity, Long> {
 	@Query(value =  """
-		SELECT ss.id_subsubcategory, ss.name as subsubcategory_name, s.id_subcategory, s.name as subcategory_name, s.subcategory_number_of_adverts, c.id_category, c.name as category_name, NULL as number_of_adverts, c.emoji, COUNT(a.id_advert) as subsubcategory_number_of_adverts
-		FROM subsubcategory ss
-		LEFT JOIN subcategory_subsubcategory sss ON ss.id_subsubcategory = sss.id_subsubcategory 
+		SELECT 
+			subsub.id_subsubcategory, subsub.subsubcategory_name,
+			sub.id_subcategory, sub.subcategory_name, sub.subcategory_number_of_adverts,
+			c.id_category, c.category_name, NULL as category_number_of_adverts, c.category_emoji,
+			COUNT(a.id_advert) as subsubcategory_number_of_adverts
 
-		LEFT JOIN advert a ON a.id_subsubcategory = ss.id_subsubcategory
+		FROM subcategory sub
+			INNER JOIN subcategory_subsubcategory ss ON sub.id_subcategory = ss.id_subcategory
+			LEFT JOIN subsubcategory subsub ON subsub.id_subsubcategory = ss.id_subsubcategory
+			INNER JOIN category_subcategory cs ON cs.id_subcategory = ss.id_subcategory
+			LEFT JOIN category c ON c.id_category = cs.id_category 
+			LEFT JOIN advert a ON a.id_subsubcategory = subsub.id_subsubcategory
 
-		INNER JOIN subcategory s ON sss.id_subcategory = s.id_subcategory 
+		WHERE sub.id_subcategory = :subcategoryId
 
-		LEFT JOIN category_subcategory cs ON cs.id_subcategory = s.id_subcategory
-
-		INNER JOIN category c ON c.id_category = cs.id_category
-
-		WHERE sss.id_subcategory = :subcategoryId
-
-		GROUP BY ss.id_subsubcategory;
+		GROUP BY subsub.id_subsubcategory;
 	""", nativeQuery = true)
 	Iterable<SubsubcategoryEntity> getAllBySubcategoryId(@Param("subcategoryId") Long subcategoryId);
 }
