@@ -12,13 +12,13 @@ public class CategoryEntity {
 	@Column(name = "id_category", unique = true)
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "category_name")
 	private String name;
 
-	@Column(name = "emoji")
+	@Column(name = "category_emoji")
 	private String emoji;
 
-	@Column(name = "number_of_adverts")
+	@Column(name = "category_number_of_adverts")
 	private Long numberOfAdverts;
 
 
