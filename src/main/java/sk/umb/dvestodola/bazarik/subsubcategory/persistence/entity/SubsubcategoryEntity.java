@@ -16,7 +16,7 @@ public class SubsubcategoryEntity {
 	@Column(name = "id_subsubcategory", unique = true)
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "subsubcategory_name")
 	private String name;
 
 	@ManyToOne
