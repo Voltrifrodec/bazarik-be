@@ -69,10 +69,20 @@ public class AdvertController {
 	}
 
 	@GetMapping("/api/search/{query}")
-	public List<AdvertDetailDto> getAllAdvertsByQuery(@PathVariable String query) {
-		System.out.println("Get all adverts by query was called, " + query);
-		return advertService.getAllAdvertsByQuery(query);
+	public Page<AdvertDetailDto> findPaginatedByQuery(
+		@PathVariable String query,
+		PageRequestDto pageRequest,
+		UriComponentsBuilder uriComponentsBuilder,
+		HttpServletResponse response
+	) {
+		System.out.println("Get paginated adverts by query id was called, query:" + query + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+		return advertService.getPaginatedAdvertsByQuery(query, pageable);
 	}
+	// public List<AdvertDetailDto> getAllAdvertsByQuery(@PathVariable String query) {
+	// 	System.out.println("Get all adverts by query was called, " + query);
+	// 	return advertService.getAllAdvertsByQuery(query);
+	// }
 
 	@GetMapping("/api/categories/{categoryId}/adverts/count")
 	public Long getNumberOfAdvertsInCategoryByCategoryId(@PathVariable Long categoryId) {

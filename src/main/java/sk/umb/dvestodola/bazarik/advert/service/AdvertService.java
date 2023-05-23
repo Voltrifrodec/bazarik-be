@@ -151,6 +151,19 @@ public class AdvertService {
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
+	//* Added
+	public Page<AdvertDetailDto> getPaginatedAdvertsByQuery(String query, Pageable pageable) {
+		query = query.toLowerCase();
+		
+		if (query.trim().length() < MINIMUM_QUERY_LENGTH) {
+			throw new BazarikApplicationException("Query must have more than 3 (three) characters.");
+		}
+
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByQuery(query, pageable);
+
+		return mapToPageAdvertDetail(advertEntityPage);
+	}
+
 	@Transactional
 	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);

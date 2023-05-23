@@ -2,7 +2,9 @@ package sk.umb.dvestodola.bazarik.advert.persistence.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
@@ -14,4 +16,8 @@ public interface AdvertPageRepository extends PagingAndSortingRepository<AdvertE
 	Page<AdvertEntity> findAllByCategoryId(Long categoryId, Pageable pageable);
 	Page<AdvertEntity> findAllBySubcategoryId(Long subcategoryId, Pageable pageable);
 	Page<AdvertEntity> findAllBySubsubcategoryId(Long subsubcategoryId, Pageable pageable);
+
+	// * Added	
+	@Query(value = "SELECT a FROM advert a WHERE LOWER(a.name) LIKE %:query% OR LOWER(a.description) LIKE %:query%")
+	Page<AdvertEntity> findAllByQuery(@Param("query") String query, Pageable pageable);
 }
