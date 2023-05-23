@@ -2,19 +2,18 @@ package sk.umb.dvestodola.bazarik.advert.controller;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -40,22 +39,26 @@ public class AdvertController {
 		this.advertService = advertService;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	// https://www.baeldung.com/spring-data-jpa-pagination-sorting
 	@GetMapping("/api/adverts")
 	public Page<AdvertDetailDto> findPaginated(
-		@RequestParam("page") int page,
-		@RequestParam("size") int size,
-		@RequestParam("query") Optional<String> query,
+		PageRequestDto pageRequest,
 		UriComponentsBuilder uriComponentsBuilder,
 		HttpServletResponse response
 	) {
-		System.out.println("Get paginated adverts was called, page: " + page + ", size: " + size);
+		System.out.println("Get paginated adverts was called, query: " + pageRequest.getQuery() + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
 
-		if (size > 25) {
-			throw new BazarikApplicationException("Paginable size must not exceed 25!");
+		if (pageRequest.getSize() < PAGE_SIZE_MINIMUM) {
+			throw new BazarikApplicationException("Page size must not be smaller than " + PAGE_SIZE_MINIMUM + "!");
 		}
-		
-		Pageable pageable = PageRequest.of(page, size);
+
+		if (pageRequest.getSize() > PAGE_SIZE_MAXIMUM) {
+			throw new BazarikApplicationException("Page size must not be bigger than " + PAGE_SIZE_MAXIMUM + "!");
+		}
+
+		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+
 		return advertService.getPaginatedAdverts(pageable);
 	}
 
@@ -71,16 +74,29 @@ public class AdvertController {
 		return advertService.getRecentAdverts((Objects.isNull(count)) ? 4L : count);
 	}
 
-	@GetMapping("/api/search/{query}")
+	@GetMapping("/api/search")
 	public Page<AdvertDetailDto> findPaginatedByQuery(
-		@PathVariable String query,
-		PageRequestDto pageRequest,
+		@Valid PageRequestDto pageRequest,
 		UriComponentsBuilder uriComponentsBuilder,
 		HttpServletResponse response
 	) {
-		System.out.println("Get paginated adverts by query id was called, query:" + query + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+		System.out.println("Get paginated adverts by query id was called, query: " + pageRequest.getQuery() + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+
+		if (pageRequest.getSize() < PAGE_SIZE_MINIMUM) {
+			throw new BazarikApplicationException("Page size must not be smaller than " + PAGE_SIZE_MINIMUM + "!");
+		}
+
+		if (pageRequest.getSize() > PAGE_SIZE_MAXIMUM) {
+			throw new BazarikApplicationException("Page size must not be bigger than " + PAGE_SIZE_MAXIMUM + "!");
+		}
+
+		if (pageRequest.getQuery().isBlank()) {
+			throw new BazarikApplicationException("Search query must not be blank!");
+		}
+
 		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
-		return advertService.getPaginatedAdvertsByQuery(query, pageable);
+		
+		return advertService.getPaginatedAdvertsByQuery(pageRequest.getQuery(), pageable);
 	}
 
 	@GetMapping("/api/categories/{categoryId}/adverts/count")
