@@ -59,7 +59,7 @@ public class AdvertController {
 
 		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
 
-		return advertService.getPaginatedAdverts(pageable);
+		return advertService.getPaginatedAdverts(pageRequest.getQuery(), pageable);
 	}
 
 	@GetMapping("/api/adverts/recent/{count}")
