@@ -80,7 +80,7 @@ public class AdvertController {
 		UriComponentsBuilder uriComponentsBuilder,
 		HttpServletResponse response
 	) {
-		System.out.println("Get paginated adverts by query id was called, query: " + pageRequest.getQuery() + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
+		System.out.println("Get paginated adverts by query was called, query: " + pageRequest.getQuery() + ", page: " + pageRequest.getPage() + ", size: " + pageRequest.getSize());
 
 		if (pageRequest.getSize() < PAGE_SIZE_MINIMUM) {
 			throw new BazarikApplicationException("Page size must not be smaller than " + PAGE_SIZE_MINIMUM + "!");
