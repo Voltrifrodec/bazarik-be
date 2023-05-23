@@ -10,9 +10,9 @@ public class PageRequestDto {
 	private static final String DEFAULT_PAGE_QUERY = "";
 
 	@Min(0)
-	private int page;
+	private int page = DEFAULT_PAGE_NUMBER;
 
-	@Min(5)
+	@Min(0)
 	@Max(25)
 	private int size;
 	

@@ -28,6 +28,9 @@ import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
 @RestController
 public class AdvertController {
+	
+	private final static int PAGE_SIZE_MAXIMUM = 25;
+	private final static int PAGE_SIZE_MINIMUM = 1;
 
 	private final AdvertService advertService;
 
