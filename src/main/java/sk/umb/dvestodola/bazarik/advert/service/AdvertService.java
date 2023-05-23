@@ -99,8 +99,8 @@ public class AdvertService {
 	}
 	
 	// https://stackoverflow.com/questions/53601006/how-to-modify-page-type-result-of-spring-repository-search-for-rest-api
-	public Page<AdvertDetailDto> getPaginatedAdverts(Pageable pageable) {
-		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAll(pageable);
+	public Page<AdvertDetailDto> getPaginatedAdverts(String query, Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByQuery(query, pageable);
 
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
