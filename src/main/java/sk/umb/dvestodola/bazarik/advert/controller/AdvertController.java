@@ -79,10 +79,6 @@ public class AdvertController {
 		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
 		return advertService.getPaginatedAdvertsByQuery(query, pageable);
 	}
-	// public List<AdvertDetailDto> getAllAdvertsByQuery(@PathVariable String query) {
-	// 	System.out.println("Get all adverts by query was called, " + query);
-	// 	return advertService.getAllAdvertsByQuery(query);
-	// }
 
 	@GetMapping("/api/categories/{categoryId}/adverts/count")
 	public Long getNumberOfAdvertsInCategoryByCategoryId(@PathVariable Long categoryId) {

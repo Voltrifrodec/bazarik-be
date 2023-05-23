@@ -151,7 +151,6 @@ public class AdvertService {
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
-	//* Added
 	public Page<AdvertDetailDto> getPaginatedAdvertsByQuery(String query, Pageable pageable) {
 		query = query.toLowerCase();
 		

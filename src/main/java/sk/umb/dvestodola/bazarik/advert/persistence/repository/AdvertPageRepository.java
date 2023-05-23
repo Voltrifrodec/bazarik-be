@@ -17,7 +17,6 @@ public interface AdvertPageRepository extends PagingAndSortingRepository<AdvertE
 	Page<AdvertEntity> findAllBySubcategoryId(Long subcategoryId, Pageable pageable);
 	Page<AdvertEntity> findAllBySubsubcategoryId(Long subsubcategoryId, Pageable pageable);
 
-	// * Added	
 	@Query(value = "SELECT a FROM advert a WHERE LOWER(a.name) LIKE %:query% OR LOWER(a.description) LIKE %:query%")
 	Page<AdvertEntity> findAllByQuery(@Param("query") String query, Pageable pageable);
 }
