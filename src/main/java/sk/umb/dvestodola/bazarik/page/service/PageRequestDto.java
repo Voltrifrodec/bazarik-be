@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 public class PageRequestDto {
+	private static final int DEFAULT_PAGE_NUMBER = 0;
+	private static final int DEFAULT_PAGE_SIZE = 10;
+	private static final String DEFAULT_PAGE_QUERY = "";
+
 	@Min(0)
 	private int page;
 
