@@ -12,12 +12,12 @@ public class PageRequestDto {
 	@Min(0)
 	private int page = DEFAULT_PAGE_NUMBER;
 
-	@Min(0)
+	@Min(1)
 	@Max(25)
-	private int size;
+	private int size = DEFAULT_PAGE_SIZE;
 	
 	@NotBlank()
-	private String query;
+	private String query = DEFAULT_PAGE_QUERY;
 
 	
 	public int getPage() {
