@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
+import sk.umb.dvestodola.bazarik.config.YAMLConfig;
 import sk.umb.dvestodola.bazarik.email.service.EmailService;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
@@ -22,15 +23,19 @@ public class SecurityService {
 	private final int MAX_VALUE = 999;
 
 	// Áno viem, nie je to bezpečné
-	private final String SALT = "Ab/N#w5|~+bm>+Cj";
+	private final String salt;
 
 	@Autowired
 	private EmailService emailService;
 
 	private AdvertRepository advertRepository;
 
-	public SecurityService(AdvertRepository advertRepository) {
+	public SecurityService(
+		AdvertRepository advertRepository,
+		YAMLConfig yamlConfig
+	) {
 		this.advertRepository = advertRepository;
+		this.salt = yamlConfig.getSalt();
 	}
 
 	@Transactional
@@ -91,7 +96,7 @@ public class SecurityService {
 
 	// https://www.baeldung.com/sha-256-hashing-java
 	public String hashFunction(String stringToHash) {
-		return new DigestUtils("SHA3-256").digestAsHex(SALT + stringToHash);
+		return new DigestUtils("SHA3-256").digestAsHex(salt + stringToHash);
 	}
 	
 }
