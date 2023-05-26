@@ -76,7 +76,7 @@ public class EmailService {
 			
 			message.setContent(multipart);
 		
-			System.out.println("Email was sent to: " + toEmail);
+			System.out.println("E-mail was sent to: " + toEmail);
 			Transport.send(message);
 		} catch (MessagingException e) {
 			e.printStackTrace();
