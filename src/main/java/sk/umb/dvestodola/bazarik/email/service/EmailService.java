@@ -22,11 +22,10 @@ public class EmailService {
 	
 	private final Properties properties;
 	private final Session session;
-
-	private final String fromEmail = "bazarik.noreply@gmail.com";
-
+	
 	private EmailFactory emailFactory;
-		
+	
+	private final String fromEmail = "bazarik.noreply@gmail.com";
 	private final String pathToHtml = "src/main/java/sk/umb/dvestodola/bazarik/email/design/index.html";
 
 	public EmailService(
