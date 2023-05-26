@@ -31,6 +31,7 @@ public class EmailService {
 		this.properties.put("mail.smtp.starttls.enable", "true");
 		this.properties.put("mail.smtp.host", "smtp.gmail.com");
 		this.properties.put("mail.smtp.port", "25");
+		this.properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
 		this.session = Session.getInstance(
 			this.properties,
