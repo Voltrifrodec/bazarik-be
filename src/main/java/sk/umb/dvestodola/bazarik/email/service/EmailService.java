@@ -25,7 +25,13 @@ public class EmailService {
 
 	private final String fromEmail = "bazarik.noreply@gmail.com";
 
-	public EmailService(YAMLConfig yamlConfig) {
+	private EmailFactory emailFactory;
+		
+	private final String pathToHtml = "src/main/java/sk/umb/dvestodola/bazarik/email/design/index.html";
+
+	public EmailService(
+		YAMLConfig yamlConfig
+	) {
 		this.properties = new Properties();
 		this.properties.put("mail.smtp.auth", "true");
 		this.properties.put("mail.smtp.starttls.enable", "true");
@@ -45,6 +51,8 @@ public class EmailService {
 				}
 			}
 		);
+
+		this.emailFactory = new EmailFactory(pathToHtml);
 	}
 
 	public void sendEmail(String toEmail, String code) {
@@ -54,20 +62,11 @@ public class EmailService {
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
 			message.setSubject("Bazárik - Overovací kód");
 			
-			// TODO: Lepší HTML kód
 			// https://stackoverflow.com/questions/5068827/how-do-i-send-an-html-email
 			// https://developers.google.com/gmail/design/css
 			// https://litmus.com/blog/gmail-to-support-responsive-email-design?utm_campaign=gmail_updates&utm_source=pardot&utm_medium=email
 			// http://www.campaignmonitor.com/css/
-			String messageBody = """
-				<div style='background-color: yellow; color: black; text-align: center;'>
-					<h2>Bazárik</h2>
-					<h3>Váš overovací kód:</h3>
-					<h1>
-						""" + code + """ 
-					<h1>
-				</div>
-			""";
+			String messageBody = this.emailFactory.getEmailBody(code);
 			
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
 			mimeBodyPart.setContent(messageBody, "text/html; charset=utf-8");
