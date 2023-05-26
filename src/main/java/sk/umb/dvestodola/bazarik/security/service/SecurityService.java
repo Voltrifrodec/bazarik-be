@@ -40,10 +40,9 @@ public class SecurityService {
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String email = advertRequest.getContactEmail();
-		String message = "Pre overenie inzerátu zadajte overovací kód:";
 		String hash = this.hashFunction(code);
 		
-		this.emailService.sendEmail(email, code, message);
+		this.emailService.sendEmail(email, code);
 		
 		securityDetail.setHash(hash);
 
@@ -61,7 +60,6 @@ public class SecurityService {
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String checkEmail = securityUpdateDto.getEmail();
 		String advertEmail = "";
-		String message = "Pre overenie inzerátu zadajte overovací kód:";
 
 		Optional<AdvertEntity> advertEntity = this.advertRepository.findById(advertId);
 		if (advertEntity.isPresent()) {
@@ -74,7 +72,7 @@ public class SecurityService {
 			throw new BazarikApplicationException("Advert could not be found by id.");
 		}
 
-		this.emailService.sendEmail(advertEmail, code, message);
+		this.emailService.sendEmail(advertEmail, code);
 
 		securityDetail.setHash(this.hashFunction(code));
 		
