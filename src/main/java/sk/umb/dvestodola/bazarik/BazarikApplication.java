@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import sk.umb.dvestodola.bazarik.config.YAMLConfig;
 import sk.umb.dvestodola.bazarik.currency.persistence.entity.CurrencyEntity;
 import sk.umb.dvestodola.bazarik.currency.persistence.repository.CurrencyRepository;
 import sk.umb.dvestodola.bazarik.email.service.EmailService;
@@ -18,6 +19,9 @@ public class BazarikApplication implements CommandLineRunner {
 
 	@Autowired
 	EmailService emailService;
+
+	@Autowired
+	YAMLConfig yamlConfig;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(BazarikApplication.class, args);
@@ -27,6 +31,10 @@ public class BazarikApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		if (currencyRepository.count() == 0) {
 			insertToCurrencies("€", "Euro");
+		}
+
+		if (this.yamlConfig.getEnvironment() == "test-YAML") {
+			this.emailService.sendEmail("avalastan@student.umb.sk", "68");
 		}
 	}
 
