@@ -354,11 +354,12 @@ public class AdvertService {
 			Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(advertRequest.getSubcategoryId());
 
 			if (subcategoryEntity.isPresent()) {
-				if (advertEntity.getCategory().getId().equals(subcategoryEntity.get().getCategory().getId())) {
-					advertEntity.setSubcategory(subcategoryEntity.get());
-				} else {
-					throw new BazarikApplicationException("Subcategory must have a valid id.");
-					// advertEntity.setSubcategory(null);
+				if (! Objects.isNull(subcategoryEntity.get().getCategory())) {
+					if (advertEntity.getCategory().getId().equals(subcategoryEntity.get().getCategory().getId())) {
+						advertEntity.setSubcategory(subcategoryEntity.get());
+					} else {
+						throw new BazarikApplicationException("Subcategory must have a valid id.");
+					}
 				}
 			} else {
 				// advertEntity.setSubcategory(null);
@@ -374,11 +375,12 @@ public class AdvertService {
 				Optional<SubsubcategoryEntity> subsubcategoryEntity = subsubcategoryRepository.findById(advertRequest.getSubsubcategoryId());
 	
 				if (subsubcategoryEntity.isPresent()) {
-					if (advertEntity.getSubcategory().getId().equals(subsubcategoryEntity.get().getSubcategory().getId())) {
-						advertEntity.setSubsubcategory(subsubcategoryEntity.get());
-					} else {
-						// advertEntity.setSubsubcategory(null);
-						throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+					if (! Objects.isNull(subsubcategoryEntity.get().getSubcategory())) {
+						if (advertEntity.getSubcategory().getId().equals(subsubcategoryEntity.get().getSubcategory().getId())) {
+							advertEntity.setSubsubcategory(subsubcategoryEntity.get());
+						} else {
+							throw new BazarikApplicationException("Subsubcategory must have a valid id.");
+						}
 					}
 				} else {
 					// advertEntity.setSubsubcategory(null);
