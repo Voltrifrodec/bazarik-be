@@ -36,7 +36,8 @@ public class SubcategoryService {
 	}
 
 	public List<SubcategoryDetailDto> getSubcategoriesByCategoryId(Long categoryId) {
-		return getSubcategoryDetailListByCategoryId(categoryId);
+		return mapToSubcategoryDetailList(subcategoryRepository.getAllByCategoryId(categoryId));
+		// return getSubcategoryDetailListByCategoryId(categoryId);
 	}
 
 	@Transactional
@@ -81,17 +82,6 @@ public class SubcategoryService {
 	}
 
 
-	private List<SubcategoryDetailDto> getSubcategoryDetailListByCategoryId(Long categoryId) {
-		Iterable<SubcategoryEntity> subcategoryEntities = subcategoryRepository.getAllByCategoryId(categoryId);
-		List<SubcategoryDetailDto> subcategoryEntityList = new ArrayList<>();
-
-		subcategoryEntities.forEach(subcategoryEntity -> {
-			subcategoryEntityList.add(mapToSubcategoryDetail(subcategoryEntity));
-		});
-
-		return subcategoryEntityList;
-	}
-
 	private SubcategoryEntity getSubcategoryEntityById(Long subcategoryId) {
 		Optional<SubcategoryEntity> subcategoryEntity = subcategoryRepository.findById(subcategoryId);
 
@@ -135,6 +125,7 @@ public class SubcategoryService {
 		subcategoryDetail.setId(subcategoryEntity.getId());
 		subcategoryDetail.setName(subcategoryEntity.getName());
 		subcategoryDetail.setCategory(mapToCategoryDetail(subcategoryEntity.getCategory()));
+		subcategoryDetail.setNumberOfAdverts(subcategoryEntity.getNumberOfAdverts());
 
 		return subcategoryDetail;
 	}
@@ -148,6 +139,8 @@ public class SubcategoryService {
 
 		categoryDetail.setId(categoryEntity.getId());
 		categoryDetail.setName(categoryEntity.getName());
+		categoryDetail.setEmoji(categoryEntity.getEmoji());
+		categoryDetail.setNumberOfAdverts(categoryEntity.getNumberOfAdverts());
 
 		return categoryDetail;
 	}

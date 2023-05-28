@@ -137,6 +137,7 @@ public class SubsubcategoryService {
 		subsubcategoryDetail.setId(subsubcategoryEntity.getId());
 		subsubcategoryDetail.setName(subsubcategoryEntity.getName());
 		subsubcategoryDetail.setSubcategory(mapToSubcategoryDetail(subsubcategoryEntity.getSubcategory()));
+		subsubcategoryDetail.setNumberOfAdverts(subsubcategoryEntity.getNumberOfAdverts());
 
 		return subsubcategoryDetail;
 	}

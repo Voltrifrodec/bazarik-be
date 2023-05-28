@@ -6,7 +6,16 @@ public class SubcategoryDetailDto {
 	private Long id;
 	private String name;
 	private CategoryDetailDto category;
+	private Long numberOfAdverts;
 	
+
+	public Long getNumberOfAdverts() {
+		return numberOfAdverts;
+	}
+
+	public void setNumberOfAdverts(Long numberOfAdverts) {
+		this.numberOfAdverts = numberOfAdverts;
+	}
 
 	public CategoryDetailDto getCategory() {
 		return category;

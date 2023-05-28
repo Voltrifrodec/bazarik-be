@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 import sk.umb.dvestodola.bazarik.advert.persistence.repository.AdvertRepository;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
+import sk.umb.dvestodola.bazarik.config.YAMLConfig;
 import sk.umb.dvestodola.bazarik.email.service.EmailService;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 
@@ -22,15 +23,19 @@ public class SecurityService {
 	private final int MAX_VALUE = 999;
 
 	// Áno viem, nie je to bezpečné
-	private final String SALT = "Ab/N#w5|~+bm>+Cj";
+	private final String salt;
 
 	@Autowired
 	private EmailService emailService;
 
 	private AdvertRepository advertRepository;
 
-	public SecurityService(AdvertRepository advertRepository) {
+	public SecurityService(
+		AdvertRepository advertRepository,
+		YAMLConfig yamlConfig
+	) {
 		this.advertRepository = advertRepository;
+		this.salt = yamlConfig.getSalt();
 	}
 
 	@Transactional
@@ -40,12 +45,13 @@ public class SecurityService {
 		Random random = new Random();
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String email = advertRequest.getContactEmail();
-		String message = "Pre overenie inzerátu zadajte overovací kód:";
 		String hash = this.hashFunction(code);
 		
-		this.emailService.sendEmail(email, code, message);
+		this.emailService.sendEmail(email, code);
 		
 		securityDetail.setHash(hash);
+
+		System.out.println("Code: " + code + ", hash: " + hash);
 
 		return securityDetail;
 	}
@@ -59,7 +65,6 @@ public class SecurityService {
 		String code = String.valueOf(random.nextInt(MIN_VALUE, MAX_VALUE));
 		String checkEmail = securityUpdateDto.getEmail();
 		String advertEmail = "";
-		String message = "Pre overenie inzerátu zadajte overovací kód:";
 
 		Optional<AdvertEntity> advertEntity = this.advertRepository.findById(advertId);
 		if (advertEntity.isPresent()) {
@@ -72,9 +77,11 @@ public class SecurityService {
 			throw new BazarikApplicationException("Advert could not be found by id.");
 		}
 
-		this.emailService.sendEmail(advertEmail, code, message);
+		this.emailService.sendEmail(advertEmail, code);
 
 		securityDetail.setHash(this.hashFunction(code));
+		
+		System.out.println("Code: " + code + ", hash: " + securityDetail.getHash());
 
 		return securityDetail;
 	}
@@ -89,7 +96,7 @@ public class SecurityService {
 
 	// https://www.baeldung.com/sha-256-hashing-java
 	public String hashFunction(String stringToHash) {
-		return new DigestUtils("SHA3-256").digestAsHex(SALT + stringToHash);
+		return new DigestUtils("SHA3-256").digestAsHex(salt + stringToHash);
 	}
 	
 }

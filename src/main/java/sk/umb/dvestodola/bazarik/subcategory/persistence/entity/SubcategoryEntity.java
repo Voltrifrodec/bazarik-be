@@ -16,7 +16,7 @@ public class SubcategoryEntity {
 	@Column(name = "id_subcategory", unique = true)
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "subcategory_name")
 	private String name;
 
 	@ManyToOne
@@ -28,6 +28,17 @@ public class SubcategoryEntity {
 	@JoinColumn(name = "id_category", nullable = false)
 	private CategoryEntity category;
 
+	@Column(name = "subcategory_number_of_adverts")
+	private Long numberOfAdverts;
+
+
+	public Long getNumberOfAdverts() {
+		return numberOfAdverts;
+	}
+
+	public void setNumberOfAdverts(Long numberOfAdverts) {
+		this.numberOfAdverts = numberOfAdverts;
+	}
 
 	public CategoryEntity getCategory() {
 		return category;

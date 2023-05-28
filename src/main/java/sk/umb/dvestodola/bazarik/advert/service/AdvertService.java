@@ -99,8 +99,8 @@ public class AdvertService {
 	}
 	
 	// https://stackoverflow.com/questions/53601006/how-to-modify-page-type-result-of-spring-repository-search-for-rest-api
-	public Page<AdvertDetailDto> getPaginatedAdverts(Pageable pageable) {
-		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAll(pageable);
+	public Page<AdvertDetailDto> getPaginatedAdverts(String query, Pageable pageable) {
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByQuery(query, pageable);
 
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
@@ -125,6 +125,14 @@ public class AdvertService {
 		return advertRepository.getNumberOfAdvertsInCategoryByCategoryId(categoryId);
 	}
 
+	public Long getNumberOfAdvertsInSubcategoryBySubcategoryId(Long subcategoryId) {		
+		return advertRepository.getNumberOfAdvertsInSubcategoryBySubcategoryId(subcategoryId);
+	}
+
+	public Long getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(Long subsubcategoryId) {		
+		return advertRepository.getNumberOfAdvertsInSubsubcategoryBySubsubcategoryId(subsubcategoryId);
+	}
+
 	public Page<AdvertDetailDto> getPaginatedAdvertsByCategoryId(Long categoryId, Pageable pageable) {
 		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByCategoryId(categoryId, pageable);
 
@@ -139,6 +147,18 @@ public class AdvertService {
 
 	public Page<AdvertDetailDto> getPaginatedAdvertsBySubsubcategoryId(Long subsubcategoryId, Pageable pageable) {
 		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllBySubsubcategoryId(subsubcategoryId, pageable);
+
+		return mapToPageAdvertDetail(advertEntityPage);
+	}
+
+	public Page<AdvertDetailDto> getPaginatedAdvertsByQuery(String query, Pageable pageable) {
+		query = query.toLowerCase();
+		
+		if (query.trim().length() < MINIMUM_QUERY_LENGTH) {
+			throw new BazarikApplicationException("Query must have more than 3 (three) characters.");
+		}
+
+		Page<AdvertEntity> advertEntityPage = advertPageRepository.findAllByQuery(query, pageable);
 
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
