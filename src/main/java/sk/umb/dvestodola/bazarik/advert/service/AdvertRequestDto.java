@@ -88,7 +88,7 @@ public class AdvertRequestDto {
 	public Long getSubsubcategoryId() {
 		return subsubcategoryId;
 	}
-
+	
 	public void setSubsubcategoryId(Long subsubcategoryId) {
 		this.subsubcategoryId = subsubcategoryId;
 	}

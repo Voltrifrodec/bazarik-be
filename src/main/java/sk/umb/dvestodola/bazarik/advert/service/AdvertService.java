@@ -565,6 +565,9 @@ public class AdvertService {
 		return imageDetail;
 	}
 
-	
 
+	public List<AdvertDetailDto> getLatestByCategory(Long categoryId) {
+		return mapToAdvertDetailList(advertRepositoryImplementation.findRecentByCategory(categoryId));
+
+	}
 }

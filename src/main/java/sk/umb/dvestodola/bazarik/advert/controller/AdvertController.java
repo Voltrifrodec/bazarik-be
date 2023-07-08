@@ -74,6 +74,13 @@ public class AdvertController {
 		return advertService.getRecentAdverts((Objects.isNull(count)) ? 4L : count);
 	}
 
+	@GetMapping("/api/adverts/recent-advert/{categoryId}")
+	public List<AdvertDetailDto> getLatestByCategory(@PathVariable Long categoryId) {
+		System.out.println("Get all latest adverts by category was called, " + categoryId);
+		return advertService.getLatestByCategory(categoryId);
+
+	}
+
 	@GetMapping("/api/search")
 	public Page<AdvertDetailDto> findPaginatedByQuery(
 		@Valid PageRequestDto pageRequest,
