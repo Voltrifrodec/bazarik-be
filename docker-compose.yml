@@ -2,7 +2,7 @@
 version: '3.1'
 
 services:
-  bazarik:
+  bazarik-db:
     image: mariadb
     restart: always
     environment:
@@ -16,6 +16,28 @@ services:
       - logs:/var/log/mysql
     ports:
       - "3306:3306"
+    networks:
+      - bazarik
+  
+  bazarik-be:
+    image: bazarik-be
+    ports:
+      - "8080:8080"
+    networks:
+      - bazarik
+
+  bazarik-fe:
+    image: bazarik-fe
+    ports:
+      - "4200:4200"
+    networks:
+      - bazarik
+
+networks:
+  bazarik:
+    name: bazarik
+    driver: bridge
+    external: true
 
 volumes:
   data:
