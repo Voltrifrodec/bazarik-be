@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +55,7 @@ import sk.umb.dvestodola.bazarik.subsubcategory.persistence.repository.Subsubcat
 import sk.umb.dvestodola.bazarik.subsubcategory.service.SubsubcategoryDetailDto;
 
 @Service
+// @CacheConfig(cacheNames = "advertCache")
 public class AdvertService {
 
 	private final int MINIMUM_QUERY_LENGTH = 3;
@@ -90,11 +95,25 @@ public class AdvertService {
 		this.advertPageRepository = advertPageRepository;
 	}
 
+	// Ak Redis nemá požadované dáta, zájde do DB => request počká 2s
+	private void waitSomeTime() {
+		System.out.println("Long Wait Begin");
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Long Wait End");
+	}
+
+	// @Cacheable(cacheNames = "adverts")
 	public List<AdvertDetailDto> getAllAdverts() {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
+	// @Cacheable(cacheNames = "advert", key = "#id", unless = "#result == null")
 	public AdvertDetailDto getAdvertById(UUID advertId) {
+		waitSomeTime();
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 	
@@ -163,6 +182,7 @@ public class AdvertService {
 		return mapToPageAdvertDetail(advertEntityPage);
 	}
 
+	// @CacheEvict(cacheNames = "adverts", allEntries = true)
 	@Transactional
 	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
@@ -174,6 +194,7 @@ public class AdvertService {
 		return advertRepository.save(advertEntity).getId();
 	}
 
+	// @CacheEvict(cacheNames = "adverts", allEntries = true)
 	@Transactional
 	public void updateAdvert(UUID advertId, AdvertRequestDto advertRequest) {
 		AdvertEntity advertEntity = getAdvertEntityById(advertId);
@@ -294,6 +315,10 @@ public class AdvertService {
         advertRepository.save(advertEntity);
 	}
 
+	// @Caching(evict = {
+	// 	@CacheEvict(cacheNames = "advert", key = "#id"),
+	// 	@CacheEvict(cacheNames = "adverts", allEntries = true)
+	// })
 	@Transactional
 	public void deleteAdvert(UUID advertId) {
 		advertRepository.deleteById(advertId);

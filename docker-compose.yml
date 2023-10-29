@@ -19,10 +19,17 @@ services:
     networks:
       - bazarik
   
-  bazarik-be:
+  bazarik-be-1:
     image: bazarik-be
     ports:
       - "8080:8080"
+    networks:
+      - bazarik
+
+  bazarik-be-2:
+    image: bazarik-be
+    ports:
+      - "8085:8080"
     networks:
       - bazarik
 
@@ -32,6 +39,13 @@ services:
       - "4200:80"
     networks:
       - bazarik
+
+  # bazarik-fe-2:
+  #   image: bazarik-fe
+  #   ports:
+  #     - "4201:80"
+  #   networks:
+  #     - bazarik
 
 networks:
   bazarik:

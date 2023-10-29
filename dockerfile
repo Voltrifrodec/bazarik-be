@@ -1,6 +1,6 @@
 FROM openjdk:17
 
-ADD /target/bazarik-0.0.1-SNAPSHOT.jar bazarik-fe.jar
+ADD ./target/bazarik-0.0.1-SNAPSHOT.jar bazarik-fe.jar
 
 EXPOSE 8080
 

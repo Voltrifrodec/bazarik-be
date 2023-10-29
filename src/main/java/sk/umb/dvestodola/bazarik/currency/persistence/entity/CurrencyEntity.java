@@ -1,10 +1,13 @@
 package sk.umb.dvestodola.bazarik.currency.persistence.entity;
 
+import org.springframework.data.redis.core.RedisHash;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+@RedisHash("currency")
 @Entity(name = "currency")
 public class CurrencyEntity {
 	@Id
