@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -22,9 +23,11 @@ public class CurrencyService {
 		this.currencyRepository = currencyRepository;
 	}
 
+	@Cacheable(value = "currencies")
 	public List<CurrencyDetailDto> getAllCurrencies() {
-        return mapToCurrencyDetailList(currencyRepository.findAll());
-    }
+		System.out.println("Ťahá currencies zo service metódy.");
+    return mapToCurrencyDetailList(currencyRepository.findAll());
+  }
 
 	public CurrencyDetailDto getCurrencyById(Long currencyId) {
 		return mapToCurrencyDetail(getCurrencyEntityById(currencyId));
