@@ -37,6 +37,8 @@ public class AuthenticationService {
 	@Cacheable(value = "authenticationCache", key = "{#username, #password}")
 	@Transactional
 	public String authenticate(String username, String password) {
+		System.out.println("Ťahá token, podľa username a password, zo service metódy.");
+
 		Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
 
 		if (optionalUser.isEmpty()) {
@@ -58,9 +60,11 @@ public class AuthenticationService {
 		return token.getToken();
 	}
 
-	@Cacheable(value = "tokenCache", key = "#token")
+	@Cacheable(value = "userRoles", key = "#token")
 	@Transactional
 	public UserRolesDto authenticate(String token) {
+		System.out.println("Ťahá user roles zo service metódy.");
+
 		Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
 
 		if (optionalToken.isEmpty()) {
@@ -83,7 +87,7 @@ public class AuthenticationService {
 	@Cacheable(value = "adminTokenValidation", key = "#token")
 	@Transactional
 	public boolean validateAdminToken(String token) {
-		System.out.println("Ťahá to zo service metódy.");
+		System.out.println("Ťahá validate admin token zo service metódy.");
 
 		if (token.equals("null")) return false;
 

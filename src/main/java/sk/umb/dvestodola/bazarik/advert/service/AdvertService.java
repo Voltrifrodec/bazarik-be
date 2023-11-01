@@ -95,25 +95,13 @@ public class AdvertService {
 		this.advertPageRepository = advertPageRepository;
 	}
 
-	// Ak Redis nemá požadované dáta, zájde do DB => request počká 2s
-	private void waitSomeTime() {
-		System.out.println("Long Wait Begin");
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Long Wait End");
-	}
-
-	// @Cacheable(cacheNames = "adverts")
 	public List<AdvertDetailDto> getAllAdverts() {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
-	// @Cacheable(cacheNames = "advert", key = "#id", unless = "#result == null")
+	@Cacheable(cacheNames = "advert", key = "#advertId")
 	public AdvertDetailDto getAdvertById(UUID advertId) {
-		waitSomeTime();
+		System.out.println("Get advert by id ťahá zo service metódy.");
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
 	}
 	

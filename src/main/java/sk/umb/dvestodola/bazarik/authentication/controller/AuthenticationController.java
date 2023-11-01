@@ -46,6 +46,8 @@ public class AuthenticationController {
 		HttpServletResponse response
 	) {
 		if (auth.isPresent()) {
+			System.out.println("Volá validate admin token.");
+			
 			if (this.authenticationService.validateAdminToken(auth.get())) {
 				response.setStatus(HttpStatus.OK.value());
 				return true;
