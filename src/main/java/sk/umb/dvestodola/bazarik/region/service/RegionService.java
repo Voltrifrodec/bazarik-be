@@ -39,13 +39,13 @@ public class RegionService {
 
 	@Cacheable(value = "regions")
 	public List<RegionDetailDto> getAllRegions() {
-		System.out.println("Ťahá regions zo service metódy.");
+		System.out.println("- ťahá regions zo service metódy.");
     return mapToRegionDetailList(regionRepository.findAll());
   }
 	
 	@Cacheable(value = "districtsByRegion", key = "#regionId")
 	public List<DistrictDetailDto> getAllDistrictsByRegionById(Long regionId) {
-		System.out.println("Ťahá districts podľa region id zo service metódy.");
+		System.out.println("- ťahá districts podľa region id zo service metódy.");
 		return mapToDistrictDetailList(districtRepository.findAllByRegionId(regionId));
 	}
 

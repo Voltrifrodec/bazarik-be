@@ -25,7 +25,7 @@ public class CurrencyService {
 
 	@Cacheable(value = "currencies")
 	public List<CurrencyDetailDto> getAllCurrencies() {
-		System.out.println("Ťahá currencies zo service metódy.");
+		System.out.println("- ťahá currencies zo service metódy.");
     return mapToCurrencyDetailList(currencyRepository.findAll());
   }
 
