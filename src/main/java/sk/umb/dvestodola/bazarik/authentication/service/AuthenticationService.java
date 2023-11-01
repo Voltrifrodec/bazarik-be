@@ -1,5 +1,7 @@
 package sk.umb.dvestodola.bazarik.authentication.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,7 @@ public class AuthenticationService {
 		this.passwordEncoder = new BCryptPasswordEncoder();
 	}
 
+	@Cacheable(value = "authenticationCache", key = "{#username, #password}")
 	@Transactional
 	public String authenticate(String username, String password) {
 		Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
@@ -55,6 +58,7 @@ public class AuthenticationService {
 		return token.getToken();
 	}
 
+	@Cacheable(value = "tokenCache", key = "#token")
 	@Transactional
 	public UserRolesDto authenticate(String token) {
 		Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
@@ -76,8 +80,11 @@ public class AuthenticationService {
 		return new UserRolesDto(optionalToken.get().getUser().getUsername(), roleNames);
 	}
 
+	@Cacheable(value = "adminTokenValidation", key = "#token")
 	@Transactional
 	public boolean validateAdminToken(String token) {
+		System.out.println("Ťahá to zo service metódy.");
+
 		if (token.equals("null")) return false;
 
 		String extractedToken = token.split("Bearer")[1].strip();
@@ -94,6 +101,7 @@ public class AuthenticationService {
 		}
 	}
 
+	@CacheEvict(value = "tokenCache", key = "#token")
 	@Transactional
 	public void tokenRemove(String token) {
 		tokenRepository.deleteByToken(token);

@@ -26,7 +26,7 @@ public class EmailService {
 	private EmailFactory emailFactory;
 	
 	private final String fromEmail = "bazarik.noreply@gmail.com";
-	private final String pathToHtml = "src/main/java/sk/umb/dvestodola/bazarik/email/design/index.html";
+	private final String pathToHtml = "email/registration.html";
 
 	public EmailService(
 		YAMLConfig yamlConfig

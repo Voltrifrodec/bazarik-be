@@ -18,4 +18,10 @@ public class AdvertRepositoryImplementation {
 			AdvertEntity.class).setMaxResults(count.intValue()).getResultList();
 	}
 
+	public Iterable<AdvertEntity> findRecentByCategory(Long categoryId) {
+		final int maxCount = 1;
+		return entityManager.createQuery("SELECT a FROM advert a WHERE a.category.id = " + categoryId + "ORDER BY a.dateAdded DESC LIMIT " + maxCount,
+				AdvertEntity.class).setMaxResults(maxCount).getResultList();
+	}
+
 }

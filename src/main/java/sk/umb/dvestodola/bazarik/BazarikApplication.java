@@ -35,9 +35,9 @@ public class BazarikApplication implements CommandLineRunner {
 
 		System.out.println("'" + this.yamlConfig.getEnvironment() + "'");
 		if (this.yamlConfig.getEnvironment().equals("test-YAML")) {
-			String email = "avalastan@student.umb.sk";
-			System.out.println("Sending e-mail to:  " + email);
-			this.emailService.sendEmail(email, "68");
+			// String email = "avalastan@student.umb.sk";
+			// System.out.println("Sending e-mail to:  " + email);
+			// this.emailService.sendEmail(email, "68");
 		}
 	}
 

@@ -1,8 +1,10 @@
 package sk.umb.dvestodola.bazarik.email.service;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class EmailFactory {
 	private String fileName;
@@ -21,7 +23,9 @@ public class EmailFactory {
 		StringBuilder stringBuilder = new StringBuilder();
 		char[] buffer = new char[10];
 		try {
-			reader = new BufferedReader(new FileReader(fileName));
+			InputStream inputStream = EmailFactory.class.getResourceAsStream(fileName);
+			Reader targetReader = new InputStreamReader(inputStream);
+			reader = new BufferedReader(targetReader);
 			while (reader.read(buffer) != -1) {
 				stringBuilder.append(new String(buffer));
 				buffer = new char[10];
