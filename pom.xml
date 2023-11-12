@@ -112,6 +112,14 @@
 			<artifactId>jedis</artifactId>
 		</dependency>
 
+		<!-- AMQP (pre RabbitMQ) -->
+		<!-- https://medium.com/javarevisited/getting-started-with-rabbitmq-in-spring-boot-6323b9179247 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

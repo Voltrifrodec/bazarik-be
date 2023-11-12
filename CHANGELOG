@@ -1,0 +1,19 @@
+## Prerekvizitá:
+
+- Docker Image pre RabbitMQ: `docker pull rabbitmq:3.12-management`
+  - spustenie: `docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management`
+- RabbitMQ: [https://www.rabbitmq.com/install-windows.html#installer](https://www.rabbitmq.com/install-windows.html#installer)
+  - asi nie je potrebný ak beží docker?
+- Erlang (keďže je v ňom RabbitMQ napísané): [https://www.erlang.org/downloads](https://www.erlang.org/downloads)
+- Ak by boli problémy s pripojením sa, možno toto vie pomôcť: [https://stackoverflow.com/questions/33915400/unable-to-connect-spring-amqp-rabbit-mq-org-springframework-amqp-amqpconnect](https://stackoverflow.com/questions/33915400/unable-to-connect-spring-amqp-rabbit-mq-org-springframework-amqp-amqpconnect)
+
+
+## Možné užitočné materiály:
+1. *dev.to* Spring Boot and Messaging Queue - [Rabbit MQ] using Docker: [https://dev.to/atharvasiddhabhatti/spring-boot-publisher-subscriber-rabbit-mq-using-docker-117a](https://dev.to/atharvasiddhabhatti/spring-boot-publisher-subscriber-rabbit-mq-using-docker-117a)
+2. *medium.com* Getting started with RabbitMQ in Spring Boot: [https://medium.com/javarevisited/getting-started-with-rabbitmq-in-spring-boot-6323b9179247](https://medium.com/javarevisited/getting-started-with-rabbitmq-in-spring-boot-6323b9179247)
+3. *spring.io* Messaging with RabbitMQ: [https://spring.io/guides/gs/messaging-rabbitmq/](https://spring.io/guides/gs/messaging-rabbitmq/)
+4. *docs.spring.io* [https://docs.spring.io/spring-amqp/docs/current/reference/html/](https://docs.spring.io/spring-amqp/docs/current/reference/html/)
+
+
+## Notes
+*POJO* - Plain Old Java Object

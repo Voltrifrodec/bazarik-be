@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,9 +36,11 @@ public class AdvertController {
 	private final AdvertService advertService;
 
 	public AdvertController(
-		AdvertService advertService
+		AdvertService advertService,
+		RabbitTemplate rabbitTemplate
 	) {
 		this.advertService = advertService;
+		this.rabbitTemplate = rabbitTemplate;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -163,8 +167,13 @@ public class AdvertController {
 		return advertService.getPaginatedAdvertsBySubsubcategoryId(subsubcategoryId, pageable);
 	}
 
+	@Autowired
+	private final RabbitTemplate rabbitTemplate;
+
 	@GetMapping("/api/adverts/{advertId}")
 	public AdvertDetailDto getAdvertById(@PathVariable UUID advertId) {
+
+		rabbitTemplate.convertAndSend("", "advert-id", advertId);
 		System.out.println("Get advert was called, " + advertId);
 		return advertService.getAdvertById(advertId);
 	}

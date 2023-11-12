@@ -19,6 +19,14 @@ services:
     networks:
       - bazarik #je nutné mať aj databázu v tom istom networku, ako sú be-1 a be-2, aby spolu mohli komunikovať
   
+  bazarik-rabbitmq:
+    # image: rabbitmq:3-management
+    image: bazarik-rabbitmq
+    ports:
+      - "8082:8080"
+    networks:
+      - bazarik
+
   bazarik-be-1:
     image: bazarik-be
     ports:
