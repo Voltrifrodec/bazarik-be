@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertService;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.page.service.PageRequestDto;
+import sk.umb.dvestodola.bazarik.BazarikApplication;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertDetailDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
@@ -172,10 +173,13 @@ public class AdvertController {
 
 	@GetMapping("/api/adverts/{advertId}")
 	public AdvertDetailDto getAdvertById(@PathVariable UUID advertId) {
-
-		rabbitTemplate.convertAndSend("", "advert-id", advertId);
-		System.out.println("Get advert was called, " + advertId);
-		return advertService.getAdvertById(advertId);
+		try {
+			// rabbitTemplate.convertAndSend(BazarikApplication.topicExchangeName, "foo.bar.baz", advertId);
+			System.out.println("Get advert was called, " + advertId);
+			return advertService.getAdvertById(advertId);
+		} catch (Exception e) {
+			throw new BazarikApplicationException(e.getMessage());
+		}
 	}
 
 	@PostMapping("/api/adverts")

@@ -1,6 +1,7 @@
 package sk.umb.dvestodola.bazarik;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +14,9 @@ import sk.umb.dvestodola.bazarik.email.service.EmailService;
 
 @SpringBootApplication
 public class BazarikApplication implements CommandLineRunner {
+
+	public static final String topicExchangeName = "spring-boot-exchange";
+  public static final String queueName = "spring-boot";
 	
 	@Autowired
 	CurrencyRepository currencyRepository;
