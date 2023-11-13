@@ -1,5 +1,7 @@
 package sk.umb.dvestodola.bazarik.advert.persistence.repository;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import sk.umb.dvestodola.bazarik.advert.persistence.entity.AdvertEntity;
 
 @Repository
-public interface AdvertPageRepository extends PagingAndSortingRepository<AdvertEntity, Long> {
+public interface AdvertPageRepository extends PagingAndSortingRepository<AdvertEntity, UUID> {
 	Page<AdvertEntity> findAll(Pageable pageable);
 
 	Page<AdvertEntity> findAllByCategoryId(Long categoryId, Pageable pageable);
