@@ -180,6 +180,8 @@ public class AdvertController {
 		System.out.println("Create advert was called.");
 		UUID advertId = advertService.createAdvert(advert);
 
+		// https://stackoverflow.com/questions/49649947/use-of-rabbittemplate-convertsendandreceive-with-org-springframework-messaging-m
+		// https://docs.spring.io/spring-amqp/docs/1.5.2.RELEASE/api//index.html?org/springframework/amqp/rabbit/core/RabbitMessagingTemplate.html
 		// TODO: Create ImageGeneratorService:
 		// TODO: Implement generateImageFromAdvertTitle:
 		// Get AdvertEntity
