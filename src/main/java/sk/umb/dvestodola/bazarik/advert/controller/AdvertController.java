@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertService;
 import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.page.service.PageRequestDto;
-import sk.umb.dvestodola.bazarik.BazarikApplication;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertDetailDto;
 import sk.umb.dvestodola.bazarik.advert.service.AdvertRequestDto;
 
@@ -35,6 +34,8 @@ public class AdvertController {
 	private final static int PAGE_SIZE_MINIMUM = 1;
 
 	private final AdvertService advertService;
+
+	@Autowired RabbitTemplate rabbitTemplate;
 
 	public AdvertController(
 		AdvertService advertService,
@@ -168,24 +169,35 @@ public class AdvertController {
 		return advertService.getPaginatedAdvertsBySubsubcategoryId(subsubcategoryId, pageable);
 	}
 
-	@Autowired
-	private final RabbitTemplate rabbitTemplate;
-
 	@GetMapping("/api/adverts/{advertId}")
 	public AdvertDetailDto getAdvertById(@PathVariable UUID advertId) {
-		try {
-			// rabbitTemplate.convertAndSend(BazarikApplication.topicExchangeName, "foo.bar.baz", advertId);
-			System.out.println("Get advert was called, " + advertId);
-			return advertService.getAdvertById(advertId);
-		} catch (Exception e) {
-			throw new BazarikApplicationException(e.getMessage());
-		}
+		System.out.println("Get advert was called, " + advertId);
+		return advertService.getAdvertById(advertId);
 	}
 
 	@PostMapping("/api/adverts")
 	public UUID createAdvert(@Valid @RequestBody AdvertRequestDto advert) {
 		System.out.println("Create advert was called.");
-		return advertService.createAdvert(advert);
+		UUID advertId = advertService.createAdvert(advert);
+
+		// TODO: Create ImageGeneratorService:
+		// TODO: Implement generateImageFromAdvertTitle:
+		// Get AdvertEntity
+		// Create backgroundWorker
+		// Send message to messageQueue -> generateDescription (KUBO), then maybe generateImage
+		// Receive transformed message
+		// update Image
+
+		// Send advertId to ImageGeneratorService
+		// IN ImageGeneratorService:
+		// get advertEntity by Id
+		// send message to queue with advert title
+		// ... worker does its thang
+		// wait until it is updated
+		// change the advertImage -> updateImage in DB
+		// byte[] bytes = (byte[]) rabbitTemplate.convertSendAndReceive(BazarikApplication.topicExchangeName, "foo.bar.baz", advertId.toString());
+
+		return advertId;
 	}
 
 	@PutMapping("/api/adverts/{advertId}")
