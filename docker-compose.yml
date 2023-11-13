@@ -25,6 +25,9 @@ services:
       - "5672:5672"
     networks:
       - bazarik
+    volumes:
+      - data:/var/lib/rabbitmq
+      - logs:/var/log/rabbitmq
 
   # bazarik-rabbitmq:
   #   image: bazarik-rabbitmq

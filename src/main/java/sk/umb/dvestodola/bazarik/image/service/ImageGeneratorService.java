@@ -30,6 +30,14 @@ public class ImageGeneratorService {
 	@Autowired AdvertRepository advertRepository;
 	@Autowired RabbitTemplate rabbitTemplate;
 
+	private final int rabbitmqTimeoutInMiliseconds = 60000;
+
+	public ImageGeneratorService(RabbitTemplate rabbitTemplate) {
+		rabbitTemplate.setReceiveTimeout(rabbitmqTimeoutInMiliseconds);
+		rabbitTemplate.setReplyTimeout(rabbitmqTimeoutInMiliseconds);
+		this.rabbitTemplate = rabbitTemplate;
+	}
+
 	public void generateImage(UUID advertId) {
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
@@ -42,6 +50,10 @@ public class ImageGeneratorService {
 		
 				System.out.println("Sent advert name to message queue.");
 				byte[] bytes = (byte[]) rabbitTemplate.convertSendAndReceive(BazarikApplication.topicExchangeName, "foo.bar.image", advertEntity.getName());
+				
+				if (bytes == null) return;
+				if (bytes.length == 0) return;
+
 				System.out.println("Received response from message queue.");
 
 				try {
