@@ -13,10 +13,7 @@ import java.util.stream.Collectors;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +42,7 @@ import sk.umb.dvestodola.bazarik.exception.BazarikApplicationException;
 import sk.umb.dvestodola.bazarik.image.persistence.entity.ImageEntity;
 import sk.umb.dvestodola.bazarik.image.persistence.repository.ImageRepository;
 import sk.umb.dvestodola.bazarik.image.service.ImageDetailDto;
+import sk.umb.dvestodola.bazarik.image.service.ImageGeneratorService;
 import sk.umb.dvestodola.bazarik.region.persistence.entity.RegionEntity;
 import sk.umb.dvestodola.bazarik.region.service.RegionDetailDto;
 import sk.umb.dvestodola.bazarik.subcategory.persistence.entity.SubcategoryEntity;
@@ -70,6 +68,8 @@ public class AdvertService {
 	private final ImageRepository imageRepository;
 	private final CurrencyRepository currencyRepository;
 	private final AdvertPageRepository advertPageRepository;
+
+	@Autowired ImageGeneratorService imageGeneratorService;
 
 	public AdvertService(
 		AdvertRepository advertRepository,
@@ -99,7 +99,7 @@ public class AdvertService {
         return mapToAdvertDetailList(advertRepository.findAll());
     }
 
-	@Cacheable(cacheNames = "advert", key = "#advertId")
+	// @Cacheable(cacheNames = "advert", key = "#advertId")
 	public AdvertDetailDto getAdvertById(UUID advertId) {
 		System.out.println("Get advert by id ťahá zo service metódy.");
 		return mapToAdvertDetail(getAdvertEntityById(advertId));
@@ -171,7 +171,7 @@ public class AdvertService {
 	}
 
 	// @CacheEvict(cacheNames = "adverts", allEntries = true)
-	@Transactional
+	// @Transactional // The transaction did not finish before call to imageGeneratorService, advert did not exist
 	public UUID createAdvert(AdvertRequestDto advertRequestDto) {
 		AdvertEntity advertEntity = mapToAdvertEntity(advertRequestDto);
 
@@ -179,7 +179,18 @@ public class AdvertService {
 			throw new BazarikApplicationException("Advert information must be filled properly.");
 		}
 
-		return advertRepository.save(advertEntity).getId();
+		advertEntity = advertRepository.save(advertEntity);
+		UUID advertId = advertEntity.getId();
+
+		if (advertEntity.getImage().getId() == 0L) {
+			imageGeneratorService.generateImage(advertId);
+		}
+
+		// if (Strings.isBlank(advertEntity.getDescription())) {
+		// 	imageGeneratorService.generateDescription(advertId);
+		// }
+
+		return advertEntity.getId();
 	}
 
 	// @CacheEvict(cacheNames = "adverts", allEntries = true)
