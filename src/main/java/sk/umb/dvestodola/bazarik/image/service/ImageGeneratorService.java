@@ -49,21 +49,26 @@ public class ImageGeneratorService {
 				AdvertEntity advertEntity = optionalAdvertEntity.get();
 		
 				System.out.println("Sent advert name to message queue.");
-				byte[] bytes = (byte[]) rabbitTemplate.convertSendAndReceive(BazarikApplication.topicExchangeName, "foo.bar.image", advertEntity.getName());
+				byte[] response = (byte[]) rabbitTemplate.convertSendAndReceive(BazarikApplication.topicExchangeName, "foo.bar.image", advertEntity.getName());
 				
-				if (bytes == null) return;
-				if (bytes.length == 0) return;
+				if(response == null) {
+					return;
+				}
 
 				System.out.println("Received response from message queue.");
 
+				ByteArrayInputStream bytesConvert = new ByteArrayInputStream(response);
+
 				try {
-					BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
+
+
+					BufferedImage img = ImageIO.read(bytesConvert);
 					
 					ImageEntity imageEntity = new ImageEntity();
 					imageEntity.setHeight(img.getHeight());
 					imageEntity.setWidth(img.getWidth());
 					imageEntity.setOriginalFileName("Generated Image");
-					imageEntity.setImage(new SerialBlob(bytes));
+					imageEntity.setImage(new SerialBlob(response));
 		
 					imageEntity = imageRepository.save(imageEntity);
 					advertEntity.setImage(imageEntity);
